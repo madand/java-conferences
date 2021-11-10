@@ -15,7 +15,7 @@ DROP TYPE IF EXISTS user_role;
 
 ------------------------------------------------------------------------
 
-CREATE TYPE user_role AS ENUM ('moderator', 'speaker', 'attendee');
+CREATE TYPE user_role AS ENUM ('MODERATOR', 'SPEAKER', 'ATTENDEE');
 
 CREATE TABLE "user" (
   id serial NOT NULL PRIMARY KEY,
