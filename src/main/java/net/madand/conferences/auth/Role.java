@@ -6,4 +6,16 @@ package net.madand.conferences.auth;
  */
 public enum Role {
     MODERATOR, SPEAKER, ATTENDEE;
+
+    public boolean isModerator() {
+        return this == MODERATOR;
+    }
+
+    public boolean isSpeaker() {
+        return this == SPEAKER;
+    }
+
+    public boolean isAttendee() {
+        return this == ATTENDEE;
+    }
 }

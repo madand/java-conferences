@@ -1,0 +1,9 @@
+* Possible improvements
+
+Here I gather the things that are not implemented, but might be useful if the time
+allows to make them real.
+
+** Make distinction between application and conference  language
+
+This will allow to hold the conference in a language not supported as an
+application localization.

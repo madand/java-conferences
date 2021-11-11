@@ -1,16 +1,17 @@
 package net.madand.conferences.entity;
 
 import net.madand.conferences.auth.Role;
+import net.madand.conferences.security.PasswordHelper;
 
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.OffsetDateTime;
 
-public class User implements IDable, Serializable {
+public class User implements Serializable {
     private static final long serialVersionUID = 7877556371955180148L;
 
     private int id;
-    private Instant createdAt;
-    private Instant updatedAt;
+    private OffsetDateTime createdAt;
+    private OffsetDateTime updatedAt;
     private String email;
     private String realName;
     private String passwordHash;
@@ -19,14 +20,48 @@ public class User implements IDable, Serializable {
     public User() {
     }
 
-    @Override
+    public static User makeInstance(String email, String realName, String password, Role role) {
+        User user = new User();
+
+        user.setEmail(email);
+        user.setRealName(realName);
+        user.setPassword(password);
+        user.setRole(role);
+
+        return user;
+    }
+
+    /**
+     * Set the passwordHash from the given string.
+     *
+     * @param newPassword the new password in clear text.
+     */
+    public void setPassword(String newPassword) {
+        passwordHash = PasswordHelper.hash(newPassword);
+    }
+
     public int getId() {
         return id;
     }
 
-    @Override
     public void setId(int id) {
         this.id = id;
+    }
+
+    public OffsetDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(OffsetDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public OffsetDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(OffsetDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public String getEmail() {
@@ -59,13 +94,5 @@ public class User implements IDable, Serializable {
 
     public void setRole(Role role) {
         this.role = role;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public Instant getUpdatedAt() {
-        return updatedAt;
     }
 }
