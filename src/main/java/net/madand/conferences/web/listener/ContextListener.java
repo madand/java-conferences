@@ -24,10 +24,13 @@ public class ContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         ServletContext sc = sce.getServletContext();
+        // Store the context in helper, to make it easily accessible everywhere.
+        ContextHelper.setContext(sc);
+
         // Order matters! Later methods expect the functioning logger and DataSource.
         initLog4J(sc);
-        initDataSource(sc);
-        initLanguages(sc);
+        initDataSource();
+        initLanguages();
     }
 
     /**
@@ -48,12 +51,12 @@ public class ContextListener implements ServletContextListener {
         logToSysOut("Log4J initialization finished.");
     }
 
-    private void initDataSource(ServletContext servletContext) {
+    private void initDataSource() {
         log.trace("DataSource initialization started");
 
         try {
             Context ctx = (Context) new InitialContext().lookup("java:comp/env");
-            ContextHelper.setDataSource(servletContext, (DataSource) ctx.lookup("jdbc/conferences"));
+            ContextHelper.setDataSource((DataSource) ctx.lookup("jdbc/conferences"));
         } catch (NamingException e) {
             log.error("DataSource initialization failed", e);
             throw new RuntimeException("Failed to initialize the Data Source.", e);
@@ -62,21 +65,21 @@ public class ContextListener implements ServletContextListener {
         log.info("DataSource initialization finished");
     }
 
-    private void initLanguages(ServletContext servletContext) {
+    private void initLanguages() {
         log.trace("Languages initialization started");
 
-        try (Connection connection = ContextHelper.getDataSource(servletContext).getConnection()) {
+        try (Connection connection = ContextHelper.getDataSource().getConnection()) {
             List<Language> allLanguages = LanguageDao.findAll(connection);
 
             List<Language> extraLanguages = new ArrayList<>();
             for (Language language : allLanguages) {
                 if (language.isDefault()) {
-                    ContextHelper.setDefaultLanguage(servletContext, language);
+                    ContextHelper.setDefaultLanguage(language);
                 } else {
                     extraLanguages.add(language);
                 }
             }
-            ContextHelper.setExtraLanguages(servletContext, extraLanguages);
+            ContextHelper.setExtraLanguages(extraLanguages);
         } catch (SQLException throwables) {
             log.error("Languages query failed", throwables);
             throw new RuntimeException("Failed to initialize the languages", throwables);
