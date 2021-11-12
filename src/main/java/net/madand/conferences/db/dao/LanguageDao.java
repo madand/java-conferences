@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public class LanguageDao {
     private static final String SQL_FIND_ALL = "SELECT * FROM language ORDER BY id";
-    private static final String SQL_INSERT_ONE = "INSERT INTO language (code, name, is_default) VALUES (?,?,?)";
+    private static final String SQL_INSERT = "INSERT INTO language (code, name, is_default) VALUES (?,?,?)";
 
     private static Map<Integer, Language> languages;
 
@@ -23,7 +23,7 @@ public class LanguageDao {
     }
 
     public static void insert(Connection conn, Language language) throws SQLException {
-        Optional<Integer> maybeId = QueryHelper.insert(conn, SQL_INSERT_ONE,
+        Optional<Integer> maybeId = QueryHelper.insert(conn, SQL_INSERT,
                 stmt -> {
                     stmt.setString(1, language.getCode());
                     stmt.setString(2, language.getName());

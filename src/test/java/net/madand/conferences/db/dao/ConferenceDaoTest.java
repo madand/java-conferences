@@ -2,6 +2,7 @@ package net.madand.conferences.db.dao;
 
 import net.madand.conferences.db.util.DbInflator;
 import net.madand.conferences.entity.Conference;
+import net.madand.conferences.entity.Language;
 import net.madand.conferences.l10n.Languages;
 import net.madand.conferences.test.DbHelper;
 import org.junit.Before;
@@ -19,20 +20,19 @@ import static org.junit.Assert.*;
 public class ConferenceDaoTest {
     private final DbHelper dbHelper;
     private final Connection connection;
-    private final DbInflator dbInflator;
 
     public ConferenceDaoTest() throws SQLException, IOException {
         dbHelper = DbHelper.getInstance();
         connection = dbHelper.getConnection();
-        dbInflator = new DbInflator(connection);
     }
 
     @Before
     public void setUp() throws IOException, SQLException {
         dbHelper.recreateDbTables();
-        dbInflator.insertLanguages();
-        // Cache all the languages.
-        LanguageDao.findAll(connection).forEach(Languages::add);
+
+        Language en = Language.makeInstance("en", "English", true);
+        LanguageDao.insert(connection, en);
+        Languages.add(en);
     }
 
     @Test

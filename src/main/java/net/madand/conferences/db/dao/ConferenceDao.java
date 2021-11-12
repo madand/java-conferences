@@ -16,7 +16,7 @@ import java.util.Optional;
 
 public class ConferenceDao {
     private static final String SQL_FIND_ALL = "SELECT * FROM conference ORDER BY event_date DESC";
-    private static final String SQL_FIND_ONE_BY_ID = "SELECT * FROM conference WHERE id = ?";
+    private static final String SQL_FIND_ONE = "SELECT * FROM conference WHERE id = ?";
     private static final String SQL_INSERT = "INSERT INTO conference (event_date, language_id, actually_attended_count) VALUES (?,?,?)";
     private static final String SQL_UPDATE = "UPDATE conference SET event_date = ?, language_id = ?, actually_attended_count = ? WHERE id = ?";
     private static final String SQL_DELETE = "DELETE FROM conference WHERE id = ?";
@@ -26,7 +26,7 @@ public class ConferenceDao {
     }
 
     public static Optional<Conference> findOneById(Connection conn, int id) throws SQLException {
-        return QueryHelper.findOne(conn, SQL_FIND_ONE_BY_ID,
+        return QueryHelper.findOne(conn, SQL_FIND_ONE,
                 stmt -> stmt.setInt(1, id),
                 ConferenceDao::mapRow);
     }
