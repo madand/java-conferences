@@ -5,6 +5,7 @@ import net.madand.conferences.security.PasswordHelper;
 
 import java.io.Serializable;
 import java.time.OffsetDateTime;
+import java.util.Objects;
 
 public class User implements Serializable {
     private static final long serialVersionUID = 7877556371955180148L;
@@ -94,5 +95,28 @@ public class User implements Serializable {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id == user.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", realName='" + realName + '\'' +
+                ", role=" + role +
+                '}';
     }
 }

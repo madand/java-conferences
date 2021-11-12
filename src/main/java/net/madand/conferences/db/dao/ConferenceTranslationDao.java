@@ -1,8 +1,8 @@
 package net.madand.conferences.db.dao;
 
-import net.madand.conferences.db.Mapper;
-import net.madand.conferences.db.QueryHelper;
-import net.madand.conferences.db.StatementParametersSetter;
+import net.madand.conferences.db.util.Mapper;
+import net.madand.conferences.db.util.QueryHelper;
+import net.madand.conferences.db.util.StatementParametersSetter;
 import net.madand.conferences.entity.Conference;
 import net.madand.conferences.entity.ConferenceTranslation;
 import net.madand.conferences.entity.Language;

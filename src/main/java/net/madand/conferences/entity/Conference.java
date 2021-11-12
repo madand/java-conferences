@@ -81,8 +81,6 @@ public class Conference implements Serializable {
     public String toString() {
         return "Conference{" +
                 "id=" + id +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
                 ", eventDate=" + eventDate +
                 ", actuallyAttendedCount=" + actuallyAttendedCount +
                 '}';

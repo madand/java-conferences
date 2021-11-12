@@ -1,7 +1,7 @@
 package net.madand.conferences.db.dao;
 
-import net.madand.conferences.db.QueryHelper;
-import net.madand.conferences.db.StatementParametersSetter;
+import net.madand.conferences.db.util.QueryHelper;
+import net.madand.conferences.db.util.StatementParametersSetter;
 import net.madand.conferences.entity.Conference;
 import net.madand.conferences.l10n.Languages;
 
@@ -25,7 +25,7 @@ public class ConferenceDao {
         return QueryHelper.findAll(connection, SQL_FIND_ALL, ConferenceDao::mapRow);
     }
 
-    public static Optional<Conference> findOneById(Connection conn, int id) throws SQLException {
+    public static Optional<Conference> findOne(Connection conn, int id) throws SQLException {
         return QueryHelper.findOne(conn, SQL_FIND_ONE,
                 stmt -> stmt.setInt(1, id),
                 ConferenceDao::mapRow);

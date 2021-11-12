@@ -86,4 +86,15 @@ public class ConferenceTranslation implements Serializable {
     public int hashCode() {
         return Objects.hash(conference, language);
     }
+
+    @Override
+    public String toString() {
+        return "ConferenceTranslation{" +
+                "conference=" + conference +
+                ", language=" + language +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", location='" + location + '\'' +
+                '}';
+    }
 }

@@ -1,6 +1,5 @@
 package net.madand.conferences.db.dao;
 
-import net.madand.conferences.db.util.DbInflator;
 import net.madand.conferences.entity.Conference;
 import net.madand.conferences.entity.Language;
 import net.madand.conferences.l10n.Languages;
@@ -48,10 +47,10 @@ public class ConferenceDaoTest {
     }
 
     @Test
-    public void findOneById() throws SQLException {
+    public void findOne() throws SQLException {
         Conference conference1 = Conference.makeInstance(LocalDate.now(), Languages.getDefaultLanguage(), 0);
         ConferenceDao.insert(connection, conference1);
-        Conference conference2 = ConferenceDao.findOneById(connection, conference1.getId()).get();
+        Conference conference2 = ConferenceDao.findOne(connection, conference1.getId()).get();
         assertNotNull("Should successfully find", conference2);
         assertTrue("Should have the same fields", compareConferences(conference1, conference2));
     }
@@ -72,7 +71,7 @@ public class ConferenceDaoTest {
         final LocalDate NEW_DATE = conference1.getEventDate().plusDays(10);
         conference1.setEventDate(NEW_DATE);
         ConferenceDao.update(connection, conference1);
-        Conference conference2 = ConferenceDao.findOneById(connection, conference1.getId()).get();
+        Conference conference2 = ConferenceDao.findOne(connection, conference1.getId()).get();
         assertEquals(NEW_DATE, conference2.getEventDate());
     }
 
@@ -83,10 +82,10 @@ public class ConferenceDaoTest {
 
         Conference conference = Conference.makeInstance(LocalDate.now(), Languages.getDefaultLanguage(), 0);
         ConferenceDao.insert(connection, conference);
-        assertNotNull(ConferenceDao.findOneById(connection, conference.getId()));
+        assertNotNull(ConferenceDao.findOne(connection, conference.getId()));
 
         ConferenceDao.delete(connection, conference);
-        assertFalse(ConferenceDao.findOneById(connection, conference.getId()).isPresent());
+        assertFalse(ConferenceDao.findOne(connection, conference.getId()).isPresent());
     }
 
     private boolean compareConferences(Conference c1, Conference c2) {

@@ -1,6 +1,6 @@
 package net.madand.conferences.db.dao;
 
-import net.madand.conferences.db.QueryHelper;
+import net.madand.conferences.db.util.QueryHelper;
 import net.madand.conferences.entity.Language;
 
 import java.sql.Connection;

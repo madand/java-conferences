@@ -1,8 +1,8 @@
 package net.madand.conferences.db.dao;
 
 import net.madand.conferences.auth.Role;
-import net.madand.conferences.db.QueryHelper;
-import net.madand.conferences.db.StatementParametersSetter;
+import net.madand.conferences.db.util.QueryHelper;
+import net.madand.conferences.db.util.StatementParametersSetter;
 import net.madand.conferences.entity.User;
 
 import java.sql.Connection;

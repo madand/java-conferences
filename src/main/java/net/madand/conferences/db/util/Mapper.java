@@ -1,4 +1,4 @@
-package net.madand.conferences.db;
+package net.madand.conferences.db.util;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
