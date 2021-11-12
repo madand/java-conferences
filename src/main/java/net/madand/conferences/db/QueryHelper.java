@@ -61,17 +61,17 @@ public class QueryHelper {
      * @return the found entity or null.
      * @throws SQLException
      */
-    public static <T> T findOne(Connection conn, String sql, StatementParametersSetter paramsSetter,
+    public static <T> Optional<T> findOne(Connection conn, String sql, StatementParametersSetter paramsSetter,
                                 Mapper<T> mapper) throws SQLException {
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             paramsSetter.setStatementParameters(stmt);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return mapper.mapRow(rs);
+                return Optional.of(mapper.mapRow(rs));
             }
         }
 
-        return null;
+        return Optional.empty();
     }
 
     /**

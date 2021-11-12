@@ -44,7 +44,7 @@ public class UserDaoTest {
     public void findOneById() throws SQLException {
         User user1 = User.makeInstance("a@b.com", "John Doe", "secret", Role.MODERATOR);
         UserDao.insert(connection, user1);
-        User user2 = UserDao.findOneById(connection, user1.getId());
+        User user2 = UserDao.findOneById(connection, user1.getId()).get();
         assertNotNull("Should successfully find", user2);
         assertTrue("Should have the same fields", compareUsers(user1, user2));
     }
@@ -65,7 +65,7 @@ public class UserDaoTest {
         final String NEW_EMAIL = "new@test.com";
         user1.setEmail(NEW_EMAIL);
         UserDao.update(connection, user1);
-        User user2 = UserDao.findOneById(connection, user1.getId());
+        User user2 = UserDao.findOneById(connection, user1.getId()).get();
         assertEquals("Updated email in database", NEW_EMAIL, user2.getEmail());
     }
 
@@ -79,7 +79,7 @@ public class UserDaoTest {
         assertNotNull(UserDao.findOneById(connection, user.getId()));
 
         UserDao.delete(connection, user);
-        assertNull(UserDao.findOneById(connection, user.getId()));
+        assertFalse(UserDao.findOneById(connection, user.getId()).isPresent());
     }
 
     private boolean compareUsers(User u1, User u2) {

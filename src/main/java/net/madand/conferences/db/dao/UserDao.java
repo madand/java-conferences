@@ -8,7 +8,6 @@ import net.madand.conferences.entity.User;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +26,7 @@ public class UserDao {
                 UserDao::mapRow);
     }
 
-    public static User findOneById(Connection conn, int id) throws SQLException {
+    public static Optional<User> findOneById(Connection conn, int id) throws SQLException {
         return QueryHelper.findOne(conn, SQL_FIND_ONE_BY_ID,
                 stmt -> stmt.setInt(1, id),
                 UserDao::mapRow);
