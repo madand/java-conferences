@@ -2,12 +2,12 @@
 -- Clean-up the database
 DROP TABLE IF EXISTS talk_speaker_request;
 DROP TABLE IF EXISTS talk_speaker_proposal;
-DROP TABLE IF EXISTS new_talk_proposal_l10n;
+DROP TABLE IF EXISTS new_talk_proposal_translation;
 DROP TABLE IF EXISTS new_talk_proposal;
-DROP TABLE IF EXISTS talk_l10n;
+DROP TABLE IF EXISTS talk_translation;
 DROP TABLE IF EXISTS talk;
 DROP TABLE IF EXISTS conference_attendee;
-DROP TABLE IF EXISTS conference_l10n;
+DROP TABLE IF EXISTS conference_translation;
 DROP TABLE IF EXISTS conference;
 DROP TABLE IF EXISTS "user";
 DROP TABLE IF EXISTS language;
@@ -44,12 +44,12 @@ CREATE TABLE conference (
   updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
   event_date DATE NOT NULL,
   language_id INTEGER NOT NULL REFERENCES language(id) ON UPDATE CASCADE ON DELETE RESTRICT,
-  actually_attended_count INTEGER
+  actually_attended_count INTEGER NOT NULL DEFAULT 0
 );
 COMMENT ON TABLE conference
   IS 'The conference.';
 
-CREATE TABLE conference_l10n (
+CREATE TABLE conference_translation (
   conference_id INTEGER NOT NULL REFERENCES conference(id) ON UPDATE CASCADE ON DELETE CASCADE,
   language_id INTEGER NOT NULL REFERENCES language(id) ON UPDATE CASCADE ON DELETE RESTRICT,
   name CHARACTER VARYING(255) NOT NULL,
@@ -57,8 +57,8 @@ CREATE TABLE conference_l10n (
   location TEXT NOT NULL,
   PRIMARY KEY (conference_id, language_id)
 );
-COMMENT ON TABLE conference_l10n
-  IS 'Localization data for the "conference_l10n" table.';
+COMMENT ON TABLE conference_translation
+  IS 'Localization data for the "conference" table.';
 
 CREATE TABLE conference_attendee (
   id SERIAL NOT NULL PRIMARY KEY,
@@ -68,7 +68,7 @@ CREATE TABLE conference_attendee (
   UNIQUE (conference_id, user_id)
 );
 COMMENT ON TABLE conference_attendee
-  IS 'Fact that the user will attend the conference.';
+  IS 'A fact that the user will attend the conference.';
 
 CREATE TABLE talk (
   id SERIAL NOT NULL PRIMARY KEY,
@@ -84,14 +84,14 @@ CREATE TABLE talk (
 COMMENT ON TABLE talk
   IS 'A talk given at the conference.';
 
-CREATE TABLE talk_l10n (
+CREATE TABLE talk_translation (
     talk_id INTEGER NOT NULL REFERENCES talk(id) ON UPDATE CASCADE ON DELETE CASCADE,
     language_id INTEGER NOT NULL REFERENCES language(id) ON UPDATE CASCADE ON DELETE RESTRICT,
     name CHARACTER VARYING(255) NOT NULL,
     description TEXT NOT NULL,
     PRIMARY KEY (talk_id, language_id)
 );
-COMMENT ON TABLE talk_l10n
+COMMENT ON TABLE talk_translation
   IS 'Localization data for the "talk" table.';
 
 CREATE TABLE talk_speaker_request (
@@ -124,14 +124,14 @@ CREATE TABLE new_talk_proposal (
   duration INTEGER NOT NULL
 );
 COMMENT ON TABLE new_talk_proposal
-  IS 'New talk proposed by the speaker. Should be accepted by a moderator.';
+  IS 'A new talk proposed by the speaker. Should be accepted by a moderator.';
 
-CREATE TABLE new_talk_proposal_l10n (
+CREATE TABLE new_talk_proposal_translation (
   talk_proposal_id INTEGER NOT NULL REFERENCES new_talk_proposal(id) ON UPDATE CASCADE ON DELETE CASCADE,
   language_id INTEGER NOT NULL REFERENCES language(id) ON UPDATE CASCADE ON DELETE RESTRICT,
   name CHARACTER VARYING(255) NOT NULL,
   description TEXT NOT NULL,
   PRIMARY KEY (talk_proposal_id, language_id)
 );
-COMMENT ON TABLE new_talk_proposal_l10n
-  IS 'Localization data for the "new_talk_proposal_l10n" table.';
+COMMENT ON TABLE new_talk_proposal_translation
+  IS 'Localization data for the "new_talk_proposal" table.';
