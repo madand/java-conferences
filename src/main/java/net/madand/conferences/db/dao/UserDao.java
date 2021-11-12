@@ -27,8 +27,8 @@ public class UserDao {
                 UserDao::mapRow);
     }
 
-    public static User findOneById(Connection connection, int id) throws SQLException {
-        return QueryHelper.findOne(connection, SQL_FIND_ONE_BY_ID,
+    public static User findOneById(Connection conn, int id) throws SQLException {
+        return QueryHelper.findOne(conn, SQL_FIND_ONE_BY_ID,
                 stmt -> stmt.setInt(1, id),
                 UserDao::mapRow);
     }

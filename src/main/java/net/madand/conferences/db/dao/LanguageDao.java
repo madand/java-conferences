@@ -13,8 +13,8 @@ public class LanguageDao {
     private static final String SQL_FIND_ALL = "SELECT * FROM language ORDER BY id";
     private static final String SQL_INSERT_ONE = "INSERT INTO language (code, name, is_default) VALUES (?,?,?)";
 
-    public static List<Language> findAll(Connection connection) throws SQLException {
-        return QueryHelper.findAll(connection, SQL_FIND_ALL, LanguageDao::mapRow);
+    public static List<Language> findAll(Connection conn) throws SQLException {
+        return QueryHelper.findAll(conn, SQL_FIND_ALL, LanguageDao::mapRow);
     }
 
     public static void insert(Connection conn, Language language) throws SQLException {
