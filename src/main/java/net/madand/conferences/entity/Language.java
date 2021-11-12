@@ -14,15 +14,13 @@ public class Language implements Serializable {
     /**
      * Static factory of {@link Language} instances.
      *
-     * @param id the ID.
      * @param code the code.
      * @param name the name.
      * @param isDefault whether this is the default language.
      * @return the constructed instance.
      */
-    public static Language makeInstance(int id, String code, String name, boolean isDefault) {
+    public static Language makeInstance(String code, String name, boolean isDefault) {
         Language language = new Language();
-        language.id = id;
         language.code = code;
         language.name = name;
         language.isDefault = isDefault;

@@ -1,5 +1,7 @@
 package net.madand.conferences.test;
 
+import net.madand.conferences.db.dao.LanguageDao;
+import net.madand.conferences.entity.Language;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.jdbc.ScriptRunner;
 
@@ -36,6 +38,10 @@ public class DbHelper {
         return instance;
     }
 
+    public Connection getConnection() {
+        return connection;
+    }
+
     public void recreateDbTables() throws IOException, SQLException {
         Reader reader = Resources.getResourceAsReader(properties.getProperty("recreate_tables_script"));
         connection.setAutoCommit(false);
@@ -43,9 +49,5 @@ public class DbHelper {
         scriptRunner.setLogWriter(null);
         scriptRunner.runScript(reader);
         connection.setAutoCommit(true);
-    }
-
-    public Connection getConnection() {
-        return connection;
     }
 }

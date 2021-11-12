@@ -7,11 +7,16 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class LanguageDao {
     private static final String SQL_FIND_ALL = "SELECT * FROM language ORDER BY id";
     private static final String SQL_INSERT_ONE = "INSERT INTO language (code, name, is_default) VALUES (?,?,?)";
+
+    private static Map<Integer, Language> languages;
+
+    private LanguageDao() {}
 
     public static List<Language> findAll(Connection conn) throws SQLException {
         return QueryHelper.findAll(conn, SQL_FIND_ALL, LanguageDao::mapRow);

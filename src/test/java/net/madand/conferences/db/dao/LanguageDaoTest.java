@@ -11,8 +11,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class LanguageDaoTest {
     private final DbHelper dbHelper;
@@ -30,9 +29,10 @@ public class LanguageDaoTest {
 
     @Test
     public void insert() throws SQLException {
-        Language lang1 = Language.makeInstance(-1, "en", "English", true);
+        Language lang1 = Language.makeInstance("en", "English", true);
+        int oldId = lang1.getId();
         LanguageDao.insert(connection, lang1);
-        assertTrue("ID should change", lang1.getId() != -1);
+        assertNotEquals("ID should change", oldId, lang1.getId());
     }
 
     @Test
@@ -40,7 +40,7 @@ public class LanguageDaoTest {
         List<Language> list1 = LanguageDao.findAll(connection);
         assertEquals("Initially empty", 0, list1.size());
 
-        Language lang1 = Language.makeInstance(0, "en", "English", true);
+        Language lang1 = Language.makeInstance("en", "English", true);
         LanguageDao.insert(connection, lang1);
         List<Language> list2 = LanguageDao.findAll(connection);
         assertEquals("Should find inserted row", 1, list2.size());
