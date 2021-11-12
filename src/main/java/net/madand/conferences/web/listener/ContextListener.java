@@ -2,6 +2,7 @@ package net.madand.conferences.web.listener;
 
 import net.madand.conferences.db.dao.LanguageDao;
 import net.madand.conferences.entity.Language;
+import net.madand.conferences.web.util.ContextHelper;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
@@ -23,64 +24,64 @@ public class ContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         ServletContext sc = sce.getServletContext();
+        // Order matters! Later methods expect the functioning logger and DataSource.
         initLog4J(sc);
         initDataSource(sc);
         initLanguages(sc);
     }
 
     /**
-     * Initializes log4j framework.
+     * Initializes Log4j framework.
      *
      * @param servletContext
      */
     private void initLog4J(ServletContext servletContext) {
         logToSysOut("Log4J initialization started");
+
         try {
             PropertyConfigurator.configure(servletContext.getRealPath("WEB-INF/log4j.properties"));
             log = Logger.getLogger(ContextListener.class);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to initialize Log4j", e);
         }
 
-        logToSysOut("Log4J initialization finished");
+        logToSysOut("Log4J initialization finished.");
     }
 
     private void initDataSource(ServletContext servletContext) {
         log.trace("DataSource initialization started");
+
         try {
             Context ctx = (Context) new InitialContext().lookup("java:comp/env");
-            DataSource ds = (DataSource) ctx.lookup("jdbc/conferences");
-            servletContext.setAttribute("dataSource", ds);
+            ContextHelper.setDataSource(servletContext, (DataSource) ctx.lookup("jdbc/conferences"));
         } catch (NamingException e) {
             log.error("DataSource initialization failed", e);
-            throw new RuntimeException("Cannot setup the data source. App cannot function.", e);
+            throw new RuntimeException("Failed to initialize the Data Source.", e);
         }
+
         log.info("DataSource initialization finished");
     }
 
     private void initLanguages(ServletContext servletContext) {
         log.trace("Languages initialization started");
-        try {
-            DataSource ds = (DataSource) servletContext.getAttribute("dataSource");
-            Connection connection = ds.getConnection();
+
+        try (Connection connection = ContextHelper.getDataSource(servletContext).getConnection()) {
             List<Language> allLanguages = LanguageDao.findAll(connection);
-//            connection.close();
 
             List<Language> extraLanguages = new ArrayList<>();
             for (Language language : allLanguages) {
                 if (language.isDefault()) {
-                    servletContext.setAttribute("defaultLanguage", language);
-                    log.trace("Set defaultLanguage attribute to: " + language);
+                    ContextHelper.setDefaultLanguage(servletContext, language);
                 } else {
                     extraLanguages.add(language);
                 }
             }
-            log.trace("Set extraLanguages attribute to: " + extraLanguages);
-            servletContext.setAttribute("extraLanguages", extraLanguages);
+            ContextHelper.setExtraLanguages(servletContext, extraLanguages);
         } catch (SQLException throwables) {
             log.error("Languages query failed", throwables);
-            throw new RuntimeException("Cannot setup the data source. App cannot function.", throwables);
+            throw new RuntimeException("Failed to initialize the languages", throwables);
         }
+
         log.info("Languages initialization finished");
     }
 
