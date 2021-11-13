@@ -1,11 +1,8 @@
 package net.madand.conferences.test;
 
-import net.madand.conferences.db.dao.LanguageDao;
-import net.madand.conferences.entity.Language;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.jdbc.ScriptRunner;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.sql.Connection;
@@ -14,7 +11,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class DbHelper {
-    private static final String DB_PROPERTIES_FILE = "test_db.properties";
+    private static final String DB_PROPERTIES_FILE = "db.properties";
 
     private final Properties properties = new Properties();
     private final Connection connection;
