@@ -1,0 +1,40 @@
+* Implementation plan for Conferences
+
+** Basic functionality [3/4]
+
+- [X] DB schema
+- [ ] DB demo data
+- [X] Logging setup
+- [X] App (ServletContext) initialization
+
+** Required features [3/11]
+
+- [ ] Conferences list page (home page)
+- [ ] Detailed view of a conference (talks list page)
+- [ ] Login page
+- [ ] Registration page
+- [X] DB localization
+- [X] UI localization
+- [X] Password encryption
+- [ ] Pagination
+- [ ] Attendee's cabinet [0/3]
+  - [ ] Edit profile
+  - [ ] Delete account
+- [ ] Moderator's cabinet [0/3]
+  - [ ] Conference CRUD
+  - [ ] Talk CRUD
+  - [ ] Users CRUD, allow changing other user roles (speaker, attendee)
+- [ ] Speaker's cabinet [0/3]
+  - [ ] Conference CRUD
+
+** Additional features [0/3]
+
+- [ ] Speaker requests giving a preexisting talk, moderator considers
+- [ ] Moderator proposes a preexisting talk to speaker, speaker considers
+- [ ] Speaker proposes a new talk, if moderator accepts he must chose the time slot
+
+** Possible features [0/3]
+
+- [ ] Email notifications
+- [ ] CAPTCHA on registration
+- [ ] Login attempts count limiting

@@ -1,3 +1,7 @@
+# Conferences application
+
+[TODO list](TODO.org)
+
 # :musical_note: Конференції
 
 Існують ролі: Модератор, Спікер і звичайний Користувач.
