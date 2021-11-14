@@ -6,6 +6,8 @@
 
 <Context>
 
+    <Resources allowLinking="true" />
+
     <!--=============================================================
          maxActive: the maximum number of active connections that can be
          allocated from this pool at the same time, negative for no limit.
@@ -37,7 +39,7 @@
     <Resource name="jdbc/conferences"
               auth="Container"
               type="javax.sql.DataSource"
-              maxActive="100" maxIdle="30" maxWait="10000"
+              maxTotal="100" maxIdle="30"
               username="conferences" password="conferences"
               defaultAutoCommit="false"
               defaultTransactionIsolation="READ_COMMITTED"

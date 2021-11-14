@@ -2,17 +2,16 @@ package net.madand.conferences.web;
 
 import org.apache.log4j.Logger;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class Controller extends HttpServlet {
-    private static final long serialVersionUID = 2423353715955164816L;
+public class FrontController extends HttpServlet {
+    private static final long serialVersionUID = 3867883190596876581L;
 
-    private static final Logger log = Logger.getLogger(Controller.class);
+    private static final Logger log = Logger.getLogger(FrontController.class);
 
     protected void doGet(HttpServletRequest request,
                          HttpServletResponse response) throws ServletException, IOException {
@@ -29,9 +28,10 @@ public class Controller extends HttpServlet {
      */
     private void process(HttpServletRequest request,
                          HttpServletResponse response) throws IOException, ServletException {
+        log.trace("FrontController start");
 
-        log.debug("Controller starts");
-        response.getWriter().println(getServletContext().getAttributeNames());
+        response.getWriter().print(request.getServletContext().getAttribute("javax.servlet.jsp.jstl.fmt.locale.application"));
+//        request.getRequestDispatcher("WEB-INF/jsp/index.jsp").forward(request, response);
 
 //        // extract command name from the request
 //        String commandName = request.getParameter("command");

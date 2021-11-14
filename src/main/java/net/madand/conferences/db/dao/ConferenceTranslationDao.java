@@ -39,13 +39,6 @@ public class ConferenceTranslationDao {
         });
     }
 
-    public static void delete(Connection conn, ConferenceTranslation conferenceTranslation) throws SQLException {
-        QueryHelper.delete(conn, SQL_DELETE, stmt -> {
-            stmt.setInt(1, conferenceTranslation.getConference().getId());
-            stmt.setInt(2, conferenceTranslation.getLanguage().getId());
-        });
-    }
-
     private static StatementParametersSetter makeInsertUpdateParametersSetter(ConferenceTranslation conferenceTranslation) {
         return (stmt) -> {
             int i = 0;

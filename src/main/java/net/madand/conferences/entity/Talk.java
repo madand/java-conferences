@@ -6,7 +6,7 @@ import java.time.OffsetDateTime;
 import java.util.Objects;
 
 public class Talk implements Serializable {
-    private static final long serialVersionUID = -3035142192022825160L;
+    private static final long serialVersionUID = -994800254257454614L;
 
     private int id;
     private OffsetDateTime createdAt;

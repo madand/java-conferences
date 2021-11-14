@@ -76,19 +76,6 @@ public class ConferenceTranslationDaoTest {
         assertEquals(NEW_LOCATION, conferenceTranslation2.getLocation());
     }
 
-    @Test
-    public void delete() throws SQLException {
-        assertFalse(ConferenceTranslationDao.findOne(connection, conference, language).isPresent());
-
-        ConferenceTranslation conferenceTranslation = ConferenceTranslation.makeInstance(conference, language,
-                "JConf 2021", "Descr", "Lviv");
-        ConferenceTranslationDao.insert(connection, conferenceTranslation);
-        assertTrue(ConferenceTranslationDao.findOne(connection, conference, language).isPresent());
-
-        ConferenceTranslationDao.delete(connection, conferenceTranslation);
-        assertFalse(ConferenceTranslationDao.findOne(connection, conference, language).isPresent());
-    }
-
     private boolean compareConferenceTranslations(ConferenceTranslation ct1, ConferenceTranslation ct2) {
         return Objects.equals(ct1.getConference(), ct2.getConference())
                 && Objects.equals(ct1.getLanguage(), ct2.getLanguage())

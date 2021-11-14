@@ -1,0 +1,13 @@
+
+<footer>
+    <ul>
+        <c:forEach items="${languages}" var="language">
+            <li>
+                <c:out value="${language.name}"/>
+            </li>
+        </c:forEach>
+    </ul>
+    <p class="made-by">
+        &copy; 2021 Andriy Kmit' &lt;<a href="mailto: dev@madand.net" >dev@madand.net</a>&gt;
+    </p>
+</footer>

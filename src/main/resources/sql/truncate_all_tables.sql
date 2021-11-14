@@ -1,0 +1,4 @@
+-- Truncating root
+TRUNCATE TABLE conference CASCADE;
+TRUNCATE TABLE "user" CASCADE;
+TRUNCATE TABLE language CASCADE;

@@ -2,7 +2,8 @@ package net.madand.conferences.web.listener;
 
 import net.madand.conferences.db.dao.LanguageDao;
 import net.madand.conferences.entity.Language;
-import net.madand.conferences.web.util.ContextHelper;
+import net.madand.conferences.l10n.Languages;
+import net.madand.conferences.web.constants.ServletContextAttributes;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
@@ -15,7 +16,6 @@ import javax.servlet.ServletContextListener;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ContextListener implements ServletContextListener {
@@ -24,19 +24,15 @@ public class ContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         ServletContext sc = sce.getServletContext();
-        // Store the context in helper, to make it easily accessible everywhere.
-        ContextHelper.setContext(sc);
 
         // Order matters! Later methods expect the functioning logger and DataSource.
         initLog4J(sc);
-        initDataSource();
-        initLanguages();
+        initDataSource(sc);
+        initLanguages(sc);
     }
 
     /**
      * Initializes Log4j framework.
-     *
-     * @param servletContext
      */
     private void initLog4J(ServletContext servletContext) {
         logToSysOut("Log4J initialization started");
@@ -51,12 +47,12 @@ public class ContextListener implements ServletContextListener {
         logToSysOut("Log4J initialization finished.");
     }
 
-    private void initDataSource() {
+    private void initDataSource(ServletContext servletContext) {
         log.trace("DataSource initialization started");
 
         try {
             Context ctx = (Context) new InitialContext().lookup("java:comp/env");
-            ContextHelper.setDataSource((DataSource) ctx.lookup("jdbc/conferences"));
+            servletContext.setAttribute(ServletContextAttributes.DATA_SOURCE, ctx.lookup("jdbc/conferences"));
         } catch (NamingException e) {
             log.error("DataSource initialization failed", e);
             throw new RuntimeException("Failed to initialize the Data Source.", e);
@@ -65,21 +61,19 @@ public class ContextListener implements ServletContextListener {
         log.info("DataSource initialization finished");
     }
 
-    private void initLanguages() {
+    /**
+     * Load the languages from DB and cache them for the whole app lifetime.
+     *
+     * @param servletContext
+     */
+    private void initLanguages(ServletContext servletContext) {
         log.trace("Languages initialization started");
 
-        try (Connection connection = ContextHelper.getDataSource().getConnection()) {
-            List<Language> allLanguages = LanguageDao.findAll(connection);
-
-            List<Language> extraLanguages = new ArrayList<>();
-            for (Language language : allLanguages) {
-                if (language.isDefault()) {
-                    ContextHelper.setDefaultLanguage(language);
-                } else {
-                    extraLanguages.add(language);
-                }
-            }
-            ContextHelper.setExtraLanguages(extraLanguages);
+        final DataSource dataSource = (DataSource) servletContext.getAttribute(ServletContextAttributes.DATA_SOURCE);
+        try (Connection connection = dataSource.getConnection()) {
+            final List<Language> languages = LanguageDao.findAll(connection);
+            languages.forEach(Languages::add);
+            servletContext.setAttribute(ServletContextAttributes.LANGUAGES, languages);
         } catch (SQLException throwables) {
             log.error("Languages query failed", throwables);
             throw new RuntimeException("Failed to initialize the languages", throwables);

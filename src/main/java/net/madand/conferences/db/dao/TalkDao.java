@@ -59,6 +59,7 @@ public class TalkDao {
     }
 
     private static Mapper<Talk> makeRowMapper(Connection conn) throws SQLException {
+
         return (rs) -> {
             Talk talk = new Talk();
 

@@ -90,7 +90,7 @@ public class ConferenceDaoTest {
 
     private boolean compareConferences(Conference c1, Conference c2) {
         return Objects.equals(c1.getEventDate(), c2.getEventDate())
-                && Objects.equals(c1.getLanguage(), c2.getLanguage())
+                && Objects.equals(c1.getTalkLanguage(), c2.getTalkLanguage())
                 && Objects.equals(c1.getActuallyAttendedCount(), c2.getActuallyAttendedCount());
     }
 }

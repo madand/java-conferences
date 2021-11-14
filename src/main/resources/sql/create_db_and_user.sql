@@ -1,5 +1,7 @@
+DROP USER IF EXISTS conferences;
 CREATE USER conferences PASSWORD 'conferences';
 
+DROP DATABASE IF EXISTS conferences;
 CREATE DATABASE conferences
   WITH OWNER = conferences
   template = template0

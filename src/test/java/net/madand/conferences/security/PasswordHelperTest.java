@@ -1,13 +1,14 @@
 package net.madand.conferences.security;
 
+import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class PasswordHelperTest {
-
     @Test
     public void hash() {
+        Logger.getLogger(PasswordHelperTest.class).error("testing error");
         String password1 = "foo";
         String hash1 = PasswordHelper.hash(password1);
         assertNotEquals("Result must not be empty", "", hash1);

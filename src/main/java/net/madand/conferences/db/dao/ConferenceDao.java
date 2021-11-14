@@ -17,8 +17,8 @@ import java.util.Optional;
 public class ConferenceDao {
     private static final String SQL_FIND_ALL = "SELECT * FROM conference ORDER BY event_date DESC";
     private static final String SQL_FIND_ONE = "SELECT * FROM conference WHERE id = ?";
-    private static final String SQL_INSERT = "INSERT INTO conference (event_date, language_id, actually_attended_count) VALUES (?,?,?)";
-    private static final String SQL_UPDATE = "UPDATE conference SET event_date = ?, language_id = ?, actually_attended_count = ? WHERE id = ?";
+    private static final String SQL_INSERT = "INSERT INTO conference (event_date, talk_language_id, actually_attended_count) VALUES (?,?,?)";
+    private static final String SQL_UPDATE = "UPDATE conference SET event_date = ?, talk_language_id = ?, actually_attended_count = ? WHERE id = ?";
     private static final String SQL_DELETE = "DELETE FROM conference WHERE id = ?";
 
     public static List<Conference> findAll(Connection connection) throws SQLException {
@@ -52,7 +52,7 @@ public class ConferenceDao {
         return (stmt) -> {
             int i = 0;
             stmt.setDate(++i, Date.valueOf(conference.getEventDate()));
-            stmt.setInt(++i, conference.getLanguage().getId());
+            stmt.setInt(++i, conference.getTalkLanguage().getId());
             stmt.setInt(++i, conference.getActuallyAttendedCount());
         };
     }
@@ -65,7 +65,7 @@ public class ConferenceDao {
         conference.setCreatedAt(rs.getObject(++i, OffsetDateTime.class));
         conference.setUpdatedAt(rs.getObject(++i, OffsetDateTime.class));
         conference.setEventDate(rs.getObject(++i, LocalDate.class));
-        conference.setLanguage(Languages.get(rs.getInt(++i)));
+        conference.setTalkLanguage(Languages.getById(rs.getInt(++i)));
         conference.setActuallyAttendedCount(rs.getInt(++i));
 
         return conference;

@@ -12,7 +12,7 @@ public class Conference implements Serializable {
     private OffsetDateTime createdAt;
     private OffsetDateTime updatedAt;
     private LocalDate eventDate;
-    private Language language;
+    private Language talkLanguage;
     private int actuallyAttendedCount;
 
     /**
@@ -24,7 +24,7 @@ public class Conference implements Serializable {
     public static Conference makeInstance(LocalDate eventDate, Language language, int actuallyAttendedCount) {
         Conference conference = new Conference();
         conference.setEventDate(eventDate);
-        conference.setLanguage(language);
+        conference.setTalkLanguage(language);
         conference.setActuallyAttendedCount(actuallyAttendedCount);
         return conference;
     }
@@ -61,12 +61,12 @@ public class Conference implements Serializable {
         this.eventDate = eventDate;
     }
 
-    public Language getLanguage() {
-        return language;
+    public Language getTalkLanguage() {
+        return talkLanguage;
     }
 
-    public void setLanguage(Language language) {
-        this.language = language;
+    public void setTalkLanguage(Language talkLanguage) {
+        this.talkLanguage = talkLanguage;
     }
 
     public int getActuallyAttendedCount() {

@@ -1,5 +1,11 @@
 
 -- Clean-up the database
+DROP VIEW IF EXISTS v_conference;
+DROP VIEW IF EXISTS v_talk;
+DROP VIEW IF EXISTS v_new_talk_proposal;
+
+DROP FUNCTION IF EXISTS ensure_translated(text, integer, integer, text, text);
+DROP FUNCTION IF EXISTS get_default_language_id();
 DROP TABLE IF EXISTS talk_speaker_request;
 DROP TABLE IF EXISTS talk_speaker_proposal;
 DROP TABLE IF EXISTS new_talk_proposal_translation;
@@ -32,7 +38,7 @@ COMMENT ON TABLE "user"
 CREATE TABLE language (
   id SERIAL NOT NULL PRIMARY KEY,
   code CHARACTER VARYING(6) NOT NULL UNIQUE,
-  name CHARACTER VARYING(20) NOT NULL,
+  name CHARACTER VARYING(50) NOT NULL,
   is_default BOOLEAN NOT NULL DEFAULT false
 );
 COMMENT ON TABLE language
@@ -43,7 +49,7 @@ CREATE TABLE conference (
   created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
   event_date DATE NOT NULL,
-  language_id INTEGER NOT NULL REFERENCES language(id) ON UPDATE CASCADE ON DELETE RESTRICT,
+  talk_language_id INTEGER NOT NULL REFERENCES language(id) ON UPDATE CASCADE ON DELETE RESTRICT,
   actually_attended_count INTEGER NOT NULL DEFAULT 0
 );
 COMMENT ON TABLE conference
@@ -127,11 +133,97 @@ COMMENT ON TABLE new_talk_proposal
   IS 'A new talk proposed by the speaker. Should be accepted by a moderator.';
 
 CREATE TABLE new_talk_proposal_translation (
-  talk_proposal_id INTEGER NOT NULL REFERENCES new_talk_proposal(id) ON UPDATE CASCADE ON DELETE CASCADE,
+  new_talk_proposal_id INTEGER NOT NULL REFERENCES new_talk_proposal(id) ON UPDATE CASCADE ON DELETE CASCADE,
   language_id INTEGER NOT NULL REFERENCES language(id) ON UPDATE CASCADE ON DELETE RESTRICT,
   name CHARACTER VARYING(255) NOT NULL,
   description TEXT NOT NULL,
-  PRIMARY KEY (talk_proposal_id, language_id)
+  PRIMARY KEY (new_talk_proposal_id, language_id)
 );
 COMMENT ON TABLE new_talk_proposal_translation
   IS 'Localization data for the "new_talk_proposal" table.';
+
+CREATE OR REPLACE FUNCTION get_default_language_id()
+    RETURNS integer
+    LANGUAGE 'sql'
+  STABLE
+AS $BODY$
+  SELECT id FROM language WHERE is_default = true
+  $BODY$;
+
+  CREATE OR REPLACE FUNCTION ensure_translated(
+    translated_value text,
+	  id integer,
+	  language_id integer,
+	  column_name text,
+	  base_name text)
+    RETURNS text
+    LANGUAGE 'plpgsql'
+    STABLE
+  AS $BODY$
+    DECLARE
+    ret text;
+  BEGIN
+    IF translated_value <> '' THEN
+      RETURN translated_value;
+    END IF;
+
+    EXECUTE format('SELECT %I FROM %I WHERE %I = $1'
+                   ' AND language_id = get_default_language_id()',
+                   column_name,
+                   base_name || '_translation',
+                   base_name || '_id')
+      INTO ret
+      USING id, language_id;
+    RETURN ret;
+  END
+  $BODY$;
+
+  CREATE VIEW v_conference
+    AS
+    SELECT t.id,
+           t.created_at,
+           t.updated_at,
+           t.event_date,
+           t.talk_language_id,
+           t.actually_attended_count,
+           l.language_id,
+           ensure_translated(l.name, t.id, l.language_id, 'name', 'conference') as name,
+           ensure_translated(l.description, t.id, l.language_id, 'description', 'conference') as description,
+           ensure_translated(l.location, t.id, l.language_id, 'location', 'conference') as location
+      FROM conference t
+           JOIN conference_translation l ON l.conference_id = t.id;
+  COMMENT ON VIEW v_conference
+    IS 'View that joins conference and its translation.';
+
+  CREATE VIEW v_talk
+    AS
+    SELECT t.id,
+           t.created_at,
+           t.updated_at,
+           t.conference_id,
+           t.speaker_id,
+           t.start_time,
+           t.end_time,
+           l.language_id,
+           ensure_translated(l.name, t.id, l.language_id, 'name', 'talk') as name,
+           ensure_translated(l.description, t.id, l.language_id, 'description', 'talk') as description
+      FROM talk t
+           JOIN talk_translation l ON l.talk_id = t.id;
+  COMMENT ON VIEW v_talk
+    IS 'View that joins talk and its translation.';
+
+  CREATE VIEW v_new_talk_proposal
+    AS
+    SELECT t.id,
+           t.created_at,
+           t.updated_at,
+           t.conference_id,
+           t.speaker_id,
+           t.duration,
+           l.language_id,
+           ensure_translated(l.name, t.id, l.language_id, 'name', 'new_talk_proposal') as name,
+           ensure_translated(l.description, t.id, l.language_id, 'description', 'new_talk_proposal') as description
+      FROM new_talk_proposal t
+           JOIN new_talk_proposal_translation l ON l.new_talk_proposal_id = t.id;
+  COMMENT ON VIEW v_new_talk_proposal
+    IS 'View that joins new_talk_proposal and its translation.';
