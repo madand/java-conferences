@@ -1,5 +1,6 @@
 package net.madand.conferences.db.dao;
 
+import net.madand.conferences.db.Fields;
 import net.madand.conferences.db.util.Mapper;
 import net.madand.conferences.db.util.QueryHelper;
 import net.madand.conferences.db.util.StatementParametersSetter;
@@ -8,6 +9,7 @@ import net.madand.conferences.entity.ConferenceTranslation;
 import net.madand.conferences.entity.Language;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
@@ -20,11 +22,18 @@ public class ConferenceTranslationDao {
     private static final String SQL_DELETE = "DELETE FROM conference_translation WHERE conference_id = ? AND language_id = ?";
 
     public static Optional<ConferenceTranslation> findOne(Connection conn, Conference conference, Language language) throws SQLException {
-        return QueryHelper.findOne(conn, SQL_FIND_ONE, stmt -> {
+        final Optional<ConferenceTranslation> translation = QueryHelper.findOne(conn, SQL_FIND_ONE, stmt -> {
                     stmt.setInt(1, conference.getId());
                     stmt.setInt(2, language.getId());
                 },
-                makeRowMapper(conference, language));
+                ConferenceTranslationDao::mapRow);
+
+        if (translation.isPresent()) {
+            translation.get().setConference(conference);
+            translation.get().setLanguage(language);
+        }
+
+        return translation;
     }
 
     public static void insert(Connection conn, ConferenceTranslation conferenceTranslation) throws SQLException {
@@ -50,18 +59,13 @@ public class ConferenceTranslationDao {
         };
     }
 
-    private static Mapper<ConferenceTranslation> makeRowMapper(Conference conference, Language language) throws SQLException {
-        return (rs) -> {
-            ConferenceTranslation conferenceTranslation = new ConferenceTranslation();
-            conferenceTranslation.setConference(conference);
-            conferenceTranslation.setLanguage(language);
+    public static ConferenceTranslation mapRow(ResultSet rs) throws SQLException {
+        ConferenceTranslation conferenceTranslation = new ConferenceTranslation();
 
-            int i = 2; // Skip the first two rows, with conference_id and language_id.
-            conferenceTranslation.setName(rs.getString(++i));
-            conferenceTranslation.setDescription(rs.getString(++i));
-            conferenceTranslation.setLocation(rs.getString(++i));
+        conferenceTranslation.setName(rs.getString(Fields.NAME));
+        conferenceTranslation.setDescription(rs.getString(Fields.DESCRIPTION));
+        conferenceTranslation.setLocation(rs.getString(Fields.LOCATION));
 
-            return conferenceTranslation;
-        };
+        return conferenceTranslation;
     }
 }

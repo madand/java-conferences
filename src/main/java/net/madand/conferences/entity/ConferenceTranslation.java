@@ -18,6 +18,20 @@ public class ConferenceTranslation implements Serializable {
      *
      * @param conference
      * @param language
+     * @return
+     */
+    public static ConferenceTranslation makeInstance(Conference conference, Language language) {
+        ConferenceTranslation conferenceTranslation = new ConferenceTranslation();
+        conferenceTranslation.setConference(conference);
+        conferenceTranslation.setLanguage(language);
+        return conferenceTranslation;
+    }
+
+    /**
+     * Static factory of {@link ConferenceTranslation} instances.
+     *
+     * @param conference
+     * @param language
      * @param name
      * @param description
      * @param location

@@ -1,13 +1,36 @@
 
-<footer>
-    <ul>
-        <c:forEach items="${languages}" var="language">
-            <li>
-                <c:out value="${language.name}"/>
-            </li>
-        </c:forEach>
-    </ul>
-    <p class="made-by">
-        &copy; 2021 Andriy Kmit' &lt;<a href="mailto: dev@madand.net" >dev@madand.net</a>&gt;
-    </p>
+</div>
+
+<footer class="container-fluid">
+    <div class="container-lg">
+
+        <div class="row py-1">
+            <div class="col">
+                <ul class="lang-menu">
+                    <c:forEach items="${languages}" var="lng">
+                        <li>
+                            <c:if test="${lng != currentLanguage}">
+                                <a href="${request.originalURI}?lang=${lng.code}">
+                                    <c:out value="${lng.name}"/>
+                                </a>
+                            </c:if>
+                        </li>
+                    </c:forEach>
+                </ul>
+            </div>
+            <div class="col">
+                <p class="made-by">
+                    &copy; 2021 <fmt:message key="author.name"/>
+                </p>
+            </div>
+        </div>
+    </div>
 </footer>
+
+<script src="${pageContext.request.contextPath}/assets/js/bootstrap.min.js"></script>
+<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+
+<%@ include file="/WEB-INF/jspf/debug.jspf" %>
+
+</body>
+</html>

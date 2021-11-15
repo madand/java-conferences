@@ -1,6 +1,5 @@
 package net.madand.conferences.db.dao;
 
-import net.madand.conferences.db.dao.LanguageDao;
 import net.madand.conferences.entity.Language;
 import net.madand.conferences.test.DbHelper;
 import org.junit.Before;
@@ -24,7 +23,7 @@ public class LanguageDaoTest {
 
     @Before
     public void setUp() throws IOException, SQLException {
-        dbHelper.recreateDbTables();
+        dbHelper.truncateDbTables();
     }
 
     @Test

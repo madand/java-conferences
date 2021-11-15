@@ -3,11 +3,12 @@ package net.madand.conferences.web.filter;
 import net.madand.conferences.entity.Language;
 import net.madand.conferences.l10n.Languages;
 import net.madand.conferences.web.constants.SessionAttributes;
+import net.madand.conferences.web.util.SessionHelper;
 import org.apache.log4j.Logger;
-import org.apache.taglibs.standard.lang.jstl.test.PageContextImpl;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.jstl.core.Config;
 import java.io.IOException;
 import java.util.Collections;
@@ -18,27 +19,27 @@ public class LanguageFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest req = (HttpServletRequest) request;
+        final HttpServletRequest req = (HttpServletRequest) request;
+        final HttpSession session = req.getSession();
         log.trace("Filter started");
-
 
         // If user supplied the lang query parameter, set the language.
         final Language newLang = detectSetLanguage(req);
         if (newLang != null) {
-            req.getSession().setAttribute(SessionAttributes.LANGUAGE, newLang);
+            SessionHelper.setCurrentLanguage(session, newLang);
             log.debug("Session language was set from query parameter");
         }
 
-        Language currLang = (Language) req.getSession().getAttribute(SessionAttributes.LANGUAGE);
+        Language currLang = (Language) session.getAttribute(SessionAttributes.CURRENT_LANGUAGE);
         if (currLang == null) {
             currLang = detectPreferredLanguage(req);
-            req.getSession().setAttribute(SessionAttributes.LANGUAGE, currLang);
+            SessionHelper.setCurrentLanguage(session, currLang);
             log.debug("Session language was set from the client browser preference");
         }
 
         log.info("Current session language is: " + currLang);
         // Configure JSTL fmt: to use the current language.
-        Config.set(req.getServletContext(), Config.FMT_LOCALE, currLang.getCode());
+        Config.set(session, Config.FMT_LOCALE, currLang.getCode());
 
         chain.doFilter(request, response);
     }

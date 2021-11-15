@@ -27,7 +27,7 @@ public class ConferenceDaoTest {
 
     @Before
     public void setUp() throws IOException, SQLException {
-        dbHelper.recreateDbTables();
+        dbHelper.truncateDbTables();
 
         Language en = Language.makeInstance("en", "English", true);
         LanguageDao.insert(connection, en);
@@ -39,7 +39,7 @@ public class ConferenceDaoTest {
         List<Conference> list1 = ConferenceDao.findAll(connection);
         assertEquals(0, list1.size());
 
-        Conference conference = Conference.makeInstance(LocalDate.now(), Languages.getDefaultLanguage(), 0);
+        Conference conference = Conference.makeInstance(LocalDate.now(), 0);
         ConferenceDao.insert(connection, conference);
         List<Conference> list2 = ConferenceDao.findAll(connection);
         assertEquals("Successfully inserted", 1, list2.size());
@@ -48,7 +48,7 @@ public class ConferenceDaoTest {
 
     @Test
     public void findOne() throws SQLException {
-        Conference conference1 = Conference.makeInstance(LocalDate.now(), Languages.getDefaultLanguage(), 0);
+        Conference conference1 = Conference.makeInstance(LocalDate.now(), 0);
         ConferenceDao.insert(connection, conference1);
         Conference conference2 = ConferenceDao.findOne(connection, conference1.getId()).get();
         assertNotNull("Should successfully find", conference2);
@@ -57,7 +57,7 @@ public class ConferenceDaoTest {
 
     @Test
     public void insert() throws SQLException {
-        Conference conference1 = Conference.makeInstance(LocalDate.now(), Languages.getDefaultLanguage(), 0);
+        Conference conference1 = Conference.makeInstance(LocalDate.now(), 0);
         int oldId = conference1.getId();
         ConferenceDao.insert(connection, conference1);
         assertNotEquals("Should set generated ID", oldId, conference1.getId());
@@ -65,7 +65,7 @@ public class ConferenceDaoTest {
 
     @Test
     public void update() throws SQLException {
-        Conference conference1 = Conference.makeInstance(LocalDate.now(), Languages.getDefaultLanguage(), 0);
+        Conference conference1 = Conference.makeInstance(LocalDate.now(), 0);
         ConferenceDao.insert(connection, conference1);
 
         final LocalDate NEW_DATE = conference1.getEventDate().plusDays(10);
@@ -80,7 +80,7 @@ public class ConferenceDaoTest {
         List<Conference> list1 = ConferenceDao.findAll(connection);
         assertEquals("No moderators yet", 0, list1.size());
 
-        Conference conference = Conference.makeInstance(LocalDate.now(), Languages.getDefaultLanguage(), 0);
+        Conference conference = Conference.makeInstance(LocalDate.now(), 0);
         ConferenceDao.insert(connection, conference);
         assertNotNull(ConferenceDao.findOne(connection, conference.getId()));
 
@@ -90,7 +90,6 @@ public class ConferenceDaoTest {
 
     private boolean compareConferences(Conference c1, Conference c2) {
         return Objects.equals(c1.getEventDate(), c2.getEventDate())
-                && Objects.equals(c1.getTalkLanguage(), c2.getTalkLanguage())
                 && Objects.equals(c1.getActuallyAttendedCount(), c2.getActuallyAttendedCount());
     }
 }

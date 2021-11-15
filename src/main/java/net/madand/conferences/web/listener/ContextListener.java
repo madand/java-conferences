@@ -4,6 +4,7 @@ import net.madand.conferences.db.dao.LanguageDao;
 import net.madand.conferences.entity.Language;
 import net.madand.conferences.l10n.Languages;
 import net.madand.conferences.web.constants.ServletContextAttributes;
+import net.madand.conferences.web.util.ContextHelper;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
@@ -13,6 +14,7 @@ import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.jsp.jstl.core.Config;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -52,7 +54,7 @@ public class ContextListener implements ServletContextListener {
 
         try {
             Context ctx = (Context) new InitialContext().lookup("java:comp/env");
-            servletContext.setAttribute(ServletContextAttributes.DATA_SOURCE, ctx.lookup("jdbc/conferences"));
+            ContextHelper.setDataSource(servletContext, (DataSource) ctx.lookup("jdbc/conferences"));
         } catch (NamingException e) {
             log.error("DataSource initialization failed", e);
             throw new RuntimeException("Failed to initialize the Data Source.", e);
@@ -69,11 +71,17 @@ public class ContextListener implements ServletContextListener {
     private void initLanguages(ServletContext servletContext) {
         log.trace("Languages initialization started");
 
-        final DataSource dataSource = (DataSource) servletContext.getAttribute(ServletContextAttributes.DATA_SOURCE);
+        final DataSource dataSource = ContextHelper.getDataSource(servletContext);
         try (Connection connection = dataSource.getConnection()) {
             final List<Language> languages = LanguageDao.findAll(connection);
             languages.forEach(Languages::add);
-            servletContext.setAttribute(ServletContextAttributes.LANGUAGES, languages);
+            ContextHelper.setLanguages(servletContext, languages);
+
+            // Set the default language on the context level.
+            final Language defaultLanguage = Languages.getDefaultLanguage();
+            ContextHelper.setDefaultLanguage(servletContext, defaultLanguage);
+            Config.set(servletContext, Config.FMT_LOCALE, defaultLanguage.getCode());
+            Config.set(servletContext, Config.FMT_TIME_ZONE, "Europe/Kiev");
         } catch (SQLException throwables) {
             log.error("Languages query failed", throwables);
             throw new RuntimeException("Failed to initialize the languages", throwables);

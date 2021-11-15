@@ -25,7 +25,7 @@ public class UserDaoTest {
 
     @Before
     public void setUp() throws IOException, SQLException {
-        dbHelper.recreateDbTables();
+        dbHelper.truncateDbTables();
     }
 
     @Test

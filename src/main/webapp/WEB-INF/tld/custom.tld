@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_1.xsd" version="2.1"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://java.sun.com/xml/ns/j2ee">
+
+    <description>Custom tag library for for the Conferences app</description>
+    <tlib-version>1.1</tlib-version>
+    <short-name>custom</short-name>
+
+    <tag>
+        <description>
+            Format the given date.
+        </description>
+        <name>formatDate</name>
+        <tag-class>net.madand.conferences.web.tag.FormatDateTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>
+                Date and/or time to be formatted.
+            </description>
+            <name>value</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>
+                Locale name that will be passed to Locale class one-argument constructor.
+            </description>
+            <name>locale</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>
+                Format to be passed to DateTimeFormatter.ofLocalizedDate().
+            </description>
+            <name>format</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>
+                Custom formatting style for dates and times.
+            </description>
+            <name>pattern</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <function>
+      <description>Generate HTML form element ID from its name</description>
+      <name>nameToId</name>
+      <function-class>net.madand.conferences.web.util.WebFormUtil</function-class>
+      <function-signature>java.lang.String nameToID(java.lang.String)</function-signature>
+   </function>
+
+    <function>
+        <description>Get form input name attribute for the given field name and language.</description>
+        <name>localizedParamName</name>
+        <function-class>net.madand.conferences.web.util.WebFormUtil</function-class>
+        <function-signature>java.lang.String localizedParamName(java.lang.String, net.madand.conferences.entity.Language)</function-signature>
+    </function>
+</taglib>

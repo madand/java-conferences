@@ -1,5 +1,6 @@
 package net.madand.conferences.test;
 
+import net.madand.conferences.db.inflator.DbInflator;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.jdbc.ScriptRunner;
 
@@ -39,8 +40,8 @@ public class DbHelper {
         return connection;
     }
 
-    public void recreateDbTables() throws IOException, SQLException {
-        Reader reader = Resources.getResourceAsReader(properties.getProperty("recreate_tables_script"));
+    public void truncateDbTables() throws IOException, SQLException {
+        Reader reader = Resources.getResourceAsReader(DbInflator.SQL_TRUNCATE_ALL_TABLES_FILE);
         connection.setAutoCommit(false);
         ScriptRunner scriptRunner = new ScriptRunner(connection);
         scriptRunner.setLogWriter(null);

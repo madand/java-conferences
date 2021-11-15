@@ -30,14 +30,14 @@ public class ConferenceTranslationDaoTest {
 
     @Before
     public void setUp() throws IOException, SQLException {
-        dbHelper.recreateDbTables();
+        dbHelper.truncateDbTables();
 
         Language en = Language.makeInstance("en", "English", true);
         LanguageDao.insert(connection, en);
         Languages.add(en);
         language = en;
 
-        Conference conference = Conference.makeInstance(LocalDate.now(), Languages.getDefaultLanguage(), 0);
+        Conference conference = Conference.makeInstance(LocalDate.now(), 0);
         ConferenceDao.insert(connection, conference);
         this.conference = conference;
     }

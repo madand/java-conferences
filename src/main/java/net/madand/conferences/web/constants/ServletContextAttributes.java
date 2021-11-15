@@ -6,8 +6,6 @@ package net.madand.conferences.web.constants;
  * these methods also encapsulate type casts.
  */
 public class ServletContextAttributes {
-    public static final String DATA_SOURCE = "dataSource";
-    public static final String LANGUAGES = "languages";
 
     private ServletContextAttributes() {}
 }

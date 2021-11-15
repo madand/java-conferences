@@ -7,7 +7,7 @@
 - [X] Logging setup
 - [X] App (ServletContext) initialization
 
-** Required features [3/11]
+** Required features [3/12]
 
 - [ ] Conferences list page (home page)
 - [ ] Detailed view of a conference (talks list page)
@@ -16,25 +16,24 @@
 - [X] DB localization
 - [X] UI localization
 - [X] Password encryption
-- [ ] Pagination
-- [ ] Attendee's cabinet [0/3]
+- [ ] Attendee's cabinet [0/2]
+  - [ ] Show conferences attendee is signed up 
   - [ ] Edit profile
   - [ ] Delete account
-- [ ] Moderator's cabinet [0/3]
+- [ ] Moderator's cabinet [0/4]
   - [ ] Conference CRUD
   - [ ] Talk CRUD
   - [ ] Users CRUD, allow changing other user roles (speaker, attendee)
-- [ ] Speaker's cabinet [0/3]
-  - [ ] Conference CRUD
+  - [ ] Moderator proposes a preexisting talk to speaker, speaker considers
+- [ ] Speaker's cabinet [0/2]
+  - [ ] Request giving a preexisting talk, moderator considers
+  - [ ] Proposes a new talk, if moderator accepts he must chose the time slot
+- [ ] Pagination
+- [ ] Sort conferences by date, talks count, attendees count
 
 ** Additional features [0/3]
 
-- [ ] Speaker requests giving a preexisting talk, moderator considers
-- [ ] Moderator proposes a preexisting talk to speaker, speaker considers
-- [ ] Speaker proposes a new talk, if moderator accepts he must chose the time slot
-
-** Possible features [0/3]
-
+- [ ] Save selected language in the DB
 - [ ] Email notifications
 - [ ] CAPTCHA on registration
 - [ ] Login attempts count limiting

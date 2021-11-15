@@ -6,7 +6,9 @@
     <%@ include file="/WEB-INF/jspf/head.jspf" %>
 
     <body>
-        <%= request.getServletPath() %>
-        <%= request.getQueryString() %>
+
+        <%@ include file="/WEB-INF/jspf/footer.jspf" %>
+
+        <%@ include file="/WEB-INF/jspf/debug.jspf" %>
     </body>
 </html>

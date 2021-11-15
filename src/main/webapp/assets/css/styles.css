@@ -2,3 +2,29 @@
 body {
 
 }
+
+footer {
+    background-color: #f0f8ff	;
+    position: absolute;
+    bottom: 0;
+}
+
+.made-by {
+    text-align: right;
+    margin: 0px;
+}
+
+.lang-menu {
+    list-style-type: none;
+    margin: 0px;
+}
+
+label.required:after {
+    content:"*";
+    color: crimson;
+}
+
+.main-content {
+    min-height: 100%;
+    margin-bottom: 100px;
+}

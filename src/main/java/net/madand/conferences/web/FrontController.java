@@ -1,17 +1,37 @@
 package net.madand.conferences.web;
 
+import net.madand.conferences.service.ServiceException;
+import net.madand.conferences.web.constants.ServletContextAttributes;
+import net.madand.conferences.web.controller.AbstractController;
+import net.madand.conferences.web.controller.ConferenceController;
 import org.apache.log4j.Logger;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FrontController extends HttpServlet {
     private static final long serialVersionUID = 3867883190596876581L;
 
     private static final Logger log = Logger.getLogger(FrontController.class);
+
+    private AbstractController[] controllers;
+
+    @Override
+    public void init() throws ServletException {
+        final ServletContext servletContext = getServletContext();
+        controllers = new AbstractController[] {
+                new ConferenceController(servletContext),
+        };
+    }
 
     protected void doGet(HttpServletRequest request,
                          HttpServletResponse response) throws ServletException, IOException {
@@ -28,29 +48,18 @@ public class FrontController extends HttpServlet {
      */
     private void process(HttpServletRequest request,
                          HttpServletResponse response) throws IOException, ServletException {
-        log.trace("FrontController start");
+        log.trace("FrontController process begin");
 
-        response.getWriter().print(request.getServletContext().getAttribute("javax.servlet.jsp.jstl.fmt.locale.application"));
-//        request.getRequestDispatcher("WEB-INF/jsp/index.jsp").forward(request, response);
+        boolean handled = false;
+        for (AbstractController controller : controllers) {
+            if (controller.handleRequest(request, response)) {
+                handled = true;
+                break;
+            }
+        }
 
-//        // extract command name from the request
-//        String commandName = request.getParameter("command");
-//        log.trace("Request parameter: command --> " + commandName);
-//
-//        // obtain command object by its name
-//        Command command = CommandContainer.get(commandName);
-//        log.trace("Obtained command --> " + command);
-//
-//        // execute command and get forward address
-//        String forward = command.execute(request, response);
-//        log.trace("Forward address --> " + forward);
-//
-//        log.debug("Controller finished, now go to forward address --> " + forward);
-//
-//        // if the forward address is not null go to the address
-//        if (forward != null) {
-//            RequestDispatcher disp = request.getRequestDispatcher(forward);
-//            disp.forward(request, response);
-//        }
+        if (!handled) {
+            response.sendError(404, "Page not found");
+        }
     }
 }

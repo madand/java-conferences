@@ -49,7 +49,6 @@ CREATE TABLE conference (
   created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
   event_date DATE NOT NULL,
-  talk_language_id INTEGER NOT NULL REFERENCES language(id) ON UPDATE CASCADE ON DELETE RESTRICT,
   actually_attended_count INTEGER NOT NULL DEFAULT 0
 );
 COMMENT ON TABLE conference
@@ -184,7 +183,6 @@ AS $BODY$
            t.created_at,
            t.updated_at,
            t.event_date,
-           t.talk_language_id,
            t.actually_attended_count,
            l.language_id,
            ensure_translated(l.name, t.id, l.language_id, 'name', 'conference') as name,

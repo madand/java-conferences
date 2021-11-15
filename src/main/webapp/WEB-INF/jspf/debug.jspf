@@ -1,0 +1,74 @@
+
+<hr/>
+
+<h2>DEBUG INFO</h2>
+<h2>Query</h2>
+<ul>
+    <li>request.getServletPath(): <%= request.getServletPath() %></li>
+    <li>request.getQueryString(): <%= request.getQueryString() %></li>
+    <li> request.getRequestURI(): <%= request.getRequestURI() %></li>
+    <li> request.getRequestURL(): <%= request.getRequestURL() %></li>
+</ul>
+
+<h2>Scopes</h2>
+
+<%@ page import="java.util.Collections" %>
+<%@ page import="java.util.Collection" %>
+<%@ page import="javax.servlet.jsp.PageContext" %>
+
+<%
+boolean dumpValues = true;
+
+Collection attributenNames4 = Collections.list(pageContext.getAttributeNamesInScope(PageContext.PAGE_SCOPE));
+out.print("<h3>PAGE_SCOPE</h3>");
+out.print("<table>");
+for (Object val: attributenNames4) {
+    out.print("<tr>");
+    out.print("<td>" + val + "</td>");
+    if (dumpValues) {
+        out.print("<td>" + pageContext.getAttribute(val.toString()) + "</td>");
+    }
+    out.print("</tr>");
+}
+out.print("</table>");
+
+Collection attributenNames3 = Collections.list(pageContext.getAttributeNamesInScope(PageContext.REQUEST_SCOPE));
+out.print("<h3>REQUEST_SCOPE</h3>");
+out.print("<table>");
+for (Object val: attributenNames3) {
+    out.print("<tr>");
+    out.print("<td>" + val + "</td>");
+    if (dumpValues) {
+        out.print("<td>" + pageContext.getRequest().getAttribute(val.toString()) + "</td>");
+    }
+    out.print("</tr>");
+}
+out.print("</table>");
+
+Collection attributenNames2 = Collections.list(pageContext.getAttributeNamesInScope(PageContext.SESSION_SCOPE ));
+out.print("<h3>SESSION_SCOPE</h3>");
+out.print("<table>");
+for (Object val: attributenNames2) {
+    out.print("<tr>");
+    out.print("<td>" + val + "</td>");
+    if (dumpValues) {
+        out.print("<td>" + pageContext.getSession().getAttribute(val.toString()) + "</td>");
+    }
+    out.print("</tr>");
+}
+out.print("</table>");
+
+out.print(out.getClass());
+Collection<String> attributenNames = Collections.list(pageContext.getAttributeNamesInScope(PageContext.APPLICATION_SCOPE));
+out.print("<h3>APPLICATION_SCOPE</h3>");
+out.print("<table>");
+for (Object val: attributenNames) {
+    out.print("<tr>");
+    out.print("<td>" + val + "</td>");
+    if (dumpValues) {
+        out.print("<td>" + pageContext.getServletContext().getAttribute(val.toString()) + "</td>");
+    }
+    out.print("</tr>");
+}
+out.print("</table>");
+%>
