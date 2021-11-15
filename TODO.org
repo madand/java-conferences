@@ -7,16 +7,16 @@
 - [X] Logging setup
 - [X] App (ServletContext) initialization
 
-** Required features [3/12]
+** Required features [4/12]
 
-- [ ] Conferences list page (home page)
+- [X] Conferences list page (home page)
 - [ ] Detailed view of a conference (talks list page)
 - [ ] Login page
 - [ ] Registration page
 - [X] DB localization
 - [X] UI localization
 - [X] Password encryption
-- [ ] Attendee's cabinet [0/2]
+- [ ] Attendee's cabinet [0/3]
   - [ ] Show conferences attendee is signed up 
   - [ ] Edit profile
   - [ ] Delete account

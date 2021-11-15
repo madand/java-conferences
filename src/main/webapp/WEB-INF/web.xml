@@ -36,7 +36,7 @@
 
     <servlet>
         <servlet-name>FrontController</servlet-name>
-        <servlet-class>net.madand.conferences.web.FrontController</servlet-class>
+        <servlet-class>net.madand.conferences.web.HttpRouter</servlet-class>
     </servlet>
     <!-- Make FrontController the default servlet -->
     <servlet-mapping>

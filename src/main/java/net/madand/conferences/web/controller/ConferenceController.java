@@ -29,8 +29,8 @@ public class ConferenceController extends AbstractController {
         service = new ConferenceService(ContextHelper.getDataSource(servletContext));
     }
 
-    protected Map<String, ControllerAction> getHandlersMap() {
-        Map<String, ControllerAction> map = new HashMap<>();
+    protected Map<String, Action> getHandlersMap() {
+        Map<String, Action> map = new HashMap<>();
 
         map.put(URLManager.URI_CONFERENCE_LIST, this::list);
         map.put(URLManager.URI_CONFERENCE_CREATE, this::create);
@@ -72,7 +72,7 @@ public class ConferenceController extends AbstractController {
             try {
                 service.create(conference, translations);
                 // Redirect (PRG) only if the operation was successful.
-                response.sendRedirect(buildURL(request));
+                response.sendRedirect(URLManager.buildURL(request));
                 return;
             } catch (ServiceException e) {
                 response.sendError(500, e.getMessage());
@@ -82,12 +82,4 @@ public class ConferenceController extends AbstractController {
         request.getRequestDispatcher("/WEB-INF/jsp/conference/form.jsp").forward(request, response);
     }
 
-    private static String buildURL(HttpServletRequest request) {
-        String uri = request.getRequestURI();
-        String query = request.getQueryString();
-        if (query == null) {
-            return uri;
-        }
-        return uri + "?" + query;
-    }
 }

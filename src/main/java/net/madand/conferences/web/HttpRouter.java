@@ -1,34 +1,29 @@
 package net.madand.conferences.web;
 
-import net.madand.conferences.service.ServiceException;
-import net.madand.conferences.web.constants.ServletContextAttributes;
-import net.madand.conferences.web.controller.AbstractController;
+import net.madand.conferences.web.controller.Controller;
 import net.madand.conferences.web.controller.ConferenceController;
 import org.apache.log4j.Logger;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
 
-public class FrontController extends HttpServlet {
+public class HttpRouter extends HttpServlet {
     private static final long serialVersionUID = 3867883190596876581L;
 
-    private static final Logger log = Logger.getLogger(FrontController.class);
+    private static final Logger log = Logger.getLogger(HttpRouter.class);
 
-    private AbstractController[] controllers;
+    private Controller[] controllers;
 
     @Override
     public void init() throws ServletException {
         final ServletContext servletContext = getServletContext();
-        controllers = new AbstractController[] {
+
+        // All active controllers should be instantiated here.
+        controllers = new Controller[] {
                 new ConferenceController(servletContext),
         };
     }
@@ -44,15 +39,16 @@ public class FrontController extends HttpServlet {
     }
 
     /**
-     * Main method of this controller.
+     * Try to route the request to the appropriate controller. If there was no controller able to handle the request,
+     * respond with 404 error.
      */
     private void process(HttpServletRequest request,
                          HttpServletResponse response) throws IOException, ServletException {
-        log.trace("FrontController process begin");
+        log.trace("HttpRouter process begin");
 
         boolean handled = false;
-        for (AbstractController controller : controllers) {
-            if (controller.handleRequest(request, response)) {
+        for (Controller controller : controllers) {
+            if (controller.tryHandleRequest(request, response)) {
                 handled = true;
                 break;
             }
