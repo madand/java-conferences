@@ -4,9 +4,13 @@ body {
 }
 
 footer {
-    background-color: #f0f8ff	;
+    background-color: #e3f2fd;
     position: absolute;
     bottom: 0;
+}
+
+.navbar-container {
+    background-color: #e3f2fd;
 }
 
 .made-by {

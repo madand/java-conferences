@@ -41,7 +41,7 @@
               type="javax.sql.DataSource"
               maxTotal="100" maxIdle="30"
               username="conferences" password="conferences"
-              defaultAutoCommit="false"
+              defaultAutoCommit="true"
               defaultTransactionIsolation="READ_COMMITTED"
               url="jdbc:postgresql://localhost:25432/conferences"
               driverClassName="org.postgresql.Driver"
