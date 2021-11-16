@@ -12,17 +12,15 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-public class ConferenceService {
+public class ConferenceService extends AbstractService {
     private static final Logger log = Logger.getLogger(ConferenceService.class);
 
-    private DataSource dataSource;
-
     public ConferenceService(DataSource dataSource) {
-        this.dataSource = dataSource;
+        super(dataSource);
     }
 
     public List<Conference> findAllTranslated(Language language) throws ServiceException {
-        log.trace("Begin findAllTranslated conferences");
+        log.trace("findAllTranslated conferences");
 
         try (Connection conn = getConnection()) {
             return ConferenceDao.findAll(conn, language);
@@ -34,25 +32,16 @@ public class ConferenceService {
     }
 
     public void create(Conference conference, List<ConferenceTranslation> translations) throws ServiceException {
-        log.trace("Begin create conference");
+        log.trace("create conference");
         log.debug("Data: " + conference + " " + translations);
 
-        try (Connection conn = getConnection()) {
-            conn.setAutoCommit(false);
-
-            ConferenceDao.insert(conn, conference);
-            for (ConferenceTranslation translation : translations) {
-                ConferenceTranslationDao.insert(conn, translation);
-            }
-
-            conn.commit();
-        } catch (SQLException throwables) {
-            log.error("Error during inserts", throwables);
-            throw new ServiceException("Error saving conference into the database", throwables);
-        }
-    }
-
-    private Connection getConnection() throws SQLException {
-        return dataSource.getConnection();
+        runWithinTransaction(
+                connection -> {
+                    ConferenceDao.insert(connection, conference);
+                    for (ConferenceTranslation translation : translations) {
+                        ConferenceTranslationDao.insert(connection, translation);
+                    }
+                },
+                makeDefaultHandler("Error saving conference into the database", log));
     }
 }
