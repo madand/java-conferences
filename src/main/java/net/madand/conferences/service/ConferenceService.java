@@ -42,6 +42,7 @@ public class ConferenceService extends AbstractService {
                         ConferenceTranslationDao.insert(connection, translation);
                     }
                 },
-                makeDefaultHandler("Error saving conference into the database", log));
+                makeDefaultHandler("Error saving conference into the database", log)
+        );
     }
 }

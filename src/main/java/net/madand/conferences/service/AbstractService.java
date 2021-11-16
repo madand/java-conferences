@@ -1,8 +1,7 @@
 package net.madand.conferences.service;
 
-import net.madand.conferences.db.dao.ConferenceDao;
-import net.madand.conferences.db.dao.ConferenceTranslationDao;
-import net.madand.conferences.entity.ConferenceTranslation;
+import net.madand.conferences.util.ThrowingExceptionHandler;
+import net.madand.conferences.db.util.TransactionalOperation;
 import org.apache.log4j.Logger;
 
 import javax.sql.DataSource;
@@ -25,7 +24,8 @@ public abstract class AbstractService {
      * @param handler
      * @throws ServiceException
      */
-    protected void runWithinTransaction(TransactionalOperation operation, TransactionalExceptionHandler handler) throws ServiceException {
+    protected void runWithinTransaction(TransactionalOperation operation, ThrowingExceptionHandler<SQLException, ServiceException> handler)
+            throws ServiceException {
         Connection connection = null;
         try {
             try {
@@ -58,35 +58,13 @@ public abstract class AbstractService {
      * @param logger the logger instance.
      * @return the exception handler.
      */
-    protected TransactionalExceptionHandler makeDefaultHandler(String message, Logger logger) {
-        return exception -> logAndThrowWrapped(message, logger, exception);
+    protected ThrowingExceptionHandler<SQLException, ServiceException> makeDefaultHandler(String message, Logger logger) {
+        return exception -> logAndWrapReThrowExceptionHandler(message, logger, exception);
     }
 
-    public static void logAndThrowWrapped(String message, Logger logger, SQLException exception) throws ServiceException {
+    public static void logAndWrapReThrowExceptionHandler(String message, Logger logger, SQLException exception) throws ServiceException {
         logger.error(message, exception);
         throw new ServiceException(message, exception);
     }
 
-    /**
-     * Functional interface that designates a group of database operations that are to be run within a transaction.
-     */
-    @FunctionalInterface
-    public interface TransactionalOperation {
-        /**
-         * @param connection the connection with auto commit disabled.
-         */
-        void run(Connection connection) throws SQLException;
-    }
-
-    /**
-     * Functional interface that designates an SQL exception handler.
-     */
-    @FunctionalInterface
-    public interface TransactionalExceptionHandler {
-        /**
-         * @param exception
-         * @throws ServiceException
-         */
-        void handle(SQLException exception) throws ServiceException;
-    }
 }

@@ -3,7 +3,6 @@ package net.madand.conferences.web.listener;
 import net.madand.conferences.db.dao.LanguageDao;
 import net.madand.conferences.entity.Language;
 import net.madand.conferences.l10n.Languages;
-import net.madand.conferences.web.constants.ServletContextAttributes;
 import net.madand.conferences.web.util.ContextHelper;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;

@@ -2,7 +2,7 @@ package net.madand.conferences.web.filter;
 
 import net.madand.conferences.entity.Language;
 import net.madand.conferences.l10n.Languages;
-import net.madand.conferences.web.constants.SessionAttributes;
+import net.madand.conferences.web.constant.SessionAttributes;
 import net.madand.conferences.web.util.SessionHelper;
 import org.apache.log4j.Logger;
 

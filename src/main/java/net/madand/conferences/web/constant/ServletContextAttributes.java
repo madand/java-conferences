@@ -1,4 +1,4 @@
-package net.madand.conferences.web.constants;
+package net.madand.conferences.web.constant;
 
 /**
  * Singleton helper for having easy access to the global ServletContext anywhere.
