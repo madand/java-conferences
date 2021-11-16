@@ -13,12 +13,13 @@ public class URLManager {
     public static final String URI_CONFERENCE_EDIT = "/edit-conference";
     public static final String URI_CONFERENCE_DELETE = "/delete-conference";
 
-    public static String buildURL(HttpServletRequest request) {
-        String uri = request.getRequestURI();
+    public static String buildURL(String uri, HttpServletRequest request) {
+        String servletPath = request.getContextPath();
+        String builtUri = servletPath + uri;
         String query = request.getQueryString();
         if (query == null) {
-            return uri;
+            return builtUri;
         }
-        return uri + "?" + query;
+        return builtUri + "?" + query;
     }
 }

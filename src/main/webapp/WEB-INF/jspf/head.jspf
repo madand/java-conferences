@@ -16,3 +16,6 @@
     <body>
 		    <%@ include file="/WEB-INF/jspf/header.jspf" %>
         <div class="container-lg main-content">
+            <h1>${pageTitle}</h1>
+
+            <%@ include file="/WEB-INF/jspf/flashMessages.jspf" %>

@@ -5,8 +5,6 @@ body {
 
 footer {
     background-color: #e3f2fd;
-    position: absolute;
-    bottom: 0;
 }
 
 .navbar-container {
@@ -29,6 +27,4 @@ label.required:after {
 }
 
 .main-content {
-    min-height: 100%;
-    margin-bottom: 100px;
 }

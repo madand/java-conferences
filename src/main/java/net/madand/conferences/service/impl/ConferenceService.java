@@ -1,10 +1,12 @@
-package net.madand.conferences.service;
+package net.madand.conferences.service.impl;
 
 import net.madand.conferences.db.dao.ConferenceDao;
 import net.madand.conferences.db.dao.ConferenceTranslationDao;
 import net.madand.conferences.entity.Conference;
 import net.madand.conferences.entity.ConferenceTranslation;
 import net.madand.conferences.entity.Language;
+import net.madand.conferences.service.AbstractService;
+import net.madand.conferences.service.ServiceException;
 import org.apache.log4j.Logger;
 
 import javax.sql.DataSource;

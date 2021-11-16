@@ -5,7 +5,7 @@
 
     <description>Custom tag library for for the Conferences app</description>
     <tlib-version>1.1</tlib-version>
-    <short-name>custom</short-name>
+    <short-name>mytl</short-name>
 
     <tag>
         <description>
@@ -50,7 +50,7 @@
 
     <function>
       <description>Generate HTML form element ID from its name</description>
-      <name>nameToId</name>
+      <name>nameToID</name>
       <function-class>net.madand.conferences.web.util.WebFormUtil</function-class>
       <function-signature>java.lang.String nameToID(java.lang.String)</function-signature>
    </function>

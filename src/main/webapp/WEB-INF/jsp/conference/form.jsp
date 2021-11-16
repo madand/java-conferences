@@ -1,16 +1,10 @@
 <%@ include file="/WEB-INF/jspf/directive/page.jspf" %>
 <%@ include file="/WEB-INF/jspf/directive/taglib.jspf" %>
 
-<%@ taglib tagdir="/WEB-INF/tags" prefix="mytags"%>
-<%@ taglib uri="/WEB-INF/tld/custom.tld" prefix="mytl"%>
-
 <c:set var="pageTitle" scope="request">
     <fmt:message key="conference.create.title"/>
 </c:set>
 <%@ include file="/WEB-INF/jspf/head.jspf" %>
-
-<h1>${pageTitle}</h1>
-
 
 <form method="post" action="${requestScope['javax.servlet.forward.request_uri']}">
     <div class="row">
@@ -26,27 +20,21 @@
     </div>
     <div class="row">
         <c:forEach items="${translations}" var="trn">
-            <c:set var="langCode" value="${trn.language.code}" />
+            <c:set var="language" value="${trn.language}" />
             <c:set var="required" value="${trn.language == defaultLanguage}" />
 
             <div class="col-6 mb-3">
+                <mytags:inputText name="name" labelKey="conference.label.name"
+                                  value="${trn.name}" language="${language}"
+                                  required="${required}" />
 
-                <c:set var="label"><fmt:message key="conference.label.name"/></c:set>
-                <c:set var="name" value="${mytl:localizedParamName('name', trn.language)}" />
-                <mytags:formInputText name="${name}" label="${label}" value="${trn.name}"
-                                      langCode="${langCode}" required="${required}" />
+                <mytags:textArea name="description" labelKey="conference.label.description"
+                                 value="${trn.description}" language="${language}"
+                                 required="${required}" rows="5" />
 
-                <c:set var="label"><fmt:message key="conference.label.description"/></c:set>
-                <c:set var="name" value="description[${langCode}]" />
-                <mytags:formTextArea name="${name}" label="${label}" value="${trn.description}"
-                                     langCode="${langCode}" required="${required}"
-                                     rows="5" />
-
-                <c:set var="label"><fmt:message key="conference.label.location"/></c:set>
-                <c:set var="name" value="location[${langCode}]" />
-                <mytags:formTextArea name="${name}" label="${label}" value="${trn.location}"
-                                     langCode="${langCode}" required="${required}"
-                                     rows="3" />
+                <mytags:textArea name="location" labelKey="conference.label.location"
+                                 value="${trn.location}" language="${language}"
+                                 required="${required}" rows="3" />
 
             </div>
         </c:forEach>

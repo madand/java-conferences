@@ -1,0 +1,11 @@
+<%@ include file="/WEB-INF/jspf/directive/page.jspf" %>
+<%@ include file="/WEB-INF/jspf/directive/taglib.jspf" %>
+
+<c:if test="${not empty flashMessage}">
+    <div class="alert alert-${flashType}" role="alert">
+        ${flashMessage}
+    </div>
+
+    <c:remove var="flashMessage"/>
+    <c:remove var="flashType"/>
+</c:if>

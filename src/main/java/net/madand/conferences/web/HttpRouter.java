@@ -1,7 +1,8 @@
 package net.madand.conferences.web;
 
 import net.madand.conferences.web.controller.Controller;
-import net.madand.conferences.web.controller.ConferenceController;
+import net.madand.conferences.web.controller.impl.ConferenceController;
+import net.madand.conferences.web.controller.impl.UserController;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
@@ -25,6 +26,7 @@ public class HttpRouter extends HttpServlet {
         // All active controllers should be instantiated here.
         controllers = new Controller[] {
                 new ConferenceController(servletContext),
+                new UserController(servletContext),
         };
     }
 

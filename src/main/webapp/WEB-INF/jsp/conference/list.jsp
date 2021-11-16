@@ -6,8 +6,6 @@
 </c:set>
 <%@ include file="/WEB-INF/jspf/head.jspf" %>
 
-<h1>${pageTitle}</h1>
-
 <div class="row">
     <c:forEach items="${entities}" var="entity">
         <div class="col-12 mb-3">

@@ -16,6 +16,7 @@ public class UserDao {
     private static final String SQL_FIND_ALL = "SELECT * FROM \"user\" ORDER BY real_name";
     private static final String SQL_FIND_ALL_BY_ROLE = "SELECT * FROM \"user\" WHERE role = ?::role_type ORDER BY real_name";
     private static final String SQL_FIND_ONE_BY_ID = "SELECT * FROM \"user\" WHERE id = ?";
+    private static final String SQL_FIND_ONE_BY_EMAIL = "SELECT * FROM \"user\" WHERE email = ?";
     private static final String SQL_INSERT = "INSERT INTO \"user\" (email, real_name, password_hash, role) VALUES (?,?,?,?::role_type)";
     private static final String SQL_UPDATE = "UPDATE \"user\" SET email = ?, real_name = ?, password_hash = ?, role = ?::role_type WHERE id = ?";
     private static final String SQL_DELETE = "DELETE FROM \"user\" WHERE id = ?";
@@ -26,7 +27,13 @@ public class UserDao {
                 UserDao::mapRow);
     }
 
-    public static Optional<User> findOne(Connection conn, int id) throws SQLException {
+    public static Optional<User> findOneByEmail(Connection conn, String email) throws SQLException {
+        return QueryHelper.findOne(conn, SQL_FIND_ONE_BY_EMAIL,
+                stmt -> stmt.setString(1, email),
+                UserDao::mapRow);
+    }
+
+    public static Optional<User> findOneById(Connection conn, int id) throws SQLException {
         return QueryHelper.findOne(conn, SQL_FIND_ONE_BY_ID,
                 stmt -> stmt.setInt(1, id),
                 UserDao::mapRow);

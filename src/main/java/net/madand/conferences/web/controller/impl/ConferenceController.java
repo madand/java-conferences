@@ -1,10 +1,11 @@
-package net.madand.conferences.web.controller;
+package net.madand.conferences.web.controller.impl;
 
 import net.madand.conferences.entity.Conference;
 import net.madand.conferences.entity.ConferenceTranslation;
 import net.madand.conferences.entity.Language;
-import net.madand.conferences.service.ConferenceService;
+import net.madand.conferences.service.impl.ConferenceService;
 import net.madand.conferences.service.ServiceException;
+import net.madand.conferences.web.controller.AbstractController;
 import net.madand.conferences.web.util.ContextHelper;
 import net.madand.conferences.web.util.SessionHelper;
 import net.madand.conferences.web.util.URLManager;
@@ -23,6 +24,7 @@ import java.util.Map;
 
 public class ConferenceController extends AbstractController {
     private ConferenceService service;
+    private Map<String, Action> handlersMap;
 
     public ConferenceController(ServletContext servletContext) {
         super(servletContext);
@@ -30,12 +32,14 @@ public class ConferenceController extends AbstractController {
     }
 
     protected Map<String, Action> getHandlersMap() {
-        Map<String, Action> map = new HashMap<>();
+        if (handlersMap == null) {
+            handlersMap = new HashMap<>();
 
-        map.put(URLManager.URI_CONFERENCE_LIST, this::list);
-        map.put(URLManager.URI_CONFERENCE_CREATE, this::create);
+            handlersMap.put(URLManager.URI_CONFERENCE_LIST, this::list);
+            handlersMap.put(URLManager.URI_CONFERENCE_CREATE, this::create);
+        }
 
-        return map;
+        return handlersMap;
     }
 
     public void list(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -72,10 +76,11 @@ public class ConferenceController extends AbstractController {
             try {
                 service.create(conference, translations);
                 // Redirect (PRG) only if the operation was successful.
-                response.sendRedirect(URLManager.buildURL(request));
+                response.sendRedirect(response.encodeRedirectURL(URLManager.buildURL(URLManager.URI_CONFERENCE_LIST, request)));
                 return;
             } catch (ServiceException e) {
                 response.sendError(500, e.getMessage());
+                return;
             }
         }
 

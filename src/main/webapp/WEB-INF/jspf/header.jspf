@@ -5,13 +5,48 @@ Header (top area).
 <%@ include file="/WEB-INF/jspf/directive/page.jspf" %>
 <%@ include file="/WEB-INF/jspf/directive/taglib.jspf" %>
 
+<c:set var="urlPrefix"  value="${requestScope['javax.servlet.forward.context_path']}" />
+
 <div class="container-fluid navbar-container">
     <div class="container-lg">
-        <nav class="navbar navbar-light">
+        <nav class="navbar navbar-expand-sm navbar-light">
             <div class="container-fluid">
-                <a class="navbar-brand" href="/">
+                <a class="navbar-brand" href="${urlPrefix}">
                     <fmt:message key="sitename"/>
                 </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarNav" >
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="${urlPrefix}/create-conference">New Conf</a>
+                        </li>
+
+                        <c:choose>
+                            <c:when test="${empty user}">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="${urlPrefix}/login">
+                                        <fmt:message key="menu.login"/>
+                                    </a>
+                                </li>
+                            </c:when>
+
+                            <c:otherwise>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="${urlPrefix}/logout">
+                                        <fmt:message key="menu.logout"/>
+                                        (<c:out value="${user.realName}"/>)
+                                    </a>
+                                </li>
+                            </c:otherwise>
+                        </c:choose>
+                        <c:if test="">
+
+                        </c:if>
+                    </ul>
+                </div>
             </div>
         </nav>
     </div>

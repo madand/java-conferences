@@ -68,7 +68,7 @@ public class TalkDao {
             talk.setCreatedAt(rs.getObject(++i, OffsetDateTime.class));
             talk.setUpdatedAt(rs.getObject(++i, OffsetDateTime.class));
             talk.setConference(ConferenceDao.findOne(conn, rs.getInt(++i)).get());
-            talk.setSpeaker(UserDao.findOne(conn, rs.getInt(++i)).get());
+            talk.setSpeaker(UserDao.findOneById(conn, rs.getInt(++i)).get());
             talk.setStartTime(rs.getObject(++i, LocalTime.class));
             talk.setEndTime(rs.getObject(++i, LocalTime.class));
 

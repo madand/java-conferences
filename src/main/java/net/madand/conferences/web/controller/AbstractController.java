@@ -14,10 +14,6 @@ public abstract class AbstractController implements Controller {
         this.servletContext = servletContext;
     }
 
-    protected ServletContext getServletContext() {
-        return servletContext;
-    }
-
     /**
      * Return a map from URI paths to request handlers.
      * This is an example of the Template Method pattern.
