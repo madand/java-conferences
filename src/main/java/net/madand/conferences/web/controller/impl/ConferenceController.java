@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ConferenceController extends AbstractController {
-    private ConferenceService service;
+    private final ConferenceService service;
     private Map<String, Action> handlersMap;
 
     public ConferenceController(ServletContext servletContext) {

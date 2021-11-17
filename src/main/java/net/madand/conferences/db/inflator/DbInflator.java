@@ -25,7 +25,7 @@ import java.util.stream.IntStream;
 public class DbInflator {
     public static final String SQL_TRUNCATE_ALL_TABLES_FILE = "sql/truncate_all_tables.sql";
 
-    private Connection connection;
+    private final Connection connection;
 
     public DbInflator(Connection connection) {
         this.connection = connection;
@@ -37,7 +37,7 @@ public class DbInflator {
     private static final Language UK = Language.makeInstance(CODE_UK, "Українська", false);
 
     private int locationCursor = 0;
-    private int locationsCount;
+    private final int locationsCount;
     private static final Map<String, String[]> locations = new HashMap<>();
 
     {
@@ -86,14 +86,14 @@ public class DbInflator {
         connection.setAutoCommit(true);
     }
 
-    private List<Language> languages = new ArrayList<>();
-    private List<User> moderators = new ArrayList<>();
-    private List<User> speakers = new ArrayList<>();
-    private List<User> attendees = new ArrayList<>();
-    private List<Conference> conferences = new ArrayList<>();
-    private List<ConferenceTranslation> conferenceTranslations = new ArrayList<>();
-    private List<Talk> talks = new ArrayList<>();
-    private List<TalkTranslation> talkTranslations = new ArrayList<>();
+    private final List<Language> languages = new ArrayList<>();
+    private final List<User> moderators = new ArrayList<>();
+    private final List<User> speakers = new ArrayList<>();
+    private final List<User> attendees = new ArrayList<>();
+    private final List<Conference> conferences = new ArrayList<>();
+    private final List<ConferenceTranslation> conferenceTranslations = new ArrayList<>();
+    private final List<Talk> talks = new ArrayList<>();
+    private final List<TalkTranslation> talkTranslations = new ArrayList<>();
 
     public void insertAll() throws SQLException, IOException {
         LanguageDao.insert(connection, EN);

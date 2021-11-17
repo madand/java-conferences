@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public class UserController extends AbstractController {
-    private UserService service;
+    private final UserService service;
     private Map<String, Action> handlersMap;
 
     public UserController(ServletContext servletContext) {

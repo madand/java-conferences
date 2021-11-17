@@ -8,9 +8,9 @@ import java.io.IOException;
 import java.util.Map;
 
 public abstract class AbstractController implements Controller {
-    protected ServletContext servletContext;
+    protected final ServletContext servletContext;
 
-    public AbstractController(ServletContext servletContext) {
+    protected AbstractController(ServletContext servletContext) {
         this.servletContext = servletContext;
     }
 

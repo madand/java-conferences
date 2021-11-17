@@ -7,7 +7,7 @@ import net.madand.conferences.service.impl.UserService;
 import javax.sql.DataSource;
 
 public class ServiceFactory {
-    private DataSource dataSource;
+    private final DataSource dataSource;
 
     public ServiceFactory(DataSource dataSource) {
         this.dataSource = dataSource;

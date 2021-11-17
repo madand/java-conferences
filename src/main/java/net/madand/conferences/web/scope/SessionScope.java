@@ -12,7 +12,7 @@ public class SessionScope {
     private static final String CURRENT_LANGUAGE = "currentLanguage";
     private static final String CURRENT_USER_ID = "currentUserId";
 
-    private static Logger log = Logger.getLogger(SessionScope.class);
+    private static final Logger log = Logger.getLogger(SessionScope.class);
     private static final ScopeHelper support = new ScopeHelper(log);
 
     private SessionScope() {}

@@ -11,7 +11,7 @@ import javax.servlet.ServletRequest;
 public class RequestScope {
     private static final String USER = "user";
 
-    private static Logger log = Logger.getLogger(RequestScope.class);
+    private static final Logger log = Logger.getLogger(RequestScope.class);
     private static final ScopeHelper support = new ScopeHelper(log);
 
     private RequestScope() {}

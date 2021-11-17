@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class CyclicGenerator<T> implements Iterable<T> {
-    private List<T> list = new ArrayList<>();
+    private final List<T> list = new ArrayList<>();
     private int cursor = 0;
 
     public CyclicGenerator(T[] values) {

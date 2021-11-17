@@ -61,7 +61,7 @@ public class FormatDateTag extends TagSupport {
 
     public int doEndTag() throws JspException {
 
-        String formatted = null;
+        String formatted;
 
         if (this.value == null) {
             if (this.var != null) {

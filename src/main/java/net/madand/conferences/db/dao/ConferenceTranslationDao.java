@@ -1,7 +1,6 @@
 package net.madand.conferences.db.dao;
 
 import net.madand.conferences.db.Fields;
-import net.madand.conferences.db.util.Mapper;
 import net.madand.conferences.db.util.QueryHelper;
 import net.madand.conferences.db.util.StatementParametersSetter;
 import net.madand.conferences.entity.Conference;

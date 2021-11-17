@@ -2,7 +2,6 @@ package net.madand.conferences.l10n;
 
 import net.madand.conferences.entity.Language;
 
-import javax.servlet.jsp.jstl.fmt.LocaleSupport;
 import java.util.*;
 
 /**

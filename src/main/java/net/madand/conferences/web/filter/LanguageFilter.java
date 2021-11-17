@@ -2,7 +2,6 @@ package net.madand.conferences.web.filter;
 
 import net.madand.conferences.entity.Language;
 import net.madand.conferences.l10n.Languages;
-import net.madand.conferences.web.constant.SessionAttributes;
 import net.madand.conferences.web.scope.SessionScope;
 import org.apache.log4j.Logger;
 
@@ -31,7 +30,7 @@ public class LanguageFilter implements Filter {
             log.debug("Session language was set from query parameter");
         }
 
-        Language currLang = (Language) session.getAttribute(SessionAttributes.CURRENT_LANGUAGE);
+        Language currLang = SessionScope.getCurrentLanguage(session);
         if (currLang == null) {
             currLang = detectPreferredLanguage(req);
             SessionScope.setCurrentLanguage(session, currLang);
