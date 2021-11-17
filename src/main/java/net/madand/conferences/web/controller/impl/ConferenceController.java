@@ -6,10 +6,10 @@ import net.madand.conferences.entity.Language;
 import net.madand.conferences.service.impl.ConferenceService;
 import net.madand.conferences.service.ServiceException;
 import net.madand.conferences.web.controller.AbstractController;
-import net.madand.conferences.web.util.ContextHelper;
-import net.madand.conferences.web.util.SessionHelper;
+import net.madand.conferences.web.scope.ContextScope;
+import net.madand.conferences.web.scope.SessionScope;
 import net.madand.conferences.web.util.URLManager;
-import net.madand.conferences.web.util.WebFormUtil;
+import net.madand.conferences.web.util.HtmlSupport;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -28,7 +28,7 @@ public class ConferenceController extends AbstractController {
 
     public ConferenceController(ServletContext servletContext) {
         super(servletContext);
-        service = new ConferenceService(ContextHelper.getDataSource(servletContext));
+        service = ContextScope.getServiceFactory(servletContext).getConferenceService();
     }
 
     protected Map<String, Action> getHandlersMap() {
@@ -45,7 +45,7 @@ public class ConferenceController extends AbstractController {
     public void list(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         final HttpSession session = request.getSession();
         try {
-            request.setAttribute("entities", service.findAllTranslated(SessionHelper.getCurrentLanguage(session)));
+            request.setAttribute("entities", service.findAllTranslated(SessionScope.getCurrentLanguage(session)));
         } catch (ServiceException e) {
             response.sendError(500, e.getMessage());
             return;
@@ -58,7 +58,7 @@ public class ConferenceController extends AbstractController {
         Conference conference = new Conference();
         request.setAttribute("entity", conference);
         List<ConferenceTranslation> translations = conference.makeTranslations(
-                ContextHelper.getLanguages(request.getServletContext()));
+                ContextScope.getLanguages(request.getServletContext()));
         request.setAttribute("translations", translations);
 
         if ("POST".equals(request.getMethod())) {
@@ -68,9 +68,9 @@ public class ConferenceController extends AbstractController {
 
             for (ConferenceTranslation translation : translations) {
                 final Language lang = translation.getLanguage();
-                translation.setName(request.getParameter(WebFormUtil.localizedParamName("name", lang)));
-                translation.setDescription(request.getParameter(WebFormUtil.localizedParamName("description", lang)));
-                translation.setLocation(request.getParameter(WebFormUtil.localizedParamName("location", lang)));
+                translation.setName(request.getParameter(HtmlSupport.localizedParamName("name", lang)));
+                translation.setDescription(request.getParameter(HtmlSupport.localizedParamName("description", lang)));
+                translation.setLocation(request.getParameter(HtmlSupport.localizedParamName("location", lang)));
             }
 
             try {

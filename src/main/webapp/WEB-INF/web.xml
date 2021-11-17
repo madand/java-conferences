@@ -35,12 +35,12 @@
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>FrontController</servlet-name>
+        <servlet-name>HttpRouter</servlet-name>
         <servlet-class>net.madand.conferences.web.HttpRouter</servlet-class>
     </servlet>
     <!-- Make FrontController the default servlet -->
     <servlet-mapping>
-        <servlet-name>FrontController</servlet-name>
+        <servlet-name>HttpRouter</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
 
@@ -49,14 +49,25 @@
         <listener-class>net.madand.conferences.web.listener.ContextListener</listener-class>
     </listener>
 
-    <!--  LanguageFilter intelligently sets up the session language  -->
+    <!--  Intelligently set up the session language  -->
     <filter>
         <filter-name>LanguageFilter</filter-name>
         <filter-class>net.madand.conferences.web.filter.LanguageFilter</filter-class>
     </filter>
+    <!-- Load current user's entity from the database into the request scope  -->
+    <filter>
+        <filter-name>LoadUserFilter</filter-name>
+        <filter-class>net.madand.conferences.web.filter.LoadUserFilter</filter-class>
+    </filter>
+
+    <!-- Order matters here! -->
+    <filter-mapping>
+        <filter-name>LoadUserFilter</filter-name>
+        <servlet-name>HttpRouter</servlet-name>
+    </filter-mapping>
     <filter-mapping>
         <filter-name>LanguageFilter</filter-name>
-        <servlet-name>FrontController</servlet-name>
+        <servlet-name>HttpRouter</servlet-name>
     </filter-mapping>
 
     <!--  Set POST requests encoding to UTF-8  -->

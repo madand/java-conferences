@@ -15,7 +15,7 @@
                 <fmt:message key="conference.label.event_date"/>
             </label>
             <input name="eventDate" type="date"  id="event_date" value="${conference.eventDate}"
-                   min="${minDate}" class="form-control" required />
+                   minz="${minDate}" class="form-control" required />
         </div>
     </div>
     <div class="row">

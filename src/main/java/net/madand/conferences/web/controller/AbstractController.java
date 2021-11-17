@@ -24,7 +24,7 @@ public abstract class AbstractController implements Controller {
 
     @Override
     public boolean tryHandleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        final String path = request.getServletPath();
+        final String path = request.getServletPath().substring(1);
         for (Map.Entry<String, Action> entry : getHandlersMap().entrySet()) {
             if (entry.getKey().equals(path)) {
                 entry.getValue().handleRequest(request, response);

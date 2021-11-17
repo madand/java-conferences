@@ -7,11 +7,11 @@
 - [X] Logging setup
 - [X] App (ServletContext) initialization
 
-** Required features [4/12]
+** Required features [5/12]
 
 - [X] Conferences list page (home page)
 - [ ] Detailed view of a conference (talks list page)
-- [ ] Login page
+- [X] Login page
 - [ ] Registration page
 - [X] DB localization
 - [X] UI localization
@@ -33,6 +33,7 @@
 
 ** Additional features [0/3]
 
+- [ ] Save selected language in a cookie
 - [ ] Save selected language in the DB
 - [ ] Email notifications
 - [ ] CAPTCHA on registration

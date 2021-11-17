@@ -51,14 +51,21 @@
     <function>
       <description>Generate HTML form element ID from its name</description>
       <name>nameToID</name>
-      <function-class>net.madand.conferences.web.util.WebFormUtil</function-class>
+      <function-class>net.madand.conferences.web.util.HtmlSupport</function-class>
       <function-signature>java.lang.String nameToID(java.lang.String)</function-signature>
    </function>
 
     <function>
         <description>Get form input name attribute for the given field name and language.</description>
         <name>localizedParamName</name>
-        <function-class>net.madand.conferences.web.util.WebFormUtil</function-class>
+        <function-class>net.madand.conferences.web.util.HtmlSupport</function-class>
         <function-signature>java.lang.String localizedParamName(java.lang.String, net.madand.conferences.entity.Language)</function-signature>
+    </function>
+
+    <function>
+        <description>Wrap every line of the given input string with HTML P-tags. This function will XML-escape the input.</description>
+        <name>linesToParagraphs</name>
+        <function-class>net.madand.conferences.web.util.HtmlSupport</function-class>
+        <function-signature>java.lang.String linesToParagraphs(java.lang.String)</function-signature>
     </function>
 </taglib>

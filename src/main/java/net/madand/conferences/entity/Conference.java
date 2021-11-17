@@ -1,7 +1,5 @@
 package net.madand.conferences.entity;
 
-import net.madand.conferences.web.util.ContextHelper;
-
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;

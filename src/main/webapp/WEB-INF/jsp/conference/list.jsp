@@ -8,19 +8,23 @@
 
 <div class="row">
     <c:forEach items="${entities}" var="entity">
-        <div class="col-12 mb-3">
+        <div class="col-xl-6 col-lg-12 mb-3">
             <div class="card">
                 <div class="card-body">
                     <h3 class="card-title"><c:out value="${entity.name}" /></h3>
-                    <pre class="card-text"><c:out value="${entity.description}" /></pre>
-                    <pre class="card-text location text-muted"><c:out value="${entity.location}" /></pre>
+                    <p class="card-subtitle mb-2 text-muted">
+                        <mytl:formatDate value="${entity.eventDate}" format="LONG"
+                                         locale="${currentLanguage.code}" />
+                    </p>
+                    <div class="card-text">
+                        ${mytl:linesToParagraphs(entity.description)}
+                    </div>
+                    <div class="card-text location text-muted">
+                        ${mytl:linesToParagraphs(entity.location)}
+                    </div>
                     <a href="#" class="btn btn-primary">
                         <fmt:message key="conference.list.button.details"/>
                     </a>
-                </div>
-                <div class="card-footer text-muted">
-                    <mytl:formatDate value="${entity.eventDate}" format="FULL"
-                                     locale="${currentLanguage.code}" />
                 </div>
             </div>
         </div>

@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public class LanguageDao {
-    private static final String SQL_FIND_ALL = "SELECT * FROM language ORDER BY id";
+    private static final String SQL_FIND_ALL = "SELECT * FROM language ORDER BY is_default DESC, name";
     private static final String SQL_INSERT = "INSERT INTO language (code, name, is_default) VALUES (?,?,?)";
 
     private static Map<Integer, Language> languages;

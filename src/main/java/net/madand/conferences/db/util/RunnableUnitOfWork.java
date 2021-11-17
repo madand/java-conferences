@@ -4,11 +4,11 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * Functional interface that designates a database operation (presumably consisting of multiple statements), that are
- * to be run within a transaction.
+ * Functional interface that designates a database operation(s), with no value returned.
+ * Naming is in analogy with the core's Runnable interface.
  */
 @FunctionalInterface
-public interface TransactionalOperation {
+public interface RunnableUnitOfWork {
     /**
      * @param connection the connection with auto commit set to false.
      */

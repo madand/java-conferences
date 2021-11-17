@@ -70,7 +70,10 @@ public class DbInflator {
         }
 
         DbInflator inflator = new DbInflator(DriverManager.getConnection(args[0], args[1], args[2]));
+
+        inflator.truncateDbTables();
         inflator.insertAll();
+
         System.out.println("Data was successfully inserted into the database!");
     }
 
@@ -93,8 +96,6 @@ public class DbInflator {
     private List<TalkTranslation> talkTranslations = new ArrayList<>();
 
     public void insertAll() throws SQLException, IOException {
-        truncateDbTables();
-
         LanguageDao.insert(connection, EN);
         Languages.add(EN);
         languages.add(EN);

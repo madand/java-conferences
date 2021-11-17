@@ -1,17 +1,16 @@
 package net.madand.conferences.service;
 
-import net.madand.conferences.util.ThrowingExceptionHandler;
-import net.madand.conferences.db.util.TransactionalOperation;
-import org.apache.log4j.Logger;
+import net.madand.conferences.db.util.RunnableUnitOfWork;
+import net.madand.conferences.db.util.CallableUnitOfWork;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
 public abstract class AbstractService {
-    private DataSource dataSource;
+    private final DataSource dataSource;
 
-    public AbstractService(DataSource dataSource) {
+    protected AbstractService(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -20,51 +19,49 @@ public abstract class AbstractService {
     }
 
     /**
-     * @param operation the a
-     * @param handler
+     * Run the given unit of work without a database transaction (with autoCommit=true), then return the result.
+     * Should an exception be thrown during the operation, {@link ServiceException} will be thrown with the given
+     * error message.
+     *
+     * @param unitOfWork the database operation(s) to be performed.
+     * @param errorMessage the error message of the exception, thrown by this method.
+     * @param <R> the type of the value returned by the {@code unitOfWork}.
+     * @return the value returned by the {@code unitOfWork}.
      * @throws ServiceException
      */
-    protected void runWithinTransaction(TransactionalOperation operation, ThrowingExceptionHandler<SQLException, ServiceException> handler)
-            throws ServiceException {
-        Connection connection = null;
-        try {
-            try {
-                connection = getConnection();
-                connection.setAutoCommit(false);
-
-                operation.run(connection);
-
-                connection.commit();
-            } catch (SQLException e) {
-                if (connection != null) {
-                    connection.rollback();
-                }
-                throw e;
-            } finally {
-                if (connection != null) {
-                    connection.close();
-                }
-            }
+    protected <R> R callNoTransaction(CallableUnitOfWork<R> unitOfWork, String errorMessage) throws ServiceException {
+        try (Connection connection = getConnection()) {
+            connection.setAutoCommit(true);
+            return unitOfWork.run(connection);
         } catch (SQLException e) {
-            handler.handle(e);
+            throw new ServiceException(errorMessage, e);
         }
     }
 
     /**
-     * Return exception handler that logs the given message along with the caught exception, and then throws
-     * {@link ServiceException} with the given message and the caught exception as the cause.
+     * Run the given unit of work within a database transaction. Should an exception be thrown during the operation,
+     * the transaction will be rolled back, and {@link ServiceException} will be thrown with the given error message.
      *
-     * @param message the message for logging and for the newly thrown exception.
-     * @param logger the logger instance.
-     * @return the exception handler.
+     * @param unitOfWork the database operation(s) to be performed.
+     * @param errorMessage the error message of the exception, thrown by this method.
+     * @throws ServiceException
      */
-    protected ThrowingExceptionHandler<SQLException, ServiceException> makeDefaultHandler(String message, Logger logger) {
-        return exception -> logAndWrapReThrowExceptionHandler(message, logger, exception);
+    protected void runWithinTransaction(RunnableUnitOfWork unitOfWork, String errorMessage) throws ServiceException {
+        try (Connection connection = getConnection()) {
+            runDMLWithinTransactionInternal(connection, unitOfWork);
+        } catch (SQLException e) {
+            throw new ServiceException(errorMessage, e);
+        }
     }
 
-    public static void logAndWrapReThrowExceptionHandler(String message, Logger logger, SQLException exception) throws ServiceException {
-        logger.error(message, exception);
-        throw new ServiceException(message, exception);
+    private void runDMLWithinTransactionInternal(Connection connection, RunnableUnitOfWork unitOfWork) throws SQLException {
+        try {
+            connection.setAutoCommit(false);
+            unitOfWork.run(connection);
+            connection.commit();
+        } catch (SQLException e) {
+            connection.rollback();
+            throw e;
+        }
     }
-
 }

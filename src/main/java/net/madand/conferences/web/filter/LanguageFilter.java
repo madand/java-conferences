@@ -3,7 +3,7 @@ package net.madand.conferences.web.filter;
 import net.madand.conferences.entity.Language;
 import net.madand.conferences.l10n.Languages;
 import net.madand.conferences.web.constant.SessionAttributes;
-import net.madand.conferences.web.util.SessionHelper;
+import net.madand.conferences.web.scope.SessionScope;
 import org.apache.log4j.Logger;
 
 import javax.servlet.*;
@@ -19,21 +19,22 @@ public class LanguageFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        log.trace("LanguageFilter started");
+
         final HttpServletRequest req = (HttpServletRequest) request;
         final HttpSession session = req.getSession();
-        log.trace("Filter started");
 
         // If user supplied the lang query parameter, set the language.
         final Language newLang = detectSetLanguage(req);
         if (newLang != null) {
-            SessionHelper.setCurrentLanguage(session, newLang);
+            SessionScope.setCurrentLanguage(session, newLang);
             log.debug("Session language was set from query parameter");
         }
 
         Language currLang = (Language) session.getAttribute(SessionAttributes.CURRENT_LANGUAGE);
         if (currLang == null) {
             currLang = detectPreferredLanguage(req);
-            SessionHelper.setCurrentLanguage(session, currLang);
+            SessionScope.setCurrentLanguage(session, currLang);
             log.debug("Session language was set from the client browser preference");
         }
 

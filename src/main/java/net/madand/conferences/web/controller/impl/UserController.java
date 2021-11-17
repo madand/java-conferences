@@ -6,7 +6,7 @@ import net.madand.conferences.service.ServiceException;
 import net.madand.conferences.service.impl.UserService;
 import net.madand.conferences.web.bean.LoginBean;
 import net.madand.conferences.web.controller.AbstractController;
-import net.madand.conferences.web.util.ContextHelper;
+import net.madand.conferences.web.scope.ContextScope;
 import net.madand.conferences.web.util.URLManager;
 
 import javax.servlet.ServletContext;
@@ -25,7 +25,7 @@ public class UserController extends AbstractController {
 
     public UserController(ServletContext servletContext) {
         super(servletContext);
-        service = new UserService(ContextHelper.getDataSource(servletContext));
+        service = ContextScope.getServiceFactory(servletContext).getUserService();
     }
 
     @Override

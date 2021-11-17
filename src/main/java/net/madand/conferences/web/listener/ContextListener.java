@@ -1,9 +1,11 @@
 package net.madand.conferences.web.listener;
 
-import net.madand.conferences.db.dao.LanguageDao;
 import net.madand.conferences.entity.Language;
 import net.madand.conferences.l10n.Languages;
-import net.madand.conferences.web.util.ContextHelper;
+import net.madand.conferences.service.ServiceException;
+import net.madand.conferences.service.ServiceFactory;
+import net.madand.conferences.service.impl.LanguageService;
+import net.madand.conferences.web.scope.ContextScope;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
@@ -15,11 +17,10 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.jsp.jstl.core.Config;
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
 public class ContextListener implements ServletContextListener {
+    private static final String JDBC_CONFERENCES = "jdbc/conferences";
     private static Logger log;
 
     @Override
@@ -28,7 +29,7 @@ public class ContextListener implements ServletContextListener {
 
         // Order matters! Later methods expect the functioning logger and DataSource.
         initLog4J(sc);
-        initDataSource(sc);
+        initServiceFactory(sc);
         initLanguages(sc);
     }
 
@@ -36,7 +37,7 @@ public class ContextListener implements ServletContextListener {
      * Initializes Log4j framework.
      */
     private void initLog4J(ServletContext servletContext) {
-        logToSysOut("Log4J initialization started");
+        logToSysOut("initLog4J started");
 
         try {
             PropertyConfigurator.configure(servletContext.getRealPath("WEB-INF/log4j.properties"));
@@ -45,21 +46,25 @@ public class ContextListener implements ServletContextListener {
             throw new RuntimeException("Failed to initialize Log4j", e);
         }
 
-        logToSysOut("Log4J initialization finished.");
+        log.info("initLog4J finished.");
     }
 
-    private void initDataSource(ServletContext servletContext) {
-        log.trace("DataSource initialization started");
+    private void initServiceFactory(ServletContext servletContext) {
+        log.trace("initServiceFactory started");
 
         try {
             Context ctx = (Context) new InitialContext().lookup("java:comp/env");
-            ContextHelper.setDataSource(servletContext, (DataSource) ctx.lookup("jdbc/conferences"));
-        } catch (NamingException e) {
+            final DataSource dataSource = (DataSource) ctx.lookup(JDBC_CONFERENCES);
+            if (dataSource == null) {
+                throw new IllegalStateException("Lookup for " + JDBC_CONFERENCES + " returned NULL. Valid data source expected.");
+            }
+            ContextScope.setServiceFactory(servletContext, new ServiceFactory(dataSource));
+        } catch (NamingException | IllegalStateException e) {
             log.error("DataSource initialization failed", e);
             throw new RuntimeException("Failed to initialize the Data Source.", e);
         }
 
-        log.info("DataSource initialization finished");
+        log.info("initServiceFactory finished");
     }
 
     /**
@@ -68,25 +73,25 @@ public class ContextListener implements ServletContextListener {
      * @param servletContext
      */
     private void initLanguages(ServletContext servletContext) {
-        log.trace("Languages initialization started");
+        log.trace("initLanguages started");
 
-        final DataSource dataSource = ContextHelper.getDataSource(servletContext);
-        try (Connection connection = dataSource.getConnection()) {
-            final List<Language> languages = LanguageDao.findAll(connection);
+        final LanguageService languageService = ContextScope.getServiceFactory(servletContext).getLanguageService();
+        try {
+            final List<Language> languages = languageService.findAll();
             languages.forEach(Languages::add);
-            ContextHelper.setLanguages(servletContext, languages);
+            ContextScope.setLanguages(servletContext, languages);
 
             // Set the default language on the context level.
             final Language defaultLanguage = Languages.getDefaultLanguage();
-            ContextHelper.setDefaultLanguage(servletContext, defaultLanguage);
+            ContextScope.setDefaultLanguage(servletContext, defaultLanguage);
             Config.set(servletContext, Config.FMT_LOCALE, defaultLanguage.getCode());
             Config.set(servletContext, Config.FMT_TIME_ZONE, "Europe/Kiev");
-        } catch (SQLException throwables) {
-            log.error("Languages query failed", throwables);
-            throw new RuntimeException("Failed to initialize the languages", throwables);
+        } catch (ServiceException e) {
+            log.error("Languages query failed", e);
+            throw new RuntimeException("Failed to initialize the languages", e);
         }
 
-        log.info("Languages initialization finished");
+        log.info("initLanguages finished");
     }
 
     private void logToSysOut(String msg) {
