@@ -3,6 +3,8 @@ package net.madand.conferences.web.util;
 import javax.servlet.http.HttpServletRequest;
 
 public class URLManager {
+    private URLManager() {}
+
     public static final String URI_USER_LOGIN = "login";
     public static final String URI_USER_REGISTER = "register";
     public static final String URI_USER_LOGOUT = "logout";

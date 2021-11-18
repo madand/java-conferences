@@ -7,6 +7,8 @@ import net.madand.conferences.service.impl.UserService;
 import net.madand.conferences.web.bean.LoginBean;
 import net.madand.conferences.web.controller.AbstractController;
 import net.madand.conferences.web.scope.ContextScope;
+import net.madand.conferences.web.scope.RequestScope;
+import net.madand.conferences.web.scope.SessionScope;
 import net.madand.conferences.web.util.URLManager;
 
 import javax.servlet.ServletContext;
@@ -50,20 +52,23 @@ public class UserController extends AbstractController {
             bean.setEmail(request.getParameter("email"));
             bean.setPassword(request.getParameter("password"));
 
-            final Optional<User> user;
+            final Optional<User> userOptional;
             try {
-                user = service.findByEmail(bean.getEmail());
+                userOptional = service.findByEmail(bean.getEmail());
             } catch (ServiceException e) {
                 response.sendError(500, e.getMessage());
                 return;
             }
 
-            if (user.isPresent() && PasswordHelper.checkPassword(bean.getPassword(), user.get().getPasswordHash())) {
-                session.setAttribute("user", user.get());
-                session.setAttribute("flashMessage", String.format("Successfully logged in as %s.", user.get().getRealName()));
-                session.setAttribute("flashType", "success");
-                response.sendRedirect(response.encodeRedirectURL(URLManager.buildURL(URLManager.URI_CONFERENCE_LIST, request)));
-                return;
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
+                if (PasswordHelper.checkPassword(bean.getPassword(), user.getPasswordHash())) {
+                    SessionScope.setCurrentUserId(session, user.getId());
+                    session.setAttribute("flashMessage", String.format("Successfully logged in as %s.", user.getRealName()));
+                    session.setAttribute("flashType", "success");
+                    response.sendRedirect(response.encodeRedirectURL(URLManager.buildURL(URLManager.URI_CONFERENCE_LIST, request)));
+                    return;
+                }
             }
 
             session.setAttribute("flashMessage", "Invalid login or password");
@@ -75,10 +80,10 @@ public class UserController extends AbstractController {
 
     private void logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
         final HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
+        User user = RequestScope.getUser(request);
 
         if (user != null) {
-            session.removeAttribute("user");
+            SessionScope.removeCurrentUserId(session);
             session.setAttribute("flashMessage", String.format("Good buy %s.", user.getRealName()));
             session.setAttribute("flashType", "info");
         }

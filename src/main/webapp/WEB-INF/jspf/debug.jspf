@@ -1,14 +1,41 @@
 
+<style>
+ .debug-block table {
+     border-collapse: collapse;
+     margin-bottom: 2em;
+ }
+ .debug-block td {
+     padding: 0.3em;
+     border: 1px solid black;
+ }
+</style>
+
 <hr/>
 
-<h2>DEBUG INFO</h2>
-<h2>Query</h2>
-<ul>
-    <li>request.getServletPath(): <%= request.getServletPath() %></li>
-    <li>request.getQueryString(): <%= request.getQueryString() %></li>
-    <li> request.getRequestURI(): <%= request.getRequestURI() %></li>
-    <li> request.getRequestURL(): <%= request.getRequestURL() %></li>
-</ul>
+<div class="debug-block">
+
+<h1>DEBUG INFO</h2>
+
+<h2>Request</h2>
+<table>
+    <tr>
+        <td>request.getRequestURI()</td>
+        <td><%= request.getRequestURI() %></td>
+    </tr>
+    <tr>
+        <td>request.getContextPath()</td>
+        <td><%= request.getContextPath() %></td>
+    </tr>
+    <tr>
+        <td>request.getServletPath()</td>
+        <td><%= request.getServletPath() %></td>
+    </tr>
+    <tr>
+        <td>request.getQueryString()</td>
+        <td><%= request.getQueryString() %></td>
+    </tr>
+</table>
+
 
 <h2>Scopes</h2>
 
@@ -45,7 +72,7 @@ for (Object val: attributenNames3) {
 }
 out.print("</table>");
 
-Collection attributenNames2 = Collections.list(pageContext.getAttributeNamesInScope(PageContext.SESSION_SCOPE ));
+Collection attributenNames2 = Collections.list(pageContext.getAttributeNamesInScope(PageContext.SESSION_SCOPE));
 out.print("<h3>SESSION_SCOPE</h3>");
 out.print("<table>");
 for (Object val: attributenNames2) {
@@ -58,7 +85,6 @@ for (Object val: attributenNames2) {
 }
 out.print("</table>");
 
-out.print(out.getClass());
 Collection<String> attributenNames = Collections.list(pageContext.getAttributeNamesInScope(PageContext.APPLICATION_SCOPE));
 out.print("<h3>APPLICATION_SCOPE</h3>");
 out.print("<table>");
@@ -66,9 +92,14 @@ for (Object val: attributenNames) {
     out.print("<tr>");
     out.print("<td>" + val + "</td>");
     if (dumpValues) {
-        out.print("<td>" + pageContext.getServletContext().getAttribute(val.toString()) + "</td>");
+        if (val.equals("org.apache.catalina.jsp_classpath")) {
+            out.print("<td>[omitted huge list]</td>");
+        } else {
+            out.print("<td>" + pageContext.getServletContext().getAttribute(val.toString()) + "</td>");
+        }
     }
     out.print("</tr>");
 }
 out.print("</table>");
 %>
+</div>

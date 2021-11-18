@@ -29,7 +29,7 @@ public class LoadUserFilter implements Filter {
         Integer userId = SessionScope.getCurrentUserId(session);
 
         if (userId == null) {
-            log.debug("No user is logged in. Bailing out.");
+            log.debug("No user is logged in");
             chain.doFilter(request, response);
             return;
         }
@@ -40,16 +40,15 @@ public class LoadUserFilter implements Filter {
         try {
             user = userService.findById(userId);
         } catch (ServiceException e) {
-            log.error("Failed to load a user with ID=" + userId + ". Invalidating the session.", e);
-            // Logout the user, just in case.
-            session.invalidate();
+            log.error("Failed to load a user with ID=" + userId + ". Removing the user from session.", e);
+            SessionScope.removeCurrentUserId(session);
             chain.doFilter(request, response);
             return;
         }
 
         if (!user.isPresent()) {
-            log.debug("User not was not found in the database. Invalidating the session.");
-            session.invalidate();
+            log.debug("User not was not found in the database. Removing the user from session.");
+            SessionScope.removeCurrentUserId(session);
             chain.doFilter(request, response);
             return;
         }

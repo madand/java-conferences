@@ -1,0 +1,572 @@
+{
+  "id": "31e6a93b-91e9-400b-a01a-ec29366b8c03",
+  "version": "2.0",
+  "name": "conferences",
+  "url": "http://localhost:8080/conferences/",
+  "tests": [{
+    "id": "5e4e09c2-651d-4a9c-ad7d-be655771cf35",
+    "name": "Conf JS",
+    "commands": [{
+      "id": "3ae38f2b-d2d4-4474-a954-b55a6dbb833b",
+      "comment": "",
+      "command": "open",
+      "target": "http://localhost:8080/conferences/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "c5280838-d407-459a-b72c-5474a913c027",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=New Conf",
+      "targets": [
+        ["linkText=New Conf", "linkText"],
+        ["css=.nav-item:nth-child(1) > .nav-link", "css:finder"],
+        ["xpath=//a[contains(text(),'New Conf')]", "xpath:link"],
+        ["xpath=//div[@id='navbarNav']/ul/li/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/conferences/create-conference')]", "xpath:href"],
+        ["xpath=//li/a", "xpath:position"],
+        ["xpath=//a[contains(.,'New Conf')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "ed05e0ad-d581-4911-94be-f7c2bd9ad81e",
+      "comment": "",
+      "command": "click",
+      "target": "id=event_date",
+      "targets": [
+        ["id=event_date", "id"],
+        ["name=eventDate", "name"],
+        ["css=#event_date", "css:finder"],
+        ["xpath=//input[@id='event_date']", "xpath:attributes"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "050e029b-56dc-4570-aea1-24d401cac597",
+      "comment": "",
+      "command": "type",
+      "target": "id=event_date",
+      "targets": [
+        ["id=event_date", "id"],
+        ["name=eventDate", "name"],
+        ["css=#event_date", "css:finder"],
+        ["xpath=//input[@id='event_date']", "xpath:attributes"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "2021-12-01"
+    }, {
+      "id": "70aac499-d2cb-4f3e-978f-a2700703d528",
+      "comment": "",
+      "command": "click",
+      "target": "id=name-en-",
+      "targets": [
+        ["id=name-en-", "id"],
+        ["name=name[en]", "name"],
+        ["css=#name-en-", "css:finder"],
+        ["xpath=//input[@id='name-en-']", "xpath:attributes"],
+        ["xpath=//div[2]/div/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "19bf9b3e-2f30-429c-b1a6-c2924c68ec05",
+      "comment": "",
+      "command": "type",
+      "target": "id=name-en-",
+      "targets": [
+        ["id=name-en-", "id"],
+        ["name=name[en]", "name"],
+        ["css=#name-en-", "css:finder"],
+        ["xpath=//input[@id='name-en-']", "xpath:attributes"],
+        ["xpath=//div[2]/div/div/input", "xpath:position"]
+      ],
+      "value": "JS Fest 2020"
+    }, {
+      "id": "1a5df1e3-6b56-4c38-be73-1eda365d2b82",
+      "comment": "",
+      "command": "type",
+      "target": "id=description-en-",
+      "targets": [
+        ["id=description-en-", "id"],
+        ["name=description[en]", "name"],
+        ["css=#description-en-", "css:finder"],
+        ["xpath=//textarea[@id='description-en-']", "xpath:attributes"],
+        ["xpath=//textarea", "xpath:position"]
+      ],
+      "value": "JavaScript, often abbreviated as JS, is a programming language that conforms to the ECMAScript specification. JavaScript is high-level, often just-in-time compiled and multi-paradigm. It has dynamic typing, prototype-based object-orientation and first-class functions.\\nAlongside HTML and CSS, JavaScript is one of the core technologies of the World Wide Web. Over 97% of websites use it client-side for web page behavior, often incorporating third-party libraries."
+    }, {
+      "id": "8aaeb63b-57e8-42b7-a479-247c84841f08",
+      "comment": "",
+      "command": "type",
+      "target": "id=location-en-",
+      "targets": [
+        ["id=location-en-", "id"],
+        ["name=location[en]", "name"],
+        ["css=#location-en-", "css:finder"],
+        ["xpath=//textarea[@id='location-en-']", "xpath:attributes"],
+        ["xpath=//div[3]/textarea", "xpath:position"]
+      ],
+      "value": "Kyiv, Ukraine"
+    }, {
+      "id": "1355a508-aed8-4939-9866-0fcc2a1ba295",
+      "comment": "",
+      "command": "type",
+      "target": "id=description-uk-",
+      "targets": [
+        ["id=description-uk-", "id"],
+        ["name=description[uk]", "name"],
+        ["css=#description-uk-", "css:finder"],
+        ["xpath=//textarea[@id='description-uk-']", "xpath:attributes"],
+        ["xpath=//div[2]/div[2]/textarea", "xpath:position"]
+      ],
+      "value": "JavaScript (JS) — динамічна, об'єктно-орієнтована прототипна мова програмування. Реалізація стандарту ECMAScript. Найчастіше використовується для створення сценаріїв вебсторінок, що надає можливість на боці клієнта (пристрої кінцевого користувача) взаємодіяти з користувачем, керувати браузером, асинхронно обмінюватися даними з сервером, змінювати структуру та зовнішній вигляд вебсторінки."
+    }, {
+      "id": "16154c6e-ace9-4feb-96f1-9c6166a5dc2f",
+      "comment": "",
+      "command": "type",
+      "target": "id=location-uk-",
+      "targets": [
+        ["id=location-uk-", "id"],
+        ["name=location[uk]", "name"],
+        ["css=#location-uk-", "css:finder"],
+        ["xpath=//textarea[@id='location-uk-']", "xpath:attributes"],
+        ["xpath=//div[2]/div[3]/textarea", "xpath:position"]
+      ],
+      "value": "Київ, Україна"
+    }, {
+      "id": "75e7cff2-8457-48b0-a43b-08e6e60e0661",
+      "comment": "",
+      "command": "click",
+      "target": "css=.btn",
+      "targets": [
+        ["css=.btn", "css:finder"],
+        ["xpath=//button[@type='submit']", "xpath:attributes"],
+        ["xpath=//div[3]/div/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Save')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
+  }, {
+    "id": "6a76c758-6c0e-4f3c-9969-1a4576187887",
+    "name": "Conf Java",
+    "commands": [{
+      "id": "1e5c7e1f-8ae6-4d69-abd4-ca013d82aa38",
+      "comment": "",
+      "command": "open",
+      "target": "http://localhost:8080/conferences/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "303ef8fe-5b3c-4991-bfa5-00d91a4ac9e6",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=New Conf",
+      "targets": [
+        ["linkText=New Conf", "linkText"],
+        ["css=.nav-item:nth-child(1) > .nav-link", "css:finder"],
+        ["xpath=//a[contains(text(),'New Conf')]", "xpath:link"],
+        ["xpath=//div[@id='navbarNav']/ul/li/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/conferences/create-conference')]", "xpath:href"],
+        ["xpath=//li/a", "xpath:position"],
+        ["xpath=//a[contains(.,'New Conf')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "13a999a1-9524-4848-89a9-a0c50484cefd",
+      "comment": "",
+      "command": "click",
+      "target": "id=event_date",
+      "targets": [
+        ["id=event_date", "id"],
+        ["name=eventDate", "name"],
+        ["css=#event_date", "css:finder"],
+        ["xpath=//input[@id='event_date']", "xpath:attributes"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "4b1fbff5-cf11-4f1c-ab35-f6fbaaff56cb",
+      "comment": "",
+      "command": "type",
+      "target": "id=event_date",
+      "targets": [
+        ["id=event_date", "id"],
+        ["name=eventDate", "name"],
+        ["css=#event_date", "css:finder"],
+        ["xpath=//input[@id='event_date']", "xpath:attributes"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "2021-12-01"
+    }, {
+      "id": "cc5a63b6-674c-4a0b-acfc-9e373e78de43",
+      "comment": "",
+      "command": "click",
+      "target": "id=name-en-",
+      "targets": [
+        ["id=name-en-", "id"],
+        ["name=name[en]", "name"],
+        ["css=#name-en-", "css:finder"],
+        ["xpath=//input[@id='name-en-']", "xpath:attributes"],
+        ["xpath=//div[2]/div/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "078c1911-e97f-4d28-89be-e4fa9fb90140",
+      "comment": "",
+      "command": "type",
+      "target": "id=name-en-",
+      "targets": [
+        ["id=name-en-", "id"],
+        ["name=name[en]", "name"],
+        ["css=#name-en-", "css:finder"],
+        ["xpath=//input[@id='name-en-']", "xpath:attributes"],
+        ["xpath=//div[2]/div/div/input", "xpath:position"]
+      ],
+      "value": "JavaConf 2020"
+    }, {
+      "id": "cc200f83-e54a-4f2d-bb78-c2be83907470",
+      "comment": "",
+      "command": "type",
+      "target": "id=description-en-",
+      "targets": [
+        ["id=description-en-", "id"],
+        ["name=description[en]", "name"],
+        ["css=#description-en-", "css:finder"],
+        ["xpath=//textarea[@id='description-en-']", "xpath:attributes"],
+        ["xpath=//textarea", "xpath:position"]
+      ],
+      "value": "Java is a high-level, class-based, object-oriented programming language that is designed to have as few implementation dependencies as possible.\\nIt is a general-purpose programming language intended to let programmers write once, run anywhere (WORA), meaning that compiled Java code can run on all platforms that support Java without the need for recompilation."
+    }, {
+      "id": "f419d930-cc10-485f-90d4-31c801b3b28c",
+      "comment": "",
+      "command": "type",
+      "target": "id=location-en-",
+      "targets": [
+        ["id=location-en-", "id"],
+        ["name=location[en]", "name"],
+        ["css=#location-en-", "css:finder"],
+        ["xpath=//textarea[@id='location-en-']", "xpath:attributes"],
+        ["xpath=//div[3]/textarea", "xpath:position"]
+      ],
+      "value": "Kyiv, Ukraine"
+    }, {
+      "id": "0483a78e-9f34-453e-84e8-92f915118bff",
+      "comment": "",
+      "command": "type",
+      "target": "id=description-uk-",
+      "targets": [
+        ["id=description-uk-", "id"],
+        ["name=description[uk]", "name"],
+        ["css=#description-uk-", "css:finder"],
+        ["xpath=//textarea[@id='description-uk-']", "xpath:attributes"],
+        ["xpath=//div[2]/div[2]/textarea", "xpath:position"]
+      ],
+      "value": "Java (вимовляється Джава) — об'єктно-орієнтована мова програмування, випущена 1995 року компанією «Sun Microsystems» як основний компонент платформи Java. З 2009 року мовою займається компанія «Oracle», яка того року придбала «Sun Microsystems».\\nВ офіційній реалізації Java-програми компілюються у байт-код, який при виконанні інтерпретується віртуальною машиною для конкретної платформи."
+    }, {
+      "id": "6e8105e8-a871-467a-b525-72be8067b013",
+      "comment": "",
+      "command": "type",
+      "target": "id=location-uk-",
+      "targets": [
+        ["id=location-uk-", "id"],
+        ["name=location[uk]", "name"],
+        ["css=#location-uk-", "css:finder"],
+        ["xpath=//textarea[@id='location-uk-']", "xpath:attributes"],
+        ["xpath=//div[2]/div[3]/textarea", "xpath:position"]
+      ],
+      "value": "Київ, Україна"
+    }, {
+      "id": "36f915dc-3fa4-4610-82ce-0bc05a82d970",
+      "comment": "",
+      "command": "click",
+      "target": "css=.btn",
+      "targets": [
+        ["css=.btn", "css:finder"],
+        ["xpath=//button[@type='submit']", "xpath:attributes"],
+        ["xpath=//div[3]/div/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Save')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
+  }, {
+    "id": "915da036-6913-43f9-bd78-abfeead30d6a",
+    "name": "Conf Lisp",
+    "commands": [{
+      "id": "c833ad48-34cf-49d7-9dfd-1f5a4abffd23",
+      "comment": "",
+      "command": "open",
+      "target": "http://localhost:8080/conferences/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "246e474d-474d-4acf-b1c7-dd4fce6d274f",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=New Conf",
+      "targets": [
+        ["linkText=New Conf", "linkText"],
+        ["css=.nav-item:nth-child(1) > .nav-link", "css:finder"],
+        ["xpath=//a[contains(text(),'New Conf')]", "xpath:link"],
+        ["xpath=//div[@id='navbarNav']/ul/li/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/conferences/create-conference')]", "xpath:href"],
+        ["xpath=//li/a", "xpath:position"],
+        ["xpath=//a[contains(.,'New Conf')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "ff366fd4-67b9-42fa-b1d0-c31fc0418386",
+      "comment": "",
+      "command": "click",
+      "target": "id=event_date",
+      "targets": [
+        ["id=event_date", "id"],
+        ["name=eventDate", "name"],
+        ["css=#event_date", "css:finder"],
+        ["xpath=//input[@id='event_date']", "xpath:attributes"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "48a7784b-185e-4c37-a227-4cfbb4b5267a",
+      "comment": "",
+      "command": "type",
+      "target": "id=event_date",
+      "targets": [
+        ["id=event_date", "id"],
+        ["name=eventDate", "name"],
+        ["css=#event_date", "css:finder"],
+        ["xpath=//input[@id='event_date']", "xpath:attributes"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "2021-12-01"
+    }, {
+      "id": "cad31b9f-098b-4fb1-bb19-a848195e3f63",
+      "comment": "",
+      "command": "type",
+      "target": "id=name-en-",
+      "targets": [
+        ["id=name-en-", "id"],
+        ["name=name[en]", "name"],
+        ["css=#name-en-", "css:finder"],
+        ["xpath=//input[@id='name-en-']", "xpath:attributes"],
+        ["xpath=//div[2]/div/div/input", "xpath:position"]
+      ],
+      "value": "European Lisp Symposium 2020"
+    }, {
+      "id": "5385328f-3ebb-4b14-8310-7610d909e37e",
+      "comment": "",
+      "command": "type",
+      "target": "id=description-en-",
+      "targets": [
+        ["id=description-en-", "id"],
+        ["name=description[en]", "name"],
+        ["css=#description-en-", "css:finder"],
+        ["xpath=//textarea[@id='description-en-']", "xpath:attributes"],
+        ["xpath=//textarea", "xpath:position"]
+      ],
+      "value": "Lisp (historically LISP) is a family of programming languages with a long history and a distinctive, fully parenthesized prefix notation.\\nOriginally specified in 1958, Lisp is the second-oldest high-level programming language. Only Fortran is older, by one year."
+    }, {
+      "id": "97e74456-29c3-4c5c-b942-a2faafb9f676",
+      "comment": "",
+      "command": "type",
+      "target": "id=location-en-",
+      "targets": [
+        ["id=location-en-", "id"],
+        ["name=location[en]", "name"],
+        ["css=#location-en-", "css:finder"],
+        ["xpath=//textarea[@id='location-en-']", "xpath:attributes"],
+        ["xpath=//div[3]/textarea", "xpath:position"]
+      ],
+      "value": "Kyiv, Ukraine"
+    }, {
+      "id": "3c179df9-973e-4b43-9b4a-93c46a60aec0",
+      "comment": "",
+      "command": "type",
+      "target": "id=description-uk-",
+      "targets": [
+        ["id=description-uk-", "id"],
+        ["name=description[uk]", "name"],
+        ["css=#description-uk-", "css:finder"],
+        ["xpath=//textarea[@id='description-uk-']", "xpath:attributes"],
+        ["xpath=//div[2]/div[2]/textarea", "xpath:position"]
+      ],
+      "value": "Лісп (Lisp) — мова програмування загального призначення з підтримкою парадигм функціонального та процедурного програмування. Вихідна інформація записується у вигляді списків.\\nМову програмування Лісп було розроблено в кінці 1950-тих у Масачусетському Технологічному Інституті для дослідження проблем штучного інтелекту. Але, через потужність закладених принципів, мова програмування Лісп також придатна для багатьох інших застосувань."
+    }, {
+      "id": "35ff431f-ab55-4c8e-ad03-ac21ff068ba3",
+      "comment": "",
+      "command": "type",
+      "target": "id=location-uk-",
+      "targets": [
+        ["id=location-uk-", "id"],
+        ["name=location[uk]", "name"],
+        ["css=#location-uk-", "css:finder"],
+        ["xpath=//textarea[@id='location-uk-']", "xpath:attributes"],
+        ["xpath=//div[2]/div[3]/textarea", "xpath:position"]
+      ],
+      "value": "Київ, Україна"
+    }, {
+      "id": "5ce3b684-2b62-4cd7-9f6d-ef9bfc57ea6b",
+      "comment": "",
+      "command": "click",
+      "target": "css=.btn",
+      "targets": [
+        ["css=.btn", "css:finder"],
+        ["xpath=//button[@type='submit']", "xpath:attributes"],
+        ["xpath=//div[3]/div/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Save')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
+  }, {
+    "id": "5db8e634-c90d-42f5-89ac-2ad15efd2203",
+    "name": "Conf Conj",
+    "commands": [{
+      "id": "9721519c-403c-40cb-bdaa-9bd724521c36",
+      "comment": "",
+      "command": "open",
+      "target": "http://localhost:8080/conferences/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "46a79c83-e6f8-4ee5-a6f1-628fd5e182e5",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=New Conf",
+      "targets": [
+        ["linkText=New Conf", "linkText"],
+        ["css=.nav-item:nth-child(1) > .nav-link", "css:finder"],
+        ["xpath=//a[contains(text(),'New Conf')]", "xpath:link"],
+        ["xpath=//div[@id='navbarNav']/ul/li/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/conferences/create-conference')]", "xpath:href"],
+        ["xpath=//li/a", "xpath:position"],
+        ["xpath=//a[contains(.,'New Conf')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "524a6983-59c3-4e99-92fd-eed0542c4ac5",
+      "comment": "",
+      "command": "click",
+      "target": "id=event_date",
+      "targets": [
+        ["id=event_date", "id"],
+        ["name=eventDate", "name"],
+        ["css=#event_date", "css:finder"],
+        ["xpath=//input[@id='event_date']", "xpath:attributes"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "50f8d695-ba4e-43a0-ad7c-27212b549081",
+      "comment": "",
+      "command": "type",
+      "target": "id=event_date",
+      "targets": [
+        ["id=event_date", "id"],
+        ["name=eventDate", "name"],
+        ["css=#event_date", "css:finder"],
+        ["xpath=//input[@id='event_date']", "xpath:attributes"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "2021-12-01"
+    }, {
+      "id": "82f7fc03-50b0-4c17-acf8-c5c47c931fd4",
+      "comment": "",
+      "command": "click",
+      "target": "id=name-en-",
+      "targets": [
+        ["id=name-en-", "id"],
+        ["name=name[en]", "name"],
+        ["css=#name-en-", "css:finder"],
+        ["xpath=//input[@id='name-en-']", "xpath:attributes"],
+        ["xpath=//div[2]/div/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "fe10177d-9d09-4875-ac5a-87f678ec668f",
+      "comment": "",
+      "command": "type",
+      "target": "id=name-en-",
+      "targets": [
+        ["id=name-en-", "id"],
+        ["name=name[en]", "name"],
+        ["css=#name-en-", "css:finder"],
+        ["xpath=//input[@id='name-en-']", "xpath:attributes"],
+        ["xpath=//div[2]/div/div/input", "xpath:position"]
+      ],
+      "value": "Clojure Conj 2020"
+    }, {
+      "id": "4ca5e0a3-b522-4894-841a-4b016bd68ca9",
+      "comment": "",
+      "command": "type",
+      "target": "id=description-en-",
+      "targets": [
+        ["id=description-en-", "id"],
+        ["name=description[en]", "name"],
+        ["css=#description-en-", "css:finder"],
+        ["xpath=//textarea[@id='description-en-']", "xpath:attributes"],
+        ["xpath=//textarea", "xpath:position"]
+      ],
+      "value": "Clojure is a dynamic and functional dialect of the Lisp programming language on the Java platform. Like other Lisp dialects, Clojure treats code as data and has a Lisp macro system. The current development process is community-driven, overseen by Rich Hickey as its benevolent dictator for life (BDFL).\\nClojure advocates immutability and immutable data structures and encourages programmers to be explicit about managing identity and its states."
+    }, {
+      "id": "827dad50-f0bc-44ca-b666-e0d9fca460e1",
+      "comment": "",
+      "command": "type",
+      "target": "id=location-en-",
+      "targets": [
+        ["id=location-en-", "id"],
+        ["name=location[en]", "name"],
+        ["css=#location-en-", "css:finder"],
+        ["xpath=//textarea[@id='location-en-']", "xpath:attributes"],
+        ["xpath=//div[3]/textarea", "xpath:position"]
+      ],
+      "value": "Kyiv, Ukraine"
+    }, {
+      "id": "89946668-c59f-4ff4-9f9d-5a120a2926f4",
+      "comment": "",
+      "command": "type",
+      "target": "id=description-uk-",
+      "targets": [
+        ["id=description-uk-", "id"],
+        ["name=description[uk]", "name"],
+        ["css=#description-uk-", "css:finder"],
+        ["xpath=//textarea[@id='description-uk-']", "xpath:attributes"],
+        ["xpath=//div[2]/div[2]/textarea", "xpath:position"]
+      ],
+      "value": "Clojure (вимовляється приблизно кложер, так само як англ. closure — Замикання) — сучасний діалект мови програмування Lisp. Це мова загального призначення, що підтримує інтерактивну розробку, зорієнтовану на функціональне програмування, спрощує багатопотокове програмування, та містить риси сучасних скриптових мов.\\nClojure працює на Java Virtual Machine і Common Language Runtime. Як і інші Lisp-подібні мови, Clojure розглядає код як дані і має потужну систему макросів."
+    }, {
+      "id": "f11bde22-747e-4bd2-9c7c-06c98a2061a6",
+      "comment": "",
+      "command": "type",
+      "target": "id=location-uk-",
+      "targets": [
+        ["id=location-uk-", "id"],
+        ["name=location[uk]", "name"],
+        ["css=#location-uk-", "css:finder"],
+        ["xpath=//textarea[@id='location-uk-']", "xpath:attributes"],
+        ["xpath=//div[2]/div[3]/textarea", "xpath:position"]
+      ],
+      "value": "Київ, Україна"
+    }, {
+      "id": "55a9b586-be1c-429f-81f9-81d80142950e",
+      "comment": "",
+      "command": "click",
+      "target": "css=.btn",
+      "targets": [
+        ["css=.btn", "css:finder"],
+        ["xpath=//button[@type='submit']", "xpath:attributes"],
+        ["xpath=//div[3]/div/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Save')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "0e29331a-cb5c-4fbe-ae29-3f9841d5be13",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["5e4e09c2-651d-4a9c-ad7d-be655771cf35"]
+  }],
+  "urls": ["http://localhost:8080/", "http://localhost:8080/conferences/"],
+  "plugins": []
+}

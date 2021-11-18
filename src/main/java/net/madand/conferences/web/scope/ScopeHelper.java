@@ -33,25 +33,33 @@ class ScopeHelper {
 
     public void setAttributeAndLog(ServletContext servletContext, String attribute, Object value) {
         servletContext.setAttribute(attribute, value);
-        logValue(attribute, value);
+        logSetAttribute(attribute, value);
     }
 
     public void setAttributeAndLog(HttpSession session, String attribute, Object value) {
         session.setAttribute(attribute, value);
-        logValue(attribute, value);
+        logSetAttribute(attribute, value);
     }
 
     public void setAttributeAndLog(ServletRequest request, String attribute, Object value) {
         request.setAttribute(attribute, value);
-        logValue(attribute, value);
+        logSetAttribute(attribute, value);
     }
 
+    public void removeAttributeAndLog(HttpSession session, String attribute) {
+        session.removeAttribute(attribute);
+        logRemoveAttribute(attribute);
+    }
 
     private Supplier<IllegalStateException> makeAttributeExceptionSupplier(String attribute) {
         return () -> new IllegalStateException(attribute + " attribute was not properly set (is NULL).");
     }
 
-    private void logValue(String attribute, Object value) {
+    private void logSetAttribute(String attribute, Object value) {
         logger.debug(attribute + " was set to: " + value);
+    }
+
+    private void logRemoveAttribute(String attribute) {
+        logger.debug(attribute + " was removed");
     }
 }

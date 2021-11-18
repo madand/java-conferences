@@ -28,3 +28,7 @@ label.required:after {
 
 .main-content {
 }
+
+.event-location p {
+    margin-bottom: 0.5em;
+}

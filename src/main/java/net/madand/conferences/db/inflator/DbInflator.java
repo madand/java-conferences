@@ -17,6 +17,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 /**
@@ -36,13 +37,23 @@ public class DbInflator {
     private static final String CODE_UK = "uk";
     private static final Language UK = Language.makeInstance(CODE_UK, "Українська", false);
 
+    private final List<Language> languages = new ArrayList<>();
+    {
+        EN.setId(1);
+        UK.setId(2);
+        Languages.add(EN);
+        languages.add(EN);
+        Languages.add(UK);
+        languages.add(UK);
+    }
+
     private int locationCursor = 0;
     private final int locationsCount;
     private static final Map<String, String[]> locations = new HashMap<>();
 
     {
-        locations.put(CODE_EN, new String[] { "Kyiv", "Lviv", "Odesa", "Kharkiv" });
-        locations.put(CODE_UK, new String[] { "Київ", "Львів", "Одеса", "Харків" });
+        locations.put(CODE_EN, new String[] { "Kyiv, Ukraine", "Amsterdam, Netherlands", "Berlin, Germany", "Warsaw, Poland" });
+        locations.put(CODE_UK, new String[] { "Київ, Україна", "Амстердам, Нідерланди", "Берлін, Німеччина", "Варшава, Польща" });
         locationsCount = locations.get(CODE_EN).length;
     }
 
@@ -54,25 +65,25 @@ public class DbInflator {
         return result;
     }
 
-    private int confNameCursor = 0;
-    private static final String[] confNames = new String[] { "JavaConf", "European Lisp Symposium", "JS Fest" };
-
-    private String nextConferenceName(int year) {
-        String result = confNames[confNameCursor] + " " + year;
-        confNameCursor = (confNameCursor + 1) % confNames.length;
-        return result;
-    }
-
     public static void main(String[] args) throws SQLException, IOException {
-        if (args.length != 3) {
-            System.out.println("Usage: java " + DbInflator.class.getCanonicalName() + " connectionUrl username password");
+        if (args.length != 4) {
+            System.out.println("Usage: java " + DbInflator.class.getCanonicalName() + " connectionUrl username password operation");
             return;
         }
 
         DbInflator inflator = new DbInflator(DriverManager.getConnection(args[0], args[1], args[2]));
 
-        inflator.truncateDbTables();
-        inflator.insertAll();
+        switch (args[3]) {
+            case "truncate":
+                inflator.truncateDbTables();
+                break;
+            case "langsAndUsers":
+                inflator.insertLangsAndUsers();
+                break;
+            case "adjustConferenceYears":
+                inflator.adjustConferences();
+                break;
+        }
 
         System.out.println("Data was successfully inserted into the database!");
     }
@@ -86,7 +97,6 @@ public class DbInflator {
         connection.setAutoCommit(true);
     }
 
-    private final List<Language> languages = new ArrayList<>();
     private final List<User> moderators = new ArrayList<>();
     private final List<User> speakers = new ArrayList<>();
     private final List<User> attendees = new ArrayList<>();
@@ -95,13 +105,10 @@ public class DbInflator {
     private final List<Talk> talks = new ArrayList<>();
     private final List<TalkTranslation> talkTranslations = new ArrayList<>();
 
-    public void insertAll() throws SQLException, IOException {
+    public void insertLangsAndUsers() throws SQLException {
         LanguageDao.insert(connection, EN);
-        Languages.add(EN);
-        languages.add(EN);
         LanguageDao.insert(connection, UK);
-        Languages.add(UK);
-        languages.add(UK);
+
 
         IntStream.range(0, 2).mapToObj((ignored) -> makeModerator()).forEach(moderators::add);
         for (User user : moderators) {
@@ -115,15 +122,38 @@ public class DbInflator {
         for (User user : attendees) {
             UserDao.insert(connection, user);
         }
+    }
 
-        Conference conference1 = Conference.makeInstance(LocalDate.now(), 0);
-        ConferenceDao.insert(connection, conference1);
-        ConferenceTranslation conferenceTranslation1 = ConferenceTranslation.makeInstance(conference1, EN,
-                "JConf 2021", "Descr\nDescr\nDescr", "Lviv");
-        ConferenceTranslationDao.insert(connection, conferenceTranslation1);
-        ConferenceTranslation conferenceTranslation2 = ConferenceTranslation.makeInstance(conference1, UK,
-                "", "Опис\nОпис\nОпис", "Львів");
-        ConferenceTranslationDao.insert(connection, conferenceTranslation2);
+    public void adjustConferences() throws SQLException, IOException {
+        List<Conference> conferences = ConferenceDao.findAll(connection);
+        final List<LocalDate> eventDates = new ArrayList<>();
+        Collections.addAll(eventDates,
+                LocalDate.of(2020, 6, 20),
+                LocalDate.of(2020, 12, 15),
+                LocalDate.of(2020, 12, 20),
+                LocalDate.of(2020, 12, 25));
+
+        final int DISTINCT_CONFERENCES = 4;
+        final Pattern yearPattern = Pattern.compile("\\d{4}");
+        final int numIters = conferences.size() / DISTINCT_CONFERENCES;
+        for (int i = 0; i < numIters; i++) {
+            for (int j = 0; j < DISTINCT_CONFERENCES; j++) {
+                final LocalDate date = eventDates.get(j).withYear(2019 + i);
+                final Conference conference = conferences.get(i * 4 + j);
+
+                conference.setEventDate(date);
+                ConferenceDao.update(connection, conference);
+
+                Map<String, String> nextLocationNames = nextLocationNames();
+                for (Language language : languages) {
+                    final ConferenceTranslation translation = ConferenceTranslationDao.findOne(connection, conference, language).get();
+                    translation.setName(yearPattern.matcher(translation.getName()).replaceFirst(String.valueOf(date.getYear())));
+                    translation.setLocation(nextLocationNames.get(language.getCode()));
+
+                    ConferenceTranslationDao.update(connection, translation);
+                }
+            }
+        }
 //
 //        Talk talk= Talk.makeInstance(conference1, speaker1, LocalTime.of(10, 0), LocalTime.of(10, 45));
 //        TalkDao.insert(connection, talk);

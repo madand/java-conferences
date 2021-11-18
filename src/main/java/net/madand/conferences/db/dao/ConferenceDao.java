@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class ConferenceDao {
-    private static final String SQL_FIND_ALL = "SELECT * FROM conference ORDER BY event_date DESC";
-    private static final String SQL_FIND_ALL_LANG = "SELECT * FROM v_conference WHERE language_id = ?";
+    private static final String SQL_FIND_ALL = "SELECT * FROM conference ORDER BY id";
+    private static final String SQL_FIND_ALL_LANG = "SELECT * FROM v_conference WHERE language_id = ? ORDER BY event_date";
     private static final String SQL_FIND_ONE = "SELECT * FROM conference WHERE id = ?";
     private static final String SQL_INSERT = "INSERT INTO conference (event_date, actually_attended_count) VALUES (?,?)";
     private static final String SQL_UPDATE = "UPDATE conference SET event_date = ?, actually_attended_count = ? WHERE id = ?";

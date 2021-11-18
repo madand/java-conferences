@@ -18,7 +18,8 @@ public class SessionScope {
     private SessionScope() {}
 
     public static Language getCurrentLanguage(HttpSession session) {
-        return (Language) support.getAttributeOrThrow(session, CURRENT_LANGUAGE);
+        // It's normal to might have return null here.
+        return (Language) session.getAttribute(CURRENT_LANGUAGE);
     }
 
     public static void setCurrentLanguage(HttpSession session, Language language) {
@@ -32,5 +33,9 @@ public class SessionScope {
 
     public static void setCurrentUserId(HttpSession session, Integer currentUserId) {
         support.setAttributeAndLog(session, CURRENT_USER_ID, currentUserId);
+    }
+
+    public static void removeCurrentUserId(HttpSession session) {
+        support.removeAttributeAndLog(session, CURRENT_USER_ID);
     }
 }
