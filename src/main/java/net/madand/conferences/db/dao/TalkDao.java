@@ -15,8 +15,8 @@ import java.util.Optional;
 public class TalkDao {
     private static final String SQL_FIND_ALL = "SELECT * FROM talk WHERE conference_id = ? ORDER BY start_time";
     private static final String SQL_FIND_ONE = "SELECT * FROM talk WHERE id = ?";
-    private static final String SQL_INSERT = "INSERT INTO talk (conference_id, speaker_id, start_time, end_time) VALUES (?,?,?,?)";
-    private static final String SQL_UPDATE = "UPDATE talk SET conference_id = ?, speaker_id = ?, start_time = ?, end_time = ? WHERE id = ?";
+    private static final String SQL_INSERT = "INSERT INTO talk (conference_id, speaker_id, start_time, duration) VALUES (?,?,?,?)";
+    private static final String SQL_UPDATE = "UPDATE talk SET conference_id = ?, speaker_id = ?, start_time = ?, duration = ? WHERE id = ?";
     private static final String SQL_DELETE = "DELETE FROM talk WHERE id = ?";
 
     public static List<Talk> findAll(Connection conn, Conference conference) throws SQLException {
@@ -54,7 +54,7 @@ public class TalkDao {
             stmt.setInt(++i, talk.getConference().getId());
             stmt.setInt(++i, talk.getSpeaker().getId());
             stmt.setTime(++i, Time.valueOf(talk.getStartTime()));
-            stmt.setTime(++i, Time.valueOf(talk.getEndTime()));
+            stmt.setInt(++i, talk.getDuration());
         };
     }
 
@@ -70,6 +70,7 @@ public class TalkDao {
             talk.setConference(ConferenceDao.findOne(conn, rs.getInt(++i)).get());
             talk.setSpeaker(UserDao.findOneById(conn, rs.getInt(++i)).get());
             talk.setStartTime(rs.getObject(++i, LocalTime.class));
+            talk.setDuration(rs.getInt(++i));
             talk.setEndTime(rs.getObject(++i, LocalTime.class));
 
             return talk;

@@ -14,6 +14,7 @@ public class Talk implements Serializable {
     private Conference conference;
     private User speaker;
     private LocalTime startTime;
+    private int duration;
     private LocalTime endTime;
 
     /**
@@ -21,15 +22,15 @@ public class Talk implements Serializable {
      * @param conference
      * @param speaker
      * @param startTime
-     * @param endTime
+     * @param duration
      * @return
      */
-    public static Talk makeInstance(Conference conference, User speaker, LocalTime startTime, LocalTime endTime) {
+    public static Talk makeInstance(Conference conference, User speaker, LocalTime startTime, int duration) {
         Talk talk = new Talk();
         talk.setConference(conference);
         talk.setSpeaker(speaker);
         talk.setStartTime(startTime);
-        talk.setEndTime(endTime);
+        talk.setDuration(duration);
         return talk;
     }
 
@@ -81,10 +82,22 @@ public class Talk implements Serializable {
         this.startTime = startTime;
     }
 
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
     public LocalTime getEndTime() {
         return endTime;
     }
 
+    /**
+     * Note that end_time field in the DB is computed by trigger, so this value is never directly saved into the DB!
+     * @param endTime
+     */
     public void setEndTime(LocalTime endTime) {
         this.endTime = endTime;
     }

@@ -4,6 +4,9 @@ DROP VIEW IF EXISTS v_conference;
 DROP VIEW IF EXISTS v_talk;
 DROP VIEW IF EXISTS v_new_talk_proposal;
 
+DROP TRIGGER IF EXISTS compute_end_time ON talk;
+DROP FUNCTION IF EXISTS compute_end_time;
+
 DROP FUNCTION IF EXISTS ensure_translated(text, integer, integer, text, text);
 DROP FUNCTION IF EXISTS get_default_language_id();
 DROP TABLE IF EXISTS talk_speaker_request;
@@ -56,7 +59,7 @@ COMMENT ON TABLE conference
 
 CREATE TABLE conference_translation (
   conference_id INTEGER NOT NULL REFERENCES conference(id) ON UPDATE CASCADE ON DELETE CASCADE,
-  language_id INTEGER NOT NULL REFERENCES language(id) ON UPDATE CASCADE ON DELETE RESTRICT,
+  language_id INTEGER NOT NULL REFERENCES language(id) ON UPDATE CASCADE ON DELETE CASCADE,
   name CHARACTER VARYING(255) NOT NULL,
   description TEXT NOT NULL,
   location TEXT NOT NULL,
@@ -81,17 +84,17 @@ CREATE TABLE talk (
   updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
   conference_id INTEGER NOT NULL REFERENCES conference(id) ON UPDATE CASCADE ON DELETE CASCADE,
   speaker_id INTEGER REFERENCES "user"(id) ON UPDATE CASCADE ON DELETE SET NULL,
-  start_time time without time zone NOT NULL,
-  end_time time without time zone NOT NULL,
-  UNIQUE (conference_id, start_time),
-  CHECK (start_time < end_time)
+  start_time TIME WITHOUT TIME ZONE NOT NULL,
+  duration INTEGER NOT NULL CHECK (duration > 0),
+  end_time TIME WITHOUT TIME ZONE NOT NULL,
+  UNIQUE (conference_id, start_time)
 );
 COMMENT ON TABLE talk
   IS 'A talk given at the conference.';
 
 CREATE TABLE talk_translation (
     talk_id INTEGER NOT NULL REFERENCES talk(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    language_id INTEGER NOT NULL REFERENCES language(id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    language_id INTEGER NOT NULL REFERENCES language(id) ON UPDATE CASCADE ON DELETE CASCADE,
     name CHARACTER VARYING(255) NOT NULL,
     description TEXT NOT NULL,
     PRIMARY KEY (talk_id, language_id)
@@ -126,14 +129,14 @@ CREATE TABLE new_talk_proposal (
   updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
   conference_id INTEGER NOT NULL REFERENCES conference(id) ON UPDATE CASCADE ON DELETE CASCADE,
   speaker_id INTEGER NOT NULL REFERENCES "user"(id) ON UPDATE CASCADE ON DELETE SET NULL,
-  duration INTEGER NOT NULL
+  duration INTEGER NOT NULL CHECK (duration > 0)
 );
 COMMENT ON TABLE new_talk_proposal
   IS 'A new talk proposed by the speaker. Should be accepted by a moderator.';
 
 CREATE TABLE new_talk_proposal_translation (
   new_talk_proposal_id INTEGER NOT NULL REFERENCES new_talk_proposal(id) ON UPDATE CASCADE ON DELETE CASCADE,
-  language_id INTEGER NOT NULL REFERENCES language(id) ON UPDATE CASCADE ON DELETE RESTRICT,
+  language_id INTEGER NOT NULL REFERENCES language(id) ON UPDATE CASCADE ON DELETE CASCADE,
   name CHARACTER VARYING(255) NOT NULL,
   description TEXT NOT NULL,
   PRIMARY KEY (new_talk_proposal_id, language_id)
@@ -176,6 +179,20 @@ AS $BODY$
     RETURN ret;
   END
   $BODY$;
+
+  CREATE OR REPLACE FUNCTION compute_end_time()
+    RETURNS trigger
+    LANGUAGE 'plpgsql' STABLE
+  AS $BODY$
+  BEGIN
+    NEW.end_time := NEW.start_time + format('PT00:%s:00', NEW.duration)::INTERVAL;
+    RETURN NEW;
+  END
+  $BODY$;
+
+  CREATE TRIGGER compute_end_time
+    BEFORE INSERT OR UPDATE ON talk
+    FOR EACH ROW EXECUTE FUNCTION compute_end_time();
 
   CREATE VIEW v_conference
     AS
@@ -225,3 +242,4 @@ AS $BODY$
            JOIN new_talk_proposal_translation l ON l.new_talk_proposal_id = t.id;
   COMMENT ON VIEW v_new_talk_proposal
     IS 'View that joins new_talk_proposal and its translation.';
+
