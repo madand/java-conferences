@@ -43,9 +43,9 @@ public class TalkTranslationDaoTest {
         User speaker = User.makeInstance("a@b.com", "Mr Speaker", "secret", Role.SPEAKER);
         UserDao.insert(connection, speaker);
 
-        Talk talk= Talk.makeInstance(conference, speaker, LocalTime.of(10, 0), LocalTime.of(10, 45));
-        TalkDao.insert(connection, talk);
-        this.talk = talk;
+//        Talk talk= Talk.makeInstance(conference, speaker, LocalTime.of(10, 0), LocalTime.of(10, 45));
+//        TalkDao.insert(connection, talk);
+//        this.talk = talk;
     }
 
     @Test

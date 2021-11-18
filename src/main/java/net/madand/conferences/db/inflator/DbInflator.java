@@ -1,10 +1,7 @@
 package net.madand.conferences.db.inflator;
 
 import net.madand.conferences.auth.Role;
-import net.madand.conferences.db.dao.ConferenceDao;
-import net.madand.conferences.db.dao.ConferenceTranslationDao;
-import net.madand.conferences.db.dao.LanguageDao;
-import net.madand.conferences.db.dao.UserDao;
+import net.madand.conferences.db.dao.*;
 import net.madand.conferences.entity.*;
 import net.madand.conferences.l10n.Languages;
 import org.apache.ibatis.io.Resources;
@@ -12,10 +9,12 @@ import org.apache.ibatis.jdbc.ScriptRunner;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
@@ -82,6 +81,9 @@ public class DbInflator {
                 break;
             case "adjustConferenceYears":
                 inflator.adjustConferences();
+                break;
+            case "generateTalks":
+                inflator.generateTalks();
                 break;
         }
 
@@ -157,6 +159,37 @@ public class DbInflator {
 //
 //        Talk talk= Talk.makeInstance(conference1, speaker1, LocalTime.of(10, 0), LocalTime.of(10, 45));
 //        TalkDao.insert(connection, talk);
+    }
+
+    private SecureRandom rng = new SecureRandom();
+
+    private void generateTalks() throws SQLException {
+        final List<Conference> conferences = ConferenceDao.findAll(connection);
+        speakers.clear();
+        speakers.addAll(UserDao.findAllByRole(connection, Role.SPEAKER));
+        for (Conference conference : conferences) {
+            int talksCount = 3 + rng.nextInt(4);
+            for (int i = 0; i < talksCount; i++) {
+                final Talk talk = Talk.makeInstance(
+                        conference,
+                        speakers.get(rng.nextInt(speakers.size())),
+                        LocalTime.of(12 + i, 00),
+                        20 + rng.nextInt(31)
+                );
+                TalkDao.insert(connection, talk);
+
+                for (Language language : languages) {
+                    final String name = "Talk " + (i + 1);
+                    final TalkTranslation translation = TalkTranslation.makeInstance(
+                            talk,
+                            language,
+                            name,
+                            generateDescription(name, 3, language)
+                    );
+                    TalkTranslationDao.insert(connection, translation);
+                }
+            }
+        }
     }
 
     private int currModeratorNum = 1;

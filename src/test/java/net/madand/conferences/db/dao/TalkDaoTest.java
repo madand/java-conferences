@@ -56,7 +56,7 @@ public class TalkDaoTest {
         List<Talk> list1 = TalkDao.findAll(connection, conference);
         assertEquals(0, list1.size());
 
-        Talk talk= Talk.makeInstance(conference, speaker, LocalTime.of(10, 0), LocalTime.of(10, 45));
+        Talk talk= Talk.makeInstance(conference, speaker, LocalTime.of(10, 0), 45);
         TalkDao.insert(connection, talk);
         List<Talk> list2 = TalkDao.findAll(connection, conference);
         assertEquals("Should successfully insert", 1, list2.size());
@@ -65,7 +65,7 @@ public class TalkDaoTest {
 
     @Test
     public void findOne() throws SQLException {
-        Talk talk1= Talk.makeInstance(conference, speaker, LocalTime.of(10, 0), LocalTime.of(10, 45));
+        Talk talk1= Talk.makeInstance(conference, speaker, LocalTime.of(10, 0), 45);
         TalkDao.insert(connection, talk1);
         Optional<Talk> talk2 = TalkDao.findOne(connection, talk1.getId());
         assertTrue("Should successfully find", talk2.isPresent());
@@ -74,7 +74,7 @@ public class TalkDaoTest {
 
     @Test
     public void insert() throws SQLException {
-        Talk talk1= Talk.makeInstance(conference, speaker, LocalTime.of(10, 0), LocalTime.of(10, 45));
+        Talk talk1= Talk.makeInstance(conference, speaker, LocalTime.of(10, 0), 45);
         TalkDao.insert(connection, talk1);
         Optional<Talk> talk2 = TalkDao.findOne(connection, talk1.getId());
         assertTrue(talk2.isPresent());
@@ -83,7 +83,7 @@ public class TalkDaoTest {
 
     @Test
     public void update() throws SQLException {
-        Talk talk1= Talk.makeInstance(conference, speaker, LocalTime.of(10, 0), LocalTime.of(10, 45));
+        Talk talk1= Talk.makeInstance(conference, speaker, LocalTime.of(10, 0), 45);
         TalkDao.insert(connection, talk1);
 
         final LocalTime NEW_END_TIME = talk1.getEndTime().plusMinutes(20);
@@ -99,7 +99,7 @@ public class TalkDaoTest {
         List<Talk> list1 = TalkDao.findAll(connection, conference);
         assertEquals(0, list1.size());
 
-        Talk talk= Talk.makeInstance(conference, speaker, LocalTime.of(10, 0), LocalTime.of(10, 45));
+        Talk talk= Talk.makeInstance(conference, speaker, LocalTime.of(10, 0), 45);
         TalkDao.insert(connection, talk);
         assertTrue(TalkDao.findOne(connection, talk.getId()).isPresent());
 
