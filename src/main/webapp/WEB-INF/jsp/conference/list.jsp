@@ -8,7 +8,7 @@
 
 <div class="row row-cols-1 row-cols-xl-2">
     <c:forEach items="${entities}" var="entity">
-        <div class="col mb-3">
+        <div class="col mb-4">
             <div class="card h-100">
                 <div class="card-body">
                     <h3 class="card-title"><c:out value="${entity.name}" /></h3>
