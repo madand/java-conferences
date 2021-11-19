@@ -2,12 +2,16 @@ package net.madand.conferences.service;
 
 import net.madand.conferences.db.util.RunnableUnitOfWork;
 import net.madand.conferences.db.util.CallableUnitOfWork;
+import net.madand.conferences.web.controller.impl.TalkController;
+import org.apache.log4j.Logger;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
 public abstract class AbstractService {
+    private static final Logger logger = Logger.getLogger(AbstractService.class);
+
     private final DataSource dataSource;
 
     protected AbstractService(DataSource dataSource) {
@@ -34,6 +38,7 @@ public abstract class AbstractService {
             connection.setAutoCommit(true);
             return unitOfWork.run(connection);
         } catch (SQLException e) {
+            logger.error(errorMessage, e);
             throw new ServiceException(errorMessage, e);
         }
     }
@@ -50,6 +55,7 @@ public abstract class AbstractService {
         try (Connection connection = getConnection()) {
             runDMLWithinTransactionInternal(connection, unitOfWork);
         } catch (SQLException e) {
+            logger.error(errorMessage, e);
             throw new ServiceException(errorMessage, e);
         }
     }

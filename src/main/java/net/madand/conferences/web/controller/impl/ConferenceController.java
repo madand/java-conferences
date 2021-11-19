@@ -45,7 +45,7 @@ public class ConferenceController extends AbstractController {
     public void list(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         final HttpSession session = request.getSession();
         try {
-            request.setAttribute("entities", service.findAllTranslated(SessionScope.getCurrentLanguage(session)));
+            request.setAttribute("conferences", service.findAllTranslated(SessionScope.getCurrentLanguage(session)));
         } catch (ServiceException e) {
             response.sendError(500, e.getMessage());
             return;
@@ -76,7 +76,7 @@ public class ConferenceController extends AbstractController {
             try {
                 service.create(conference, translations);
                 // Redirect (PRG) only if the operation was successful.
-                response.sendRedirect(response.encodeRedirectURL(URLManager.buildURL(URLManager.URI_CONFERENCE_LIST, request)));
+                response.sendRedirect(response.encodeRedirectURL(URLManager.buildURLPreserveQuery(URLManager.URI_CONFERENCE_LIST, request)));
                 return;
             } catch (ServiceException e) {
                 response.sendError(500, e.getMessage());

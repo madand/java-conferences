@@ -17,6 +17,10 @@ public class Talk implements Serializable {
     private int duration;
     private LocalTime endTime;
 
+    // The following properties are only set when fetching data from v_conference view.
+    private String name;
+    private String description;
+
     /**
      * Static factory of {@link Talk} instances.
      * @param conference
@@ -92,6 +96,22 @@ public class Talk implements Serializable {
 
     public LocalTime getEndTime() {
         return endTime;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     /**

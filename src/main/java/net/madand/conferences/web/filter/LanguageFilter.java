@@ -19,6 +19,8 @@ import java.util.Optional;
 
 public class LanguageFilter implements Filter {
     private static final String LANGUAGE_COOKIE ="currentLanguage";
+    // Remember the selected language for 30 days.
+    private static final int LANGUAGE_COOKIE_MAX_AGE = 3600 * 24 * 30;
 
     private static final Logger log = Logger.getLogger(LanguageFilter.class);
 
@@ -94,10 +96,9 @@ public class LanguageFilter implements Filter {
 
     private void saveLanguageInCookie(Language language, HttpServletRequest request,HttpServletResponse response) {
         Cookie cookie = new Cookie(LANGUAGE_COOKIE, language.getCode());
+        cookie.setMaxAge(LANGUAGE_COOKIE_MAX_AGE);
         cookie.setHttpOnly(true);
         cookie.setPath(request.getContextPath());
-        // Remember the selected language for 30 days.
-        cookie.setMaxAge(3600 * 24 * 30);
         response.addCookie(cookie);
     }
 }

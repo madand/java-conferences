@@ -27,12 +27,12 @@
                 Locale name that will be passed to Locale class one-argument constructor.
             </description>
             <name>locale</name>
-            <required>true</required>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
             <description>
-                Format to be passed to DateTimeFormatter.ofLocalizedDate().
+                Format to be passed to DateTimeFormatter.ofLocalizedDate(). Defaults to LONG.
             </description>
             <name>format</name>
             <required>false</required>
@@ -40,9 +40,9 @@
         </attribute>
         <attribute>
             <description>
-                Custom formatting style for dates and times.
+                Type of formatted output. Either date, time or both. Defaults to both.
             </description>
-            <name>pattern</name>
+            <name>type</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
@@ -67,5 +67,11 @@
         <name>linesToParagraphs</name>
         <function-class>net.madand.conferences.web.util.HtmlSupport</function-class>
         <function-signature>java.lang.String linesToParagraphs(java.lang.String)</function-signature>
+    </function>
+    <function>
+        <description>Wrap every line of the given input string with HTML P-tags. This function will XML-escape the input.</description>
+        <name>linesToParagraphsTruncating</name>
+        <function-class>net.madand.conferences.web.util.HtmlSupport</function-class>
+        <function-signature>java.lang.String linesToParagraphsTruncating(java.lang.String, java.lang.Integer)</function-signature>
     </function>
 </taglib>

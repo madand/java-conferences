@@ -1,13 +1,14 @@
 package net.madand.conferences.db.dao;
 
-import net.madand.conferences.db.util.Mapper;
+import net.madand.conferences.db.Fields;
 import net.madand.conferences.db.util.QueryHelper;
 import net.madand.conferences.db.util.StatementParametersSetter;
+import net.madand.conferences.entity.Language;
 import net.madand.conferences.entity.Talk;
 import net.madand.conferences.entity.TalkTranslation;
-import net.madand.conferences.entity.Language;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
@@ -24,7 +25,7 @@ public class TalkTranslationDao {
                     stmt.setInt(1, talk.getId());
                     stmt.setInt(2, language.getId());
                 },
-                makeRowMapper(talk, language));
+                TalkTranslationDao::mapRow);
     }
 
     public static void insert(Connection conn, TalkTranslation talkTranslation) throws SQLException {
@@ -49,17 +50,12 @@ public class TalkTranslationDao {
         };
     }
 
-    private static Mapper<TalkTranslation> makeRowMapper(Talk talk, Language language) throws SQLException {
-        return (rs) -> {
-            TalkTranslation talkTranslation = new TalkTranslation();
-            talkTranslation.setTalk(talk);
-            talkTranslation.setLanguage(language);
+    public static TalkTranslation mapRow(ResultSet rs) throws SQLException {
+        TalkTranslation talkTranslation = new TalkTranslation();
 
-            int i = 2; // Skip the first two rows, with talk_id and language_id.
-            talkTranslation.setName(rs.getString(++i));
-            talkTranslation.setDescription(rs.getString(++i));
+        talkTranslation.setName(rs.getString(Fields.NAME));
+        talkTranslation.setDescription(rs.getString(Fields.DESCRIPTION));
 
-            return talkTranslation;
-        };
+        return talkTranslation;
     }
 }

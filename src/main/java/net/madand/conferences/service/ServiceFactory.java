@@ -2,6 +2,7 @@ package net.madand.conferences.service;
 
 import net.madand.conferences.service.impl.ConferenceService;
 import net.madand.conferences.service.impl.LanguageService;
+import net.madand.conferences.service.impl.TalkService;
 import net.madand.conferences.service.impl.UserService;
 
 import javax.sql.DataSource;
@@ -23,5 +24,9 @@ public class ServiceFactory {
 
     public UserService getUserService() {
         return new UserService(dataSource);
+    }
+
+    public TalkService getTalkService() {
+        return new TalkService(dataSource);
     }
 }

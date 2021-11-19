@@ -7,11 +7,14 @@
         <div class="row py-1">
             <div class="col">
                 <ul class="lang-menu">
-                    <c:forEach items="${languages}" var="lng">
+                    <c:forEach items="${languages}" var="language">
                         <li>
-                            <c:if test="${lng != currentLanguage}">
-                                <a href="${request.originalURI}?lang=${lng.code}">
-                                    <c:out value="${lng.name}"/>
+                            <c:if test="${language != currentLanguage}">
+                                <c:url var="switchLangURL" value="${previousURL}">
+                                    <c:param name="lang" value="${language.code}"/>
+                                </c:url>
+                                <a href="${switchLangURL}">
+                                    <c:out value="${language.name}"/>
                                 </a>
                             </c:if>
                         </li>
@@ -21,6 +24,9 @@
             <div class="col">
                 <p class="made-by">
                     &copy; 2021 <fmt:message key="author.name"/>
+                    <c:url value="abc">
+                        <c:param name="itemId" value="I1980X"/>
+                    </c:url>
                 </p>
             </div>
         </div>

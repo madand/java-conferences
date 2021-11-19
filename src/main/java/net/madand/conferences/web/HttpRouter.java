@@ -2,6 +2,7 @@ package net.madand.conferences.web;
 
 import net.madand.conferences.web.controller.Controller;
 import net.madand.conferences.web.controller.impl.ConferenceController;
+import net.madand.conferences.web.controller.impl.TalkController;
 import net.madand.conferences.web.controller.impl.UserController;
 import org.apache.log4j.Logger;
 
@@ -27,6 +28,7 @@ public class HttpRouter extends HttpServlet {
         controllers = new Controller[] {
                 new ConferenceController(servletContext),
                 new UserController(servletContext),
+                new TalkController(servletContext),
         };
     }
 

@@ -41,6 +41,7 @@ public class LoadUserFilter implements Filter {
             user = userService.findById(userId);
         } catch (ServiceException e) {
             log.error("Failed to load a user with ID=" + userId + ". Removing the user from session.", e);
+            // Logout the user, just in case.
             SessionScope.removeCurrentUserId(session);
             chain.doFilter(request, response);
             return;

@@ -20,6 +20,7 @@ public class ConferenceDao {
     private static final String SQL_FIND_ALL = "SELECT * FROM conference ORDER BY id";
     private static final String SQL_FIND_ALL_LANG = "SELECT * FROM v_conference WHERE language_id = ? ORDER BY event_date";
     private static final String SQL_FIND_ONE = "SELECT * FROM conference WHERE id = ?";
+    private static final String SQL_FIND_ONE_LANG = "SELECT * FROM v_conference WHERE id = ? AND language_id = ?";
     private static final String SQL_INSERT = "INSERT INTO conference (event_date, actually_attended_count) VALUES (?,?)";
     private static final String SQL_UPDATE = "UPDATE conference SET event_date = ?, actually_attended_count = ? WHERE id = ?";
     private static final String SQL_DELETE = "DELETE FROM conference WHERE id = ?";
@@ -31,6 +32,24 @@ public class ConferenceDao {
     public static List<Conference> findAll(Connection connection, Language language) throws SQLException {
         return QueryHelper.findAll(connection, SQL_FIND_ALL_LANG,
                 stmt -> stmt.setInt(1, language.getId()),
+                (rs) -> {
+                    Conference conference = mapRow(rs);
+
+                    ConferenceTranslation translation = ConferenceTranslationDao.mapRow(rs);
+                    conference.setName(translation.getName());
+                    conference.setDescription(translation.getDescription());
+                    conference.setLocation(translation.getLocation());
+
+                    return conference;
+                });
+    }
+
+    public static Optional<Conference> findOne(Connection conn, int id, Language language) throws SQLException {
+        return QueryHelper.findOne(conn, SQL_FIND_ONE_LANG,
+                stmt -> {
+                    stmt.setInt(1, id);
+                    stmt.setInt(2, language.getId());
+                },
                 (rs) -> {
                     Conference conference = mapRow(rs);
 

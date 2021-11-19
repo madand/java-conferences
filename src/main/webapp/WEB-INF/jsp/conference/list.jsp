@@ -1,30 +1,34 @@
 <%@ include file="/WEB-INF/jspf/directive/page.jspf" %>
 <%@ include file="/WEB-INF/jspf/directive/taglib.jspf" %>
 
+
+<%@ page import="net.madand.conferences.web.util.URLManager" %>
+<%@ page import="net.madand.conferences.entity.Conference" %>
+
 <c:set var="pageTitle" scope="request">
     <fmt:message key="conference.list.title"/>
 </c:set>
 <%@ include file="/WEB-INF/jspf/head.jspf" %>
 
 <div class="row row-cols-1 row-cols-xl-2">
-    <c:forEach items="${entities}" var="entity">
+    <c:forEach items="${conferences}" var="conference">
         <div class="col mb-4">
             <div class="card h-100">
                 <div class="card-body">
-                    <h3 class="card-title"><c:out value="${entity.name}" /></h3>
+                    <h3 class="card-title"><c:out value="${conference.name}" /></h3>
                     <p class="card-subtitle text-muted event-date">
-                        <mytl:formatDate value="${entity.eventDate}" format="LONG"
-                                         locale="${currentLanguage.code}" />
+                        <mytl:formatDate value="${conference.eventDate}" format="LONG" />
                     </p>
                     <div class="card-text text-muted event-location">
-                        ${mytl:linesToParagraphs(entity.location)}
+                        ${mytl:linesToParagraphs(conference.location)}
                     </div>
                     <div class="card-text">
-                        ${mytl:linesToParagraphs(entity.description)}
+                        ${mytl:linesToParagraphsTruncating(conference.description, 150)}
                     </div>
                 </div>
                 <div class="card-footer">
-                    <a href="#" class="btn btn-primary">
+                    <a href="<%= URLManager.makeListTalksURL(request, (Conference) pageContext.getAttribute("conference"))  %>"
+                       class="btn btn-success">
                         <fmt:message key="conference.list.button.details"/>
                     </a>
                 </div>

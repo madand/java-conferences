@@ -4,3 +4,16 @@
 
 <%@ taglib uri="/WEB-INF/tld/mytl.tld" prefix="mytl" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="mytags"%>
+
+
+<c:set var="originalURIAndQueryString" value="${requestScope['javax.servlet.forward.servlet_path']}" scope="request" />
+<c:if test="${not empty pageContext.request.queryString}">
+    <c:set var="originalURIAndQueryString" scope="request"
+           value="${originalURIAndQueryString}?${pageContext.request.queryString}" />
+</c:if>
+
+<c:set var="originalURIAndQueryString" value="${requestScope['javax.servlet.forward.servlet_path']}" scope="request" />
+<c:if test="${not empty pageContext.request.queryString}">
+    <c:set var="originalURIAndQueryString" scope="request"
+           value="${originalURIAndQueryString}?${pageContext.request.queryString}" />
+</c:if>

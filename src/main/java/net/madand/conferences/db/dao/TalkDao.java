@@ -1,12 +1,17 @@
 package net.madand.conferences.db.dao;
 
+import net.madand.conferences.db.Fields;
 import net.madand.conferences.db.util.Mapper;
 import net.madand.conferences.db.util.QueryHelper;
 import net.madand.conferences.db.util.StatementParametersSetter;
 import net.madand.conferences.entity.Conference;
+import net.madand.conferences.entity.Language;
 import net.madand.conferences.entity.Talk;
+import net.madand.conferences.entity.TalkTranslation;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Time;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -14,6 +19,7 @@ import java.util.Optional;
 
 public class TalkDao {
     private static final String SQL_FIND_ALL = "SELECT * FROM talk WHERE conference_id = ? ORDER BY start_time";
+    private static final String SQL_FIND_ALL_LANG = "SELECT * FROM v_talk WHERE conference_id = ? AND language_id = ? ORDER BY start_time";
     private static final String SQL_FIND_ONE = "SELECT * FROM talk WHERE id = ?";
     private static final String SQL_INSERT = "INSERT INTO talk (conference_id, speaker_id, start_time, duration) VALUES (?,?,?,?)";
     private static final String SQL_UPDATE = "UPDATE talk SET conference_id = ?, speaker_id = ?, start_time = ?, duration = ? WHERE id = ?";
@@ -23,6 +29,23 @@ public class TalkDao {
         return QueryHelper.findAll(conn, SQL_FIND_ALL,
                 stmt -> stmt.setInt(1, conference.getId()),
                 makeRowMapper(conn));
+    }
+
+    public static List<Talk> findAll(Connection connection, Conference conference, Language language) throws SQLException {
+        return QueryHelper.findAll(connection, SQL_FIND_ALL_LANG,
+                stmt -> {
+                    stmt.setInt(1, conference.getId());
+                    stmt.setInt(2, language.getId());
+                },
+                (rs) -> {
+                    Talk talk = makeRowMapper(connection).mapRow(rs);
+
+                    TalkTranslation translation = TalkTranslationDao.mapRow(rs);
+                    talk.setName(translation.getName());
+                    talk.setDescription(translation.getDescription());
+
+                    return talk;
+                });
     }
 
     public static Optional<Talk> findOne(Connection conn, int id) throws SQLException {
@@ -59,19 +82,18 @@ public class TalkDao {
     }
 
     private static Mapper<Talk> makeRowMapper(Connection conn) throws SQLException {
-
         return (rs) -> {
             Talk talk = new Talk();
 
-            int i = 0;
-            talk.setId(rs.getInt(++i));
-            talk.setCreatedAt(rs.getObject(++i, OffsetDateTime.class));
-            talk.setUpdatedAt(rs.getObject(++i, OffsetDateTime.class));
-            talk.setConference(ConferenceDao.findOne(conn, rs.getInt(++i)).get());
-            talk.setSpeaker(UserDao.findOneById(conn, rs.getInt(++i)).get());
-            talk.setStartTime(rs.getObject(++i, LocalTime.class));
-            talk.setDuration(rs.getInt(++i));
-            talk.setEndTime(rs.getObject(++i, LocalTime.class));
+            talk.setId(rs.getInt(Fields.ID));
+            talk.setCreatedAt(rs.getObject(Fields.CREATED_AT, OffsetDateTime.class));
+            talk.setUpdatedAt(rs.getObject(Fields.UPDATED_AT, OffsetDateTime.class));
+
+            talk.setStartTime(rs.getObject(Fields.START_TIME, LocalTime.class));
+            talk.setDuration(rs.getInt(Fields.DURATION));
+            talk.setEndTime(rs.getObject(Fields.END_TIME, LocalTime.class));
+
+            talk.setSpeaker(UserDao.findOneById(conn, rs.getInt(Fields.SPEAKER_ID)).get());
 
             return talk;
         };

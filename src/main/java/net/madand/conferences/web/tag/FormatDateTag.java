@@ -1,5 +1,8 @@
 package net.madand.conferences.web.tag;
 
+import net.madand.conferences.entity.Language;
+import net.madand.conferences.web.scope.ContextScope;
+import net.madand.conferences.web.scope.SessionScope;
 import org.apache.taglibs.standard.tag.common.core.Util;
 
 import javax.servlet.jsp.JspException;
@@ -7,6 +10,7 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
+import java.security.InvalidParameterException;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.time.temporal.Temporal;
@@ -14,7 +18,7 @@ import java.util.Locale;
 
 public class FormatDateTag extends TagSupport {
     protected Temporal value;
-    protected String pattern;
+    protected String type;
     protected String format;
     protected String locale;
     private String var;
@@ -28,6 +32,15 @@ public class FormatDateTag extends TagSupport {
 
     private void init() {
         this.scope = PageContext.PAGE_SCOPE;
+
+        if (type == null) {
+            type = "date";
+        }
+
+        if (format == null) {
+            format = FormatStyle.SHORT.name();
+        }
+
     }
 
 
@@ -44,11 +57,6 @@ public class FormatDateTag extends TagSupport {
         this.value = value;
     }
 
-
-    public void setPattern(final String pattern) {
-        this.pattern = pattern;
-    }
-
     public void setFormat(String format) {
         this.format = format;
     }
@@ -57,37 +65,46 @@ public class FormatDateTag extends TagSupport {
         this.locale = locale;
     }
 
+    public void setType(String type) {
+        this.type = type;
+    }
+
     @Override
 
     public int doEndTag() throws JspException {
-
-        String formatted;
-
-        if (this.value == null) {
-            if (this.var != null) {
-                this.pageContext.removeAttribute(this.var, this.scope);
+        if (value == null) {
+            if (var != null) {
+                pageContext.removeAttribute(var, scope);
             }
             return EVAL_PAGE;
         }
 
-        // Create formatter
-        if (this.pattern != null) {
-            final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(this.pattern);
-            formatted = formatter.format(this.value);
-        } else if (this.format != null) {
-            final DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.valueOf(format))
-                    .withLocale(new Locale(locale));
-            formatted = formatter.format(this.value);
-        } else {
-            // no formatting locale available, use Date.toString()
-            formatted = this.value.toString();
+        if (locale == null) {
+            locale = detectLocale();
         }
 
-        if (this.var != null) {
-            this.pageContext.setAttribute(this.var, formatted, this.scope);
+        DateTimeFormatter formatter = null;
+        switch (type) {
+            case "both":
+                formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.valueOf(format));
+                break;
+            case "date":
+                formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.valueOf(format));
+                break;
+            case "time":
+                formatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.valueOf(format));
+                break;
+            default:
+                throw new InvalidParameterException("Unknown date format type: " + type);
+        }
+
+        String formatted = formatter.withLocale(new Locale(locale)).format(value);
+
+        if (var != null) {
+            pageContext.setAttribute(var, formatted, scope);
         } else {
             try {
-                this.pageContext.getOut().print(formatted);
+                pageContext.getOut().print(formatted);
             } catch (final IOException ioe) {
                 throw new JspTagException(ioe.toString(), ioe);
             }
@@ -102,4 +119,12 @@ public class FormatDateTag extends TagSupport {
         init();
     }
 
+    private String detectLocale() {
+        Language sessionLanguage = SessionScope.getCurrentLanguage(pageContext.getSession());
+        if (sessionLanguage != null) {
+            return sessionLanguage.getCode();
+        }
+
+        return ContextScope.getDefaultLanguage(pageContext.getServletContext()).getCode();
+    }
 }

@@ -10,6 +10,7 @@ import net.madand.conferences.service.ServiceException;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Optional;
 
 public class ConferenceService extends AbstractService {
     public ConferenceService(DataSource dataSource) {
@@ -32,6 +33,20 @@ public class ConferenceService extends AbstractService {
                     }
                 },
                 "Failed to save the conference into the database"
+        );
+    }
+
+    public Optional<Conference> findOne(int id) throws ServiceException {
+        return callNoTransaction(
+                connection -> ConferenceDao.findOne(connection, id),
+                "Error fetching conference"
+        );
+    }
+
+    public Optional<Conference> findOne(int id, Language language) throws ServiceException {
+        return callNoTransaction(
+                connection -> ConferenceDao.findOne(connection, id, language),
+                "Error fetching conference"
         );
     }
 }

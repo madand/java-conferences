@@ -66,7 +66,7 @@ public class UserController extends AbstractController {
                     SessionScope.setCurrentUserId(session, user.getId());
                     session.setAttribute("flashMessage", String.format("Successfully logged in as %s.", user.getRealName()));
                     session.setAttribute("flashType", "success");
-                    response.sendRedirect(response.encodeRedirectURL(URLManager.buildURL(URLManager.URI_CONFERENCE_LIST, request)));
+                    response.sendRedirect(response.encodeRedirectURL(URLManager.buildURLPreserveQuery(URLManager.URI_CONFERENCE_LIST, request)));
                     return;
                 }
             }
@@ -88,6 +88,6 @@ public class UserController extends AbstractController {
             session.setAttribute("flashType", "info");
         }
 
-        response.sendRedirect(response.encodeRedirectURL(URLManager.buildURL(URLManager.URI_CONFERENCE_LIST, request)));
+        response.sendRedirect(response.encodeRedirectURL(URLManager.buildURLPreserveQuery(URLManager.URI_CONFERENCE_LIST, request)));
     }
 }

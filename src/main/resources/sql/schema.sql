@@ -194,7 +194,7 @@ AS $BODY$
     BEFORE INSERT OR UPDATE ON talk
     FOR EACH ROW EXECUTE FUNCTION compute_end_time();
 
-  CREATE VIEW v_conference
+CREATE VIEW v_conference
     AS
     SELECT t.id,
            t.created_at,
@@ -210,7 +210,7 @@ AS $BODY$
   COMMENT ON VIEW v_conference
     IS 'View that joins conference and its translation.';
 
-  CREATE VIEW v_talk
+CREATE VIEW v_talk
     AS
     SELECT t.id,
            t.created_at,
@@ -218,6 +218,7 @@ AS $BODY$
            t.conference_id,
            t.speaker_id,
            t.start_time,
+           t.duration,
            t.end_time,
            l.language_id,
            ensure_translated(l.name, t.id, l.language_id, 'name', 'talk') as name,
@@ -227,7 +228,7 @@ AS $BODY$
   COMMENT ON VIEW v_talk
     IS 'View that joins talk and its translation.';
 
-  CREATE VIEW v_new_talk_proposal
+CREATE VIEW v_new_talk_proposal
     AS
     SELECT t.id,
            t.created_at,
