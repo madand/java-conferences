@@ -1,6 +1,9 @@
 package net.madand.conferences.web;
 
+import net.madand.conferences.service.ServiceException;
 import net.madand.conferences.web.controller.Controller;
+import net.madand.conferences.web.controller.exception.HttpNotFoundException;
+import net.madand.conferences.web.controller.exception.HttpRedirectException;
 import net.madand.conferences.web.controller.impl.ConferenceController;
 import net.madand.conferences.web.controller.impl.TalkController;
 import net.madand.conferences.web.controller.impl.UserController;
@@ -52,14 +55,26 @@ public class HttpRouter extends HttpServlet {
 
         boolean handled = false;
         for (Controller controller : controllers) {
-            if (controller.tryHandleRequest(request, response)) {
-                handled = true;
-                break;
+            try {
+                if (controller.maybeHandleRequest(request, response)) {
+                    handled = true;
+                    break;
+                }
+            } catch (ServiceException e) {
+                log.error(e);
+                response.sendError(500, e.getMessage());
+                return;
+            } catch (HttpRedirectException e) {
+                response.sendRedirect(response.encodeRedirectURL(e.getUrl()));
+                return;
+            } catch (HttpNotFoundException e) {
+                response.sendError(404);
+                return;
             }
         }
 
         if (!handled) {
-            response.sendError(404, "Page not found");
+            response.sendError(404);
         }
     }
 }

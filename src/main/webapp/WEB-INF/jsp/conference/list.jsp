@@ -23,12 +23,13 @@
                         ${mytl:linesToParagraphs(conference.location)}
                     </div>
                     <div class="card-text">
-                        ${mytl:linesToParagraphsTruncating(conference.description, 150)}
+                        ${mytl:truncate(conference.description, 160)}
                     </div>
                 </div>
                 <div class="card-footer">
                     <a href="<%= URLManager.makeListTalksURL(request, (Conference) pageContext.getAttribute("conference"))  %>"
                        class="btn btn-success">
+                        <i class="bi-eye"></i>
                         <fmt:message key="conference.list.button.details"/>
                     </a>
                 </div>

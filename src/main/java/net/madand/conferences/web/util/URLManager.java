@@ -1,13 +1,16 @@
 package net.madand.conferences.web.util;
 
 import net.madand.conferences.entity.Conference;
+import net.madand.conferences.web.scope.SessionScope;
 import org.apache.taglibs.standard.resources.Resources;
 import org.apache.taglibs.standard.tag.common.core.ImportSupport;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
+import javax.xml.validation.SchemaFactoryConfigurationError;
 
 public class URLManager {
     private URLManager() {}
@@ -69,5 +72,9 @@ public class URLManager {
                 return (context + url);
             }
         }
+    }
+
+    public static String homepage(HttpServletRequest request) {
+        return buildURL(request, URI_CONFERENCE_LIST, null);
     }
 }

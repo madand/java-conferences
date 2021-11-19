@@ -11,6 +11,8 @@ import javax.servlet.http.HttpSession;
 public class SessionScope {
     private static final String CURRENT_LANGUAGE = "currentLanguage";
     private static final String CURRENT_USER_ID = "currentUserId";
+    private static final String FLASH_MESSAGE = "flashMessage";
+    private static final String FLASH_TYPE = "flashType";
 
     private static final Logger log = Logger.getLogger(SessionScope.class);
     private static final ScopeHelper support = new ScopeHelper(log);
@@ -37,5 +39,10 @@ public class SessionScope {
 
     public static void removeCurrentUserId(HttpSession session) {
         support.removeAttributeAndLog(session, CURRENT_USER_ID);
+    }
+
+    public static void setFlashMessage(HttpSession session, String message, String type) {
+        session.setAttribute(FLASH_MESSAGE, message);
+        session.setAttribute(FLASH_TYPE, type);
     }
 }

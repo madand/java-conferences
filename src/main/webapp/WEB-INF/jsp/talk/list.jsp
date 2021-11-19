@@ -23,7 +23,6 @@
     </div>
 </div>
 
-${originalURI}
 <div class="row row-cols-1">
     <div class="col">
         <h2><fmt:message key="talk.list.subtitle"/></h2>

@@ -21,27 +21,45 @@ public class HtmlSupport {
 
 
     public static String linesToParagraphs(String text) {
-        return linesToParagraphsTruncating(text, Integer.MAX_VALUE);
+        StringBuilder sb = new StringBuilder();
+
+        try (Scanner scanner = new Scanner(text)) {
+            while (scanner.hasNextLine()) {
+                sb.append("<p>").append(Util.escapeXml(scanner.nextLine())).append("</p>");
+            }
+        }
+
+        return sb.toString();
     }
 
-    public static String linesToParagraphsTruncating(String text, Integer maxChars) {
+    public static String truncate(String text, Integer maxChars) {
         final String ELLIPSIS = "…";
         StringBuilder sb = new StringBuilder();
 
         int charsLeft = maxChars;
-        Scanner scanner = new Scanner(text);
-        while (scanner.hasNextLine()) {
-            if (charsLeft <= 0) {
-                break;
-            }
-            String nextLine = scanner.nextLine();
-            final int length = nextLine.length();
-            if (length > charsLeft) {
-                nextLine = nextLine.substring(0, charsLeft) + ELLIPSIS;
-            }
-            charsLeft -= length;
+        try (Scanner scanner = new Scanner(text)) {
+            while (scanner.hasNextLine()) {
+                if (charsLeft <= 0) {
+                    break;
+                }
 
-            sb.append("<p>").append(Util.escapeXml(nextLine)).append("</p>");
+                String nextLine = scanner.nextLine();
+                final int length = nextLine.length();
+                final boolean isLastLine = length > charsLeft;
+                if (isLastLine) {
+                    nextLine = nextLine.substring(0, charsLeft).trim();
+                }
+
+                sb.append(Util.escapeXml(nextLine));
+
+                if (isLastLine) {
+                    sb.append(ELLIPSIS);
+                } else {
+                    sb.append(' ');
+                }
+
+                charsLeft -= length;
+            }
         }
 
         return sb.toString();
