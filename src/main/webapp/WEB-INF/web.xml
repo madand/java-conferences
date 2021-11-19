@@ -59,6 +59,12 @@
         <filter-name>LoadUserFilter</filter-name>
         <filter-class>net.madand.conferences.web.filter.LoadUserFilter</filter-class>
     </filter>
+    <!-- Remember previous GET URL in the session scope  -->
+    <filter>
+        <filter-name>PreviousURLFilter</filter-name>
+        <filter-class>net.madand.conferences.web.filter.PreviousURLFilter</filter-class>
+    </filter>
+
 
     <!-- Order matters here! -->
     <filter-mapping>
@@ -67,6 +73,10 @@
     </filter-mapping>
     <filter-mapping>
         <filter-name>LanguageFilter</filter-name>
+        <servlet-name>HttpRouter</servlet-name>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>PreviousURLFilter</filter-name>
         <servlet-name>HttpRouter</servlet-name>
     </filter-mapping>
 
