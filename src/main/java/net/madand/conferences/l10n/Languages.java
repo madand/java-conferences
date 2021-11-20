@@ -9,12 +9,17 @@ import java.util.*;
  * This cache MUST be populated when the application starts.
  */
 public class Languages {
+    private static final List<Language> languages = new ArrayList<>();
     private static final Map<Integer, Language> languagesById = new HashMap<>();
     private static final Map<String, Language> languagesByCode = new HashMap<>();
 
     private static Language defaultLanguage;
 
     private Languages() {}
+
+    public static List<Language> list() {
+        return Collections.unmodifiableList(languages);
+    }
 
     public static Language getById(int id) {
         return languagesById.get(id);
@@ -38,8 +43,10 @@ public class Languages {
     }
 
     public static synchronized void add(Language language) {
+        languages.add(language);
         languagesById.put(language.getId(), language);
         languagesByCode.put(language.getCode(), language);
+
         if (language.isDefault()) {
             defaultLanguage = language;
         }

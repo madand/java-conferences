@@ -7,7 +7,6 @@ import net.madand.conferences.service.impl.UserService;
 import net.madand.conferences.web.bean.LoginBean;
 import net.madand.conferences.web.controller.AbstractController;
 import net.madand.conferences.web.controller.exception.HttpRedirectException;
-import net.madand.conferences.web.scope.ContextScope;
 import net.madand.conferences.web.scope.RequestScope;
 import net.madand.conferences.web.scope.SessionScope;
 import net.madand.conferences.web.util.URLManager;
@@ -18,19 +17,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 public class UserController extends AbstractController {
-    private final UserService service;
+    private final UserService userService;
+
+    {
+        // Register the controller's actions.
+        handlersMap.put(URLManager.URI_USER_LOGIN, this::login);
+        handlersMap.put(URLManager.URI_USER_LOGOUT, this::logout);
+    }
 
     public UserController(ServletContext servletContext) {
         super(servletContext);
-        service = ContextScope.getServiceFactory(servletContext).getUserService();
-
-        handlersMap.put(URLManager.URI_USER_LOGIN, this::login);
-        handlersMap.put(URLManager.URI_USER_LOGOUT, this::logout);
+        userService = serviceFactory.getUserService();
     }
 
     private void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException, HttpRedirectException {
@@ -43,7 +43,7 @@ public class UserController extends AbstractController {
             bean.setEmail(request.getParameter("email"));
             bean.setPassword(request.getParameter("password"));
 
-            final Optional<User> userOptional = service.findByEmail(bean.getEmail());
+            final Optional<User> userOptional = userService.findByEmail(bean.getEmail());
 
             if (userOptional.isPresent()) {
                 User user = userOptional.get();

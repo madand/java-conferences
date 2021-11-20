@@ -1,8 +1,10 @@
 package net.madand.conferences.web.controller;
 
 import net.madand.conferences.service.ServiceException;
+import net.madand.conferences.service.ServiceFactory;
 import net.madand.conferences.web.controller.exception.HttpNotFoundException;
 import net.madand.conferences.web.controller.exception.HttpRedirectException;
+import net.madand.conferences.web.scope.ContextScope;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -13,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class AbstractController implements Controller {
-    protected final ServletContext servletContext;
+    protected final ServiceFactory serviceFactory;
 
     /**
      * Every concrete controller fills this map with [URL => action handler] pairs.
@@ -21,7 +23,7 @@ public abstract class AbstractController implements Controller {
     protected Map<String, Action> handlersMap = new HashMap<>();
 
     protected AbstractController(ServletContext servletContext) {
-        this.servletContext = servletContext;
+        this.serviceFactory = ContextScope.getServiceFactory(servletContext);
     }
 
     @Override

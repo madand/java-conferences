@@ -4,7 +4,6 @@ import net.madand.conferences.db.Fields;
 import net.madand.conferences.db.util.QueryHelper;
 import net.madand.conferences.db.util.StatementParametersSetter;
 import net.madand.conferences.entity.Conference;
-import net.madand.conferences.entity.ConferenceTranslation;
 import net.madand.conferences.entity.Language;
 
 import java.sql.Connection;
@@ -17,71 +16,54 @@ import java.util.List;
 import java.util.Optional;
 
 public class ConferenceDao {
-    private static final String SQL_FIND_ALL = "SELECT * FROM conference ORDER BY id";
-    private static final String SQL_FIND_ALL_LANG = "SELECT * FROM v_conference WHERE language_id = ? ORDER BY event_date";
-    private static final String SQL_FIND_ONE = "SELECT * FROM conference WHERE id = ?";
-    private static final String SQL_FIND_ONE_LANG = "SELECT * FROM v_conference WHERE id = ? AND language_id = ?";
-    private static final String SQL_INSERT = "INSERT INTO conference (event_date, actually_attended_count) VALUES (?,?)";
-    private static final String SQL_UPDATE = "UPDATE conference SET event_date = ?, actually_attended_count = ? WHERE id = ?";
-    private static final String SQL_DELETE = "DELETE FROM conference WHERE id = ?";
+    private static final String FIND_ALL = "SELECT * FROM conference ORDER BY id";
+    private static final String FIND_ALL_LANG = "SELECT * FROM v_conference WHERE language_id = ? ORDER BY event_date";
+    private static final String FIND_ONE = "SELECT * FROM conference WHERE id = ?";
+    private static final String FIND_ONE_LANG = "SELECT * FROM v_conference WHERE id = ? AND language_id = ?";
+    
+    private static final String INSERT = "INSERT INTO conference (event_date, actually_attended_count) VALUES (?,?)";
+    private static final String UPDATE = "UPDATE conference SET event_date = ?, actually_attended_count = ? WHERE id = ?";
+    private static final String DELETE = "DELETE FROM conference WHERE id = ?";
 
     public static List<Conference> findAll(Connection connection) throws SQLException {
-        return QueryHelper.findAll(connection, SQL_FIND_ALL, ConferenceDao::mapRow);
+        return QueryHelper.findAll(connection, FIND_ALL, ConferenceDao::mapRow);
     }
 
     public static List<Conference> findAll(Connection connection, Language language) throws SQLException {
-        return QueryHelper.findAll(connection, SQL_FIND_ALL_LANG,
+        return QueryHelper.findAll(connection, FIND_ALL_LANG,
                 stmt -> stmt.setInt(1, language.getId()),
-                (rs) -> {
-                    Conference conference = mapRow(rs);
-
-                    ConferenceTranslation translation = ConferenceTranslationDao.mapRow(rs);
-                    conference.setName(translation.getName());
-                    conference.setDescription(translation.getDescription());
-                    conference.setLocation(translation.getLocation());
-
-                    return conference;
-                });
+                ConferenceDao::mapRowWithTranslation);
     }
 
     public static Optional<Conference> findOne(Connection conn, int id, Language language) throws SQLException {
-        return QueryHelper.findOne(conn, SQL_FIND_ONE_LANG,
+        return QueryHelper.findOne(conn, FIND_ONE_LANG,
                 stmt -> {
                     stmt.setInt(1, id);
                     stmt.setInt(2, language.getId());
                 },
-                (rs) -> {
-                    Conference conference = mapRow(rs);
-
-                    ConferenceTranslation translation = ConferenceTranslationDao.mapRow(rs);
-                    conference.setName(translation.getName());
-                    conference.setDescription(translation.getDescription());
-                    conference.setLocation(translation.getLocation());
-
-                    return conference;
-                });
+                ConferenceDao::mapRowWithTranslation);
     }
 
     public static Optional<Conference> findOne(Connection conn, int id) throws SQLException {
-        return QueryHelper.findOne(conn, SQL_FIND_ONE,
+        return QueryHelper.findOne(conn, FIND_ONE,
                 stmt -> stmt.setInt(1, id),
                 ConferenceDao::mapRow);
     }
 
     public static void insert(Connection conn, Conference conference) throws SQLException {
-        Optional<Integer> maybeId = QueryHelper.insert(conn, SQL_INSERT, makeStatementParametersSetter(conference));
-        conference.setId(maybeId.get());
+        QueryHelper.insert(conn, INSERT, makeStatementParametersSetter(conference))
+                .ifPresent(conference::setId);
     }
 
     public static void update(Connection conn, Conference conference) throws SQLException {
-        QueryHelper.update(conn, SQL_UPDATE, stmt -> {
+        QueryHelper.update(conn, UPDATE, stmt -> {
             makeStatementParametersSetter(conference).setStatementParameters(stmt);
             stmt.setInt(3, conference.getId());
         });
     }
 
     public static void delete(Connection conn, Conference conference) throws SQLException {
-        QueryHelper.delete(conn, SQL_DELETE,
+        QueryHelper.delete(conn, DELETE,
                 stmt -> stmt.setInt(1, conference.getId()));
     }
 
@@ -102,6 +84,12 @@ public class ConferenceDao {
         conference.setEventDate(rs.getObject(Fields.EVENT_DATE, LocalDate.class));
         conference.setActuallyAttendedCount(rs.getInt(Fields.ACTUALLY_ATTENDED_COUNT));
 
+        return conference;
+    }
+
+    private static Conference mapRowWithTranslation(ResultSet rs) throws SQLException {
+        Conference conference = mapRow(rs);
+        conference.loadTranslation(ConferenceTranslationDao.mapRow(rs));
         return conference;
     }
 }

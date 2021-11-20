@@ -20,33 +20,64 @@ public class ConferenceService extends AbstractService {
     public List<Conference> findAllTranslated(Language language) throws ServiceException {
         return callNoTransaction(
                 connection -> ConferenceDao.findAll(connection, language),
-                "Error fetching conferences"
-        );
-    }
-
-    public void create(Conference conference, List<ConferenceTranslation> translations) throws ServiceException {
-        runWithinTransaction(
-                connection -> {
-                    ConferenceDao.insert(connection, conference);
-                    for (ConferenceTranslation translation : translations) {
-                        ConferenceTranslationDao.insert(connection, translation);
-                    }
-                },
-                "Failed to save the conference into the database"
-        );
-    }
-
-    public Optional<Conference> findOne(int id) throws ServiceException {
-        return callNoTransaction(
-                connection -> ConferenceDao.findOne(connection, id),
-                "Error fetching conference"
-        );
+                "Error fetching conferences");
     }
 
     public Optional<Conference> findOne(int id, Language language) throws ServiceException {
         return callNoTransaction(
                 connection -> ConferenceDao.findOne(connection, id, language),
-                "Error fetching conference"
-        );
+                "Error fetching conference");
+    }
+
+    public Optional<Conference> findOneWithTranslations(int id, List<Language> languages) throws ServiceException {
+        return callNoTransaction(
+                connection -> {
+                    Optional<Conference> conferenceOptional = ConferenceDao.findOne(connection, id);
+                    if (!conferenceOptional.isPresent()) {
+                        return conferenceOptional;
+                    }
+
+                    final Conference conference = conferenceOptional.get();
+                    for (Language language : languages) {
+                        ConferenceTranslationDao.findOne(connection, conference, language)
+                                .ifPresent(conference::getTranslations);
+                    }
+
+                    return conferenceOptional;
+                },
+                "Error fetching conference");
+    }
+
+    public Optional<Conference> findOne(int id) throws ServiceException {
+        return callNoTransaction(
+                connection -> ConferenceDao.findOne(connection, id),
+                "Error fetching conference");
+    }
+
+    public void create(Conference conference) throws ServiceException {
+        runWithinTransaction(
+                connection -> {
+                    ConferenceDao.insert(connection, conference);
+                    for (ConferenceTranslation translation : conference.getTranslations()) {
+                        ConferenceTranslationDao.insert(connection, translation);
+                    }
+                },
+                "Failed to save the conference into the database");
+    }
+
+    public void update(Conference conference) throws ServiceException {
+        runWithinTransaction(
+                connection -> {
+                    ConferenceDao.update(connection, conference);
+                    for (ConferenceTranslation translation : conference.getTranslations()) {
+                        ConferenceTranslationDao.update(connection, translation);
+                    }
+                },
+                "Failed to save the conference into the database");
+    }
+
+    public void delete(Conference conference) throws ServiceException {
+        runWithinTransaction(connection -> ConferenceDao.delete(connection, conference),
+                "Failed to save the conference into the database");
     }
 }

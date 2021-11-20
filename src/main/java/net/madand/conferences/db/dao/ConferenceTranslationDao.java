@@ -13,34 +13,31 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 public class ConferenceTranslationDao {
-    private static final String SQL_FIND_ONE = "SELECT * FROM conference_translation WHERE conference_id = ? AND language_id = ?";
-    private static final String SQL_INSERT = "INSERT INTO conference_translation (conference_id, language_id, name, description, location) VALUES (?,?,?,?,?)";
-    private static final String SQL_UPDATE = "UPDATE conference_translation SET " +
+    private static final String FIND_ONE = "SELECT * FROM conference_translation WHERE conference_id = ? AND language_id = ?";
+    private static final String INSERT = "INSERT INTO conference_translation (conference_id, language_id, name, description, location) VALUES (?,?,?,?,?)";
+    private static final String UPDATE = "UPDATE conference_translation SET " +
             "conference_id = ?, language_id = ?, name = ?, description = ?, location = ? " +
             "WHERE conference_id = ? AND language_id = ?";
-    private static final String SQL_DELETE = "DELETE FROM conference_translation WHERE conference_id = ? AND language_id = ?";
 
     public static Optional<ConferenceTranslation> findOne(Connection conn, Conference conference, Language language) throws SQLException {
-        final Optional<ConferenceTranslation> translation = QueryHelper.findOne(conn, SQL_FIND_ONE, stmt -> {
-                    stmt.setInt(1, conference.getId());
-                    stmt.setInt(2, language.getId());
-                },
-                ConferenceTranslationDao::mapRow);
-
-        if (translation.isPresent()) {
-            translation.get().setConference(conference);
-            translation.get().setLanguage(language);
-        }
-
-        return translation;
+        return QueryHelper.findOne(conn, FIND_ONE, stmt -> {
+                            stmt.setInt(1, conference.getId());
+                            stmt.setInt(2, language.getId());
+                        },
+                        ConferenceTranslationDao::mapRow)
+                .map(translation -> {
+                    translation.setConference(conference);
+                    translation.setLanguage(language);
+                    return translation;
+                });
     }
 
     public static void insert(Connection conn, ConferenceTranslation conferenceTranslation) throws SQLException {
-        QueryHelper.insert(conn, SQL_INSERT, makeInsertUpdateParametersSetter(conferenceTranslation));
+        QueryHelper.insert(conn, INSERT, makeInsertUpdateParametersSetter(conferenceTranslation));
     }
 
     public static void update(Connection conn, ConferenceTranslation conferenceTranslation) throws SQLException {
-        QueryHelper.update(conn, SQL_UPDATE, stmt -> {
+        QueryHelper.update(conn, UPDATE, stmt -> {
             makeInsertUpdateParametersSetter(conferenceTranslation).setStatementParameters(stmt);
             stmt.setInt(6, conferenceTranslation.getConference().getId());
             stmt.setInt(7, conferenceTranslation.getLanguage().getId());

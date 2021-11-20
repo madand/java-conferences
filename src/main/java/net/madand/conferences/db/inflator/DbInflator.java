@@ -23,7 +23,7 @@ import java.util.stream.IntStream;
  * Helper for populating the database with Demo Data.
  */
 public class DbInflator {
-    public static final String SQL_TRUNCATE_ALL_TABLES_FILE = "sql/truncate_all_tables.sql";
+    public static final String TRUNCATE_ALL_TABLES_FILE = "sql/truncate_all_tables.sql";
 
     private final Connection connection;
 
@@ -91,7 +91,7 @@ public class DbInflator {
     }
 
     public void truncateDbTables() throws IOException, SQLException {
-        Reader reader = Resources.getResourceAsReader(SQL_TRUNCATE_ALL_TABLES_FILE);
+        Reader reader = Resources.getResourceAsReader(TRUNCATE_ALL_TABLES_FILE);
         connection.setAutoCommit(false);
         ScriptRunner scriptRunner = new ScriptRunner(connection);
         scriptRunner.setLogWriter(null);

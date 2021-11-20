@@ -18,21 +18,21 @@ import java.util.List;
 import java.util.Optional;
 
 public class TalkDao {
-    private static final String SQL_FIND_ALL = "SELECT * FROM talk WHERE conference_id = ? ORDER BY start_time";
-    private static final String SQL_FIND_ALL_LANG = "SELECT * FROM v_talk WHERE conference_id = ? AND language_id = ? ORDER BY start_time";
-    private static final String SQL_FIND_ONE = "SELECT * FROM talk WHERE id = ?";
-    private static final String SQL_INSERT = "INSERT INTO talk (conference_id, speaker_id, start_time, duration) VALUES (?,?,?,?)";
-    private static final String SQL_UPDATE = "UPDATE talk SET conference_id = ?, speaker_id = ?, start_time = ?, duration = ? WHERE id = ?";
-    private static final String SQL_DELETE = "DELETE FROM talk WHERE id = ?";
+    private static final String FIND_ALL = "SELECT * FROM talk WHERE conference_id = ? ORDER BY start_time";
+    private static final String FIND_ALL_LANG = "SELECT * FROM v_talk WHERE conference_id = ? AND language_id = ? ORDER BY start_time";
+    private static final String FIND_ONE = "SELECT * FROM talk WHERE id = ?";
+    private static final String INSERT = "INSERT INTO talk (conference_id, speaker_id, start_time, duration) VALUES (?,?,?,?)";
+    private static final String UPDATE = "UPDATE talk SET conference_id = ?, speaker_id = ?, start_time = ?, duration = ? WHERE id = ?";
+    private static final String DELETE = "DELETE FROM talk WHERE id = ?";
 
     public static List<Talk> findAll(Connection conn, Conference conference) throws SQLException {
-        return QueryHelper.findAll(conn, SQL_FIND_ALL,
+        return QueryHelper.findAll(conn, FIND_ALL,
                 stmt -> stmt.setInt(1, conference.getId()),
                 makeRowMapper(conn));
     }
 
     public static List<Talk> findAll(Connection connection, Conference conference, Language language) throws SQLException {
-        return QueryHelper.findAll(connection, SQL_FIND_ALL_LANG,
+        return QueryHelper.findAll(connection, FIND_ALL_LANG,
                 stmt -> {
                     stmt.setInt(1, conference.getId());
                     stmt.setInt(2, language.getId());
@@ -49,25 +49,25 @@ public class TalkDao {
     }
 
     public static Optional<Talk> findOne(Connection conn, int id) throws SQLException {
-        return QueryHelper.findOne(conn, SQL_FIND_ONE,
+        return QueryHelper.findOne(conn, FIND_ONE,
                 stmt -> stmt.setInt(1, id),
                 makeRowMapper(conn));
     }
 
     public static void insert(Connection conn, Talk talk) throws SQLException {
-        Optional<Integer> maybeId = QueryHelper.insert(conn, SQL_INSERT, makeStatementParametersSetter(talk));
+        Optional<Integer> maybeId = QueryHelper.insert(conn, INSERT, makeStatementParametersSetter(talk));
         talk.setId(maybeId.get());
     }
 
     public static void update(Connection conn, Talk talk) throws SQLException {
-        QueryHelper.update(conn, SQL_UPDATE, stmt -> {
+        QueryHelper.update(conn, UPDATE, stmt -> {
             makeStatementParametersSetter(talk).setStatementParameters(stmt);
             stmt.setInt(5, talk.getId());
         });
     }
 
     public static void delete(Connection conn, Talk talk) throws SQLException {
-        QueryHelper.delete(conn, SQL_DELETE,
+        QueryHelper.delete(conn, DELETE,
                 stmt -> stmt.setInt(1, talk.getId()));
     }
 

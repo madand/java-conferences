@@ -13,46 +13,46 @@ import java.util.List;
 import java.util.Optional;
 
 public class UserDao {
-    private static final String SQL_FIND_ALL = "SELECT * FROM \"user\" ORDER BY real_name";
-    private static final String SQL_FIND_ALL_BY_ROLE = "SELECT * FROM \"user\" WHERE role = ?::role_type ORDER BY real_name";
-    private static final String SQL_FIND_ONE_BY_ID = "SELECT * FROM \"user\" WHERE id = ?";
-    private static final String SQL_FIND_ONE_BY_EMAIL = "SELECT * FROM \"user\" WHERE email = ?";
-    private static final String SQL_INSERT = "INSERT INTO \"user\" (email, real_name, password_hash, role) VALUES (?,?,?,?::role_type)";
-    private static final String SQL_UPDATE = "UPDATE \"user\" SET email = ?, real_name = ?, password_hash = ?, role = ?::role_type WHERE id = ?";
-    private static final String SQL_DELETE = "DELETE FROM \"user\" WHERE id = ?";
+    private static final String FIND_ALL = "SELECT * FROM \"user\" ORDER BY real_name";
+    private static final String FIND_ALL_BY_ROLE = "SELECT * FROM \"user\" WHERE role = ?::role_type ORDER BY real_name";
+    private static final String FIND_ONE_BY_ID = "SELECT * FROM \"user\" WHERE id = ?";
+    private static final String FIND_ONE_BY_EMAIL = "SELECT * FROM \"user\" WHERE email = ?";
+    private static final String INSERT = "INSERT INTO \"user\" (email, real_name, password_hash, role) VALUES (?,?,?,?::role_type)";
+    private static final String UPDATE = "UPDATE \"user\" SET email = ?, real_name = ?, password_hash = ?, role = ?::role_type WHERE id = ?";
+    private static final String DELETE = "DELETE FROM \"user\" WHERE id = ?";
 
     public static List<User> findAllByRole(Connection connection, Role role) throws SQLException {
-        return QueryHelper.findAll(connection, SQL_FIND_ALL_BY_ROLE,
+        return QueryHelper.findAll(connection, FIND_ALL_BY_ROLE,
                 stmt -> stmt.setString(1, role.toString()),
                 UserDao::mapRow);
     }
 
     public static Optional<User> findOneByEmail(Connection conn, String email) throws SQLException {
-        return QueryHelper.findOne(conn, SQL_FIND_ONE_BY_EMAIL,
+        return QueryHelper.findOne(conn, FIND_ONE_BY_EMAIL,
                 stmt -> stmt.setString(1, email),
                 UserDao::mapRow);
     }
 
     public static Optional<User> findOneById(Connection conn, int id) throws SQLException {
-        return QueryHelper.findOne(conn, SQL_FIND_ONE_BY_ID,
+        return QueryHelper.findOne(conn, FIND_ONE_BY_ID,
                 stmt -> stmt.setInt(1, id),
                 UserDao::mapRow);
     }
 
     public static void insert(Connection conn, User user) throws SQLException {
-        Optional<Integer> maybeId = QueryHelper.insert(conn, SQL_INSERT, makeStatementParametersSetter(user));
+        Optional<Integer> maybeId = QueryHelper.insert(conn, INSERT, makeStatementParametersSetter(user));
         user.setId(maybeId.get());
     }
 
     public static void update(Connection conn, User user) throws SQLException {
-        QueryHelper.update(conn, SQL_UPDATE, stmt -> {
+        QueryHelper.update(conn, UPDATE, stmt -> {
             makeStatementParametersSetter(user).setStatementParameters(stmt);
             stmt.setInt(5, user.getId());
         });
     }
 
     public static void delete(Connection conn, User user) throws SQLException {
-        QueryHelper.delete(conn, SQL_DELETE,
+        QueryHelper.delete(conn, DELETE,
                 stmt -> stmt.setInt(1, user.getId()));
     }
 

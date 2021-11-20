@@ -18,30 +18,26 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 
 public class TalkController extends AbstractController {
-    private static final Logger logger = Logger.getLogger(TalkController.class);
-
     private final TalkService service;
 
-    public TalkController(ServletContext servletContext) {
-        super(servletContext);
-        service = ContextScope.getServiceFactory(servletContext).getTalkService();
-
+    {
+        // Register the controller's actions.
         handlersMap.put(URLManager.URI_TALK_LIST, this::list);
 //            handlersMap.put(URLManager.URI_TALK_CREATE, this::create);
     }
 
-    public void list(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException, HttpNotFoundException {
-        final HttpSession session = request.getSession();
-        final Language currentLanguage = SessionScope.getCurrentLanguage(session);
-        ConferenceService conferenceService = ContextScope.getServiceFactory(servletContext).getConferenceService();
+    public TalkController(ServletContext servletContext) {
+        super(servletContext);
+        service = ContextScope.getServiceFactory(servletContext).getTalkService();
+    }
 
-        final int id = Integer.parseInt(request.getParameter("conference_id"));
-        Conference conference = conferenceService.findOne(id, currentLanguage)
+    public void list(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException, HttpNotFoundException {
+        final Language currentLanguage = SessionScope.getCurrentLanguage(request.getSession());
+        final int id = Integer.parseInt(request.getParameter("id"));
+
+        Conference conference = serviceFactory.getConferenceService().findOne(id, currentLanguage)
                 .orElseThrow(HttpNotFoundException::new);
 
         request.setAttribute("conference", conference);

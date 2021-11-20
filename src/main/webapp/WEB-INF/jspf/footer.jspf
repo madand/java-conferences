@@ -10,7 +10,7 @@
                     <c:forEach items="${languages}" var="language">
                         <li>
                             <c:if test="${language != currentLanguage}">
-                                <c:url var="switchLangURL" value="${previousURL}">
+                                <c:url var="switchLangURL" value="${originalURIAndQueryString}">
                                     <c:param name="lang" value="${language.code}"/>
                                 </c:url>
                                 <a href="${switchLangURL}">

@@ -11,19 +11,19 @@ import java.util.Map;
 import java.util.Optional;
 
 public class LanguageDao {
-    private static final String SQL_FIND_ALL = "SELECT * FROM language ORDER BY is_default DESC, name";
-    private static final String SQL_INSERT = "INSERT INTO language (code, name, is_default) VALUES (?,?,?)";
+    private static final String FIND_ALL = "SELECT * FROM language ORDER BY is_default DESC, name";
+    private static final String INSERT = "INSERT INTO language (code, name, is_default) VALUES (?,?,?)";
 
     private static Map<Integer, Language> languages;
 
     private LanguageDao() {}
 
     public static List<Language> findAll(Connection conn) throws SQLException {
-        return QueryHelper.findAll(conn, SQL_FIND_ALL, LanguageDao::mapRow);
+        return QueryHelper.findAll(conn, FIND_ALL, LanguageDao::mapRow);
     }
 
     public static void insert(Connection conn, Language language) throws SQLException {
-        Optional<Integer> maybeId = QueryHelper.insert(conn, SQL_INSERT,
+        Optional<Integer> maybeId = QueryHelper.insert(conn, INSERT,
                 stmt -> {
                     stmt.setString(1, language.getCode());
                     stmt.setString(2, language.getName());

@@ -13,15 +13,15 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 public class TalkTranslationDao {
-    private static final String SQL_FIND_ONE = "SELECT * FROM talk_translation WHERE talk_id = ? AND language_id = ?";
-    private static final String SQL_INSERT = "INSERT INTO talk_translation (talk_id, language_id, name, description) VALUES (?,?,?,?)";
-    private static final String SQL_UPDATE = "UPDATE talk_translation SET " +
+    private static final String FIND_ONE = "SELECT * FROM talk_translation WHERE talk_id = ? AND language_id = ?";
+    private static final String INSERT = "INSERT INTO talk_translation (talk_id, language_id, name, description) VALUES (?,?,?,?)";
+    private static final String UPDATE = "UPDATE talk_translation SET " +
             "talk_id = ?, language_id = ?, name = ?, description = ? " +
             "WHERE talk_id = ? AND language_id = ?";
-    private static final String SQL_DELETE = "DELETE FROM talk_translation WHERE talk_id = ? AND language_id = ?";
+    private static final String DELETE = "DELETE FROM talk_translation WHERE talk_id = ? AND language_id = ?";
 
     public static Optional<TalkTranslation> findOne(Connection conn, Talk talk, Language language) throws SQLException {
-        return QueryHelper.findOne(conn, SQL_FIND_ONE, stmt -> {
+        return QueryHelper.findOne(conn, FIND_ONE, stmt -> {
                     stmt.setInt(1, talk.getId());
                     stmt.setInt(2, language.getId());
                 },
@@ -29,11 +29,11 @@ public class TalkTranslationDao {
     }
 
     public static void insert(Connection conn, TalkTranslation talkTranslation) throws SQLException {
-        QueryHelper.insert(conn, SQL_INSERT, makeInsertUpdateParametersSetter(talkTranslation));
+        QueryHelper.insert(conn, INSERT, makeInsertUpdateParametersSetter(talkTranslation));
     }
 
     public static void update(Connection conn, TalkTranslation talkTranslation) throws SQLException {
-        QueryHelper.update(conn, SQL_UPDATE, stmt -> {
+        QueryHelper.update(conn, UPDATE, stmt -> {
             makeInsertUpdateParametersSetter(talkTranslation).setStatementParameters(stmt);
             stmt.setInt(5, talkTranslation.getTalk().getId());
             stmt.setInt(6, talkTranslation.getLanguage().getId());

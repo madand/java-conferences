@@ -1,11 +1,13 @@
 package net.madand.conferences.entity;
 
+import net.madand.conferences.l10n.Languages;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class Conference implements Serializable {
     private static final long serialVersionUID = 8939135725291430909L;
@@ -15,6 +17,8 @@ public class Conference implements Serializable {
     private OffsetDateTime updatedAt;
     private LocalDate eventDate;
     private int actuallyAttendedCount;
+
+    private List<ConferenceTranslation> translations = new ArrayList<>();
 
     // The following properties are only set when fetching data from v_conference view.
     private String name;
@@ -28,16 +32,18 @@ public class Conference implements Serializable {
      * @return the constructed instance.
      */
     public static Conference makeInstance(LocalDate eventDate, int actuallyAttendedCount) {
-        Conference conference = new Conference();
+        final Conference conference = new Conference();
         conference.setEventDate(eventDate);
         conference.setActuallyAttendedCount(actuallyAttendedCount);
         return conference;
     }
 
-    public List<ConferenceTranslation> makeTranslations(List<Language> languages) {
-        return languages.stream()
-                .map(lang -> ConferenceTranslation.makeInstance(this, lang))
-                .collect(Collectors.toList());
+    public static Conference makeInstanceWithTranslations() {
+        final Conference conference = new Conference();
+        Languages.list().stream()
+                .map(language -> ConferenceTranslation.makeInstance(conference, language))
+                .forEach(conference::getTranslations);
+        return conference;
     }
 
     public int getId() {
@@ -102,6 +108,20 @@ public class Conference implements Serializable {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public List<ConferenceTranslation> getTranslations() {
+        return translations;
+    }
+
+    public void getTranslations(ConferenceTranslation translation) {
+        translations.add(translation);
+    }
+
+    public void loadTranslation(ConferenceTranslation translation) {
+        setName(translation.getName());
+        setDescription(translation.getDescription());
+        setLocation(translation.getLocation());
     }
 
     @Override

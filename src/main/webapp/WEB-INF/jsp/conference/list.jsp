@@ -10,6 +10,10 @@
 </c:set>
 <%@ include file="/WEB-INF/jspf/head.jspf" %>
 
+<%@ page import="net.madand.conferences.auth.EntityFields" %>
+${EntityFields.TEST}
+
+
 <div class="row row-cols-1 row-cols-xl-2">
     <c:forEach items="${conferences}" var="conference">
         <div class="col mb-4">
@@ -27,11 +31,23 @@
                     </div>
                 </div>
                 <div class="card-footer">
-                    <a href="<%= URLManager.makeListTalksURL(request, (Conference) pageContext.getAttribute("conference"))  %>"
-                       class="btn btn-success">
-                        <i class="bi-eye"></i>
-                        <fmt:message key="conference.list.button.details"/>
-                    </a>
+                    <mytags:actionButton action="list-talks"
+                                         entityId="${conference.id}"
+                                         buttonType="success"
+                                         messageKey="conference.list.button.details"
+                                         icon="eye" />
+
+                    <mytags:actionButton action="edit-conference"
+                                         entityId="${conference.id}"
+                                         buttonType="primary"
+                                         messageKey="form.button.edit"
+                                         icon="pencil" />
+
+                    <mytags:actionButton action="delete-conference"
+                                         entityId="${conference.id}"
+                                         buttonType="danger"
+                                         messageKey="form.button.delete"
+                                         icon="trash" />
                 </div>
             </div>
         </div>
