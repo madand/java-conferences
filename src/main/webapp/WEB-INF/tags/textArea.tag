@@ -8,30 +8,19 @@
 <%@ attribute  name="labelKey"  required="true" %>
 <%@ attribute  name="entity" type="java.lang.Object" %>
 <%@ attribute  name="language" type="net.madand.conferences.entity.Language" %>
-<%@ attribute  name="required" %>
+<%@ attribute  name="required" type="java.lang.Boolean" %>
+<%@ attribute  name="rows" type="java.lang.Integer" %>
 <%@ attribute  name="value" %>
-<%@ attribute  name="rows" %>
+<%@ attribute  name="type" %>
 
-<c:if test="${not empty entity}">
-    <c:set var="value" value="${entity[name]}" />
-</c:if>
-
-<c:if test="${not empty language}">
-    <c:set var="name"  value="${mytl:localizedParamName(name, language)}" />
-    <c:set var="afterLabelText"  value="(${language.code})" />
-</c:if>
-
-<c:set var="id"  value="${mytl:nameToID(name)}" />
-
-<c:if test="${required}">
-    <c:set var="required"  value="required" />
-</c:if>
-
-<div class="mb-3">
-    <label for="${id}" class="form-label ${required}">
-        <fmt:message key="${labelKey}"/>
-        ${afterLabelText}
-    </label>
-    <textarea name="${name}" id="${id}" class="form-control" rows="${rows}"
-              ${required}>${value}</textarea>
-</div>
+<mytags:genericInput name="${name}" labelKey="${labelKey}" entity="${entity}"
+                     language="${language}" value="${value}" required="${required}">
+    <div class="mb-3">
+        <label for="${computedId}" class="form-label ${computedRequired}">
+            ${computedLabelText}
+        </label>
+        <textarea name="${computedName}" id="${computedId}" class="form-control"
+                  rows="${rows}" ${computedRequired}
+        >${computedValue}</textarea>
+    </div>
+</mytags:genericInput>

@@ -13,12 +13,12 @@
                 <fmt:message key="conference.label.eventDate"/>
             </label>
             <input name="eventDate" type="date"  id="event_date" value="${conference.eventDate}"
-                   minz="${minDate}" class="form-control" required />
+                   min="${minDate}" class="form-control" required />
         </div>
 
         <c:if test="${empty isNewEntity}">
             <div class="col-4 md-3">
-                <mytags:inputText name="actuallyAttendedCount"
+                <mytags:inputText name="actuallyAttendedCount" type="number"
                                   labelKey="conference.label.actuallyAttendedCount"
                                   entity="${conference}"
                                   required="${true}" />
@@ -32,7 +32,7 @@
             <c:set var="language" value="${translation.language}" />
             <c:set var="required" value="${translation.language == defaultLanguage}" />
 
-            <div class="col-6 mb-3">
+            <div class="col-lg-6 mb-3">
                 <mytags:inputText name="name" labelKey="conference.label.name"
                                   entity="${translation}" language="${language}"
                                   required="${required}" />
