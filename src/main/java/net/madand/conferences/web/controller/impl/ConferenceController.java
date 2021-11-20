@@ -33,6 +33,7 @@ public class ConferenceController extends AbstractController {
         handlersMap.put(URLManager.URI_CONFERENCE_LIST, this::list);
         handlersMap.put(URLManager.URI_CONFERENCE_CREATE, this::create);
         handlersMap.put(URLManager.URI_CONFERENCE_EDIT, this::edit);
+        handlersMap.put(URLManager.URI_CONFERENCE_DELETE, this::delete);
     }
 
     public ConferenceController(ServletContext servletContext) {
@@ -65,8 +66,8 @@ public class ConferenceController extends AbstractController {
             }
 
             conferenceService.create(conference);
-            // Redirect (PRG) only if the operation was successful.
-            redirect(URLManager.buildURLPreserveQuery(URLManager.URI_CONFERENCE_LIST, request));
+            SessionScope.setFlashMessage(request.getSession(), "Saved successfully", "success");
+            redirect(URLManager.buildURL(URLManager.URI_TALK_LIST, "id=" + conference.getId(), request));
         }
 
         renderView("conference/create", request, response);
@@ -84,7 +85,8 @@ public class ConferenceController extends AbstractController {
             LocalDate eventDate = LocalDate.parse(eventDateStr);
             conference.setEventDate(eventDate);
 
-//            final int  = Integer.parseInt(request.getParameter("id"));
+            final int actuallyAttended = Integer.parseInt(request.getParameter("actuallyAttendedCount"));
+            conference.setActuallyAttendedCount(actuallyAttended);
 
             for (ConferenceTranslation translation : conference.getTranslations()) {
                 final Language lang = translation.getLanguage();
@@ -96,7 +98,7 @@ public class ConferenceController extends AbstractController {
             conferenceService.update(conference);
 
             final HttpSession session = request.getSession();
-            SessionScope.setFlashMessage(session, "Updated successfully", "success");
+            SessionScope.setFlashMessage(session, "Saved successfully", "success");
             redirect((String) session.getAttribute("previousURL"));
         }
 
@@ -114,7 +116,7 @@ public class ConferenceController extends AbstractController {
                 .orElseThrow(HttpNotFoundException::new);
 
         conferenceService.delete(conference);
-        
+
         final HttpSession session = request.getSession();
         SessionScope.setFlashMessage(session, "Deleted successfully", "success");
         redirect((String) session.getAttribute("previousURL"));

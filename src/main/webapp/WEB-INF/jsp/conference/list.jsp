@@ -10,10 +10,6 @@
 </c:set>
 <%@ include file="/WEB-INF/jspf/head.jspf" %>
 
-<%@ page import="net.madand.conferences.auth.EntityFields" %>
-${EntityFields.TEST}
-
-
 <div class="row row-cols-1 row-cols-xl-2">
     <c:forEach items="${conferences}" var="conference">
         <div class="col mb-4">
@@ -43,11 +39,8 @@ ${EntityFields.TEST}
                                          messageKey="form.button.edit"
                                          icon="pencil" />
 
-                    <mytags:actionButton action="delete-conference"
-                                         entityId="${conference.id}"
-                                         buttonType="danger"
-                                         messageKey="form.button.delete"
-                                         icon="trash" />
+                    <mytags:deleteButton action="delete-conference"
+                                         entityId="${conference.id}" />
                 </div>
             </div>
         </div>

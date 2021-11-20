@@ -1,0 +1,14 @@
+<%@ include file="/WEB-INF/jspf/directive/taglib.jspf" %>
+
+<div class="row">
+    <div class="col-12">
+        <button class="btn btn-primary" type="submit" >
+            <i class="bi-save"></i>
+            <fmt:message key="form.button.save"/>
+        </button>
+        <button class="btn btn-warning" type="reset" >
+            <i class="bi-recycle"></i>
+            <fmt:message key="form.button.reset"/>
+        </button>
+    </div>
+</div>

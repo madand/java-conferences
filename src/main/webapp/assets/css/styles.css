@@ -32,3 +32,7 @@ label.required:after {
 .event-location p {
     margin-bottom: 0.5em;
 }
+
+.delete-item-form {
+    display: inline-block;
+}

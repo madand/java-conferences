@@ -6,17 +6,7 @@
 </c:set>
 <%@ include file="/WEB-INF/jspf/head.jspf" %>
 
-<form method="post" action="${requestScope['javax.servlet.forward.request_uri']}">
-    <%@ include file="/WEB-INF/jsp/conference/form.jsp" %>
-
-    <div class="row">
-        <div class="col-12">
-            <button class="btn btn-primary" type="submit" >
-                <fmt:message key="form.button.create"/>
-            </button>
-        </div>
-    </div>
-</form>
-
+<c:set var="isNewEntity" value="${true}" scope="request" />
+<%@ include file="/WEB-INF/jsp/conference/form.jsp" %>
 
 <%@ include file="/WEB-INF/jspf/footer.jspf" %>

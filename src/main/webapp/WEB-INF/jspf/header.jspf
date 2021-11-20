@@ -42,9 +42,6 @@ Header (top area).
                                 </li>
                             </c:otherwise>
                         </c:choose>
-                        <c:if test="">
-
-                        </c:if>
                     </ul>
                 </div>
             </div>

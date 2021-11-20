@@ -1,0 +1,10 @@
+<%@ include file="/WEB-INF/jspf/directive/taglib.jspf" %>
+
+<div class="row">
+    <div class="col-12">
+        <button class="btn btn-primary" type="submit" >
+            <i class="bi-file-earmark-plus"></i>
+            <fmt:message key="form.button.create"/>
+        </button>
+    </div>
+</div>

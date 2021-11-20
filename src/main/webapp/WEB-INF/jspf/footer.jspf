@@ -24,9 +24,6 @@
             <div class="col">
                 <p class="made-by">
                     &copy; 2021 <fmt:message key="author.name"/>
-                    <c:url value="abc">
-                        <c:param name="itemId" value="I1980X"/>
-                    </c:url>
                 </p>
             </div>
         </div>
@@ -34,6 +31,7 @@
 </footer>
 
 <script src="${pageContext.request.contextPath}/assets/js/bootstrap.min.js"></script>
+<script src="${pageContext.request.contextPath}/assets/js/jquery-3.6.0.min.js"></script>
 <script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
 
 <%@ include file="/WEB-INF/jspf/debug.jspf" %>

@@ -1,16 +1,9 @@
 package net.madand.conferences.web.util;
 
 import net.madand.conferences.entity.Conference;
-import net.madand.conferences.web.scope.SessionScope;
-import org.apache.taglibs.standard.resources.Resources;
-import org.apache.taglibs.standard.tag.common.core.ImportSupport;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.PageContext;
-import javax.xml.validation.SchemaFactoryConfigurationError;
 
 public class URLManager {
     private URLManager() {}
@@ -32,10 +25,10 @@ public class URLManager {
     public static final String URI_TALK_DELETE = "delete-talk";
 
     public static String buildURLPreserveQuery(String uri, HttpServletRequest request) {
-        return buildURL(request, uri, request.getQueryString());
+        return buildURL(uri, request.getQueryString(), request);
     }
 
-    public static String buildURL(HttpServletRequest request, String uri, String query) {
+    public static String buildURL(String uri, String query, HttpServletRequest request) {
         String contextPath = request.getContextPath();
         String builtUri = contextPath + ensureLeadingSlash(uri);
         if (query == null) {
@@ -49,7 +42,7 @@ public class URLManager {
     }
 
     public static String makeListTalksURL(HttpServletRequest request, Conference conference) {
-        return buildURL(request, URI_TALK_LIST, "conference_id=" + conference.getId());
+        return buildURL(URI_TALK_LIST, "conference_id=" + conference.getId(), request);
     }
 
     public static String resolveUrl(String url, String context, HttpServletRequest request) throws JspException {
@@ -75,6 +68,6 @@ public class URLManager {
     }
 
     public static String homepage(HttpServletRequest request) {
-        return buildURL(request, URI_CONFERENCE_LIST, null);
+        return buildURL(URI_CONFERENCE_LIST, null, request);
     }
 }

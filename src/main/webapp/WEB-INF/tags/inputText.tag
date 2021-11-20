@@ -5,10 +5,15 @@
 
 <%@ attribute  name="name"  required="true" %>
 <%@ attribute  name="labelKey"  required="true" %>
+<%@ attribute  name="entity" type="java.lang.Object" %>
 <%@ attribute  name="language" type="net.madand.conferences.entity.Language" %>
 <%@ attribute  name="required" %>
 <%@ attribute  name="value" %>
 <%@ attribute  name="type" %>
+
+<c:if test="${not empty entity}">
+    <c:set var="value" value="${entity[name]}" />
+</c:if>
 
 <c:if test="${not empty language}">
     <c:set var="name"  value="${mytl:localizedParamName(name, language)}" />
@@ -30,6 +35,6 @@
         <fmt:message key="${labelKey}"/>
         ${afterLabelText}
     </label>
-    <input name="${name}" type="${type}" value="${value}" id="${id}"
-           class="form-control" ${required} />
+    <input name="${name}" type="${type}" value="${fn:escapeXml(value)}"
+           id="${id}" class="form-control" ${required} />
 </div>
