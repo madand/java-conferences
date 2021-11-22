@@ -99,7 +99,7 @@ public class ConferenceController extends AbstractController {
 
             final HttpSession session = request.getSession();
             SessionScope.setFlashMessage(session, "Saved successfully", "success");
-            redirect((String) session.getAttribute("previousURL"));
+            redirect(URLManager.buildURL(URLManager.URI_TALK_LIST, "id=" + conference.getId(), request));
         }
 
         renderView("conference/edit", request, response);
