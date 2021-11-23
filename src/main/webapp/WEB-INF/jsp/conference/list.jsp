@@ -1,10 +1,6 @@
 <%@ include file="/WEB-INF/jspf/directive/page.jspf" %>
 <%@ include file="/WEB-INF/jspf/directive/taglib.jspf" %>
 
-
-<%@ page import="net.madand.conferences.web.util.URLManager" %>
-<%@ page import="net.madand.conferences.entity.Conference" %>
-
 <c:set var="pageTitle" scope="request">
     <fmt:message key="conference.list.title"/>
 </c:set>

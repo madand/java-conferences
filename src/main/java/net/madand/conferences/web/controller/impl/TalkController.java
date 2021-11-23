@@ -1,6 +1,10 @@
 package net.madand.conferences.web.controller.impl;
 
-import net.madand.conferences.entity.*;
+import net.madand.conferences.entity.Conference;
+import net.madand.conferences.entity.Language;
+import net.madand.conferences.entity.Talk;
+import net.madand.conferences.entity.TalkTranslation;
+import net.madand.conferences.l10n.Languages;
 import net.madand.conferences.service.ServiceException;
 import net.madand.conferences.service.impl.TalkService;
 import net.madand.conferences.web.controller.AbstractController;
@@ -15,9 +19,9 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalTime;
-import java.util.List;
 
 public class TalkController extends AbstractController {
     private final TalkService talkService;
@@ -26,6 +30,8 @@ public class TalkController extends AbstractController {
         // Register the controller's actions.
         handlersMap.put(URLManager.URI_TALK_LIST, this::list);
         handlersMap.put(URLManager.URI_TALK_CREATE, this::create);
+        handlersMap.put(URLManager.URI_TALK_EDIT, this::edit);
+        handlersMap.put(URLManager.URI_TALK_DELETE, this::delete);
     }
 
     public TalkController(ServletContext servletContext) {
@@ -81,5 +87,57 @@ public class TalkController extends AbstractController {
         }
 
         renderView("talk/create", request, response);
+    }
+
+    public void edit(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, ServiceException, HttpRedirectException, HttpNotFoundException {
+        final int id = Integer.parseInt(request.getParameter("id"));
+
+        Talk talk = talkService.findOneWithTranslations(id, Languages.list())
+                .orElseThrow(HttpNotFoundException::new);
+        request.setAttribute("talk", talk);
+
+        request.setAttribute("speakersList", serviceFactory.getUserService().speakersList());
+
+        if ("POST".equals(request.getMethod())) {
+            String speakerIdStr = request.getParameter("speakerId");
+            if (speakerIdStr != null && !speakerIdStr.isEmpty()) {
+                final int speakerId = Integer.parseInt(speakerIdStr);
+                talk.setSpeaker(serviceFactory.getUserService().findById(speakerId)
+                        .orElseThrow(HttpNotFoundException::new));
+            }
+            talk.setStartTime(LocalTime.parse(request.getParameter("startTime")));
+            talk.setDuration(Integer.parseInt(request.getParameter("duration")));
+
+            for (TalkTranslation translation : talk.getTranslations()) {
+                final Language lang = translation.getLanguage();
+                translation.setName(request.getParameter(HtmlSupport.localizedParamName("name", lang)));
+                translation.setDescription(request.getParameter(HtmlSupport.localizedParamName("description", lang)));
+            }
+
+            talkService.update(talk);
+
+            final HttpSession session = request.getSession();
+            SessionScope.setFlashMessage(session, "Saved successfully", "success");
+            redirect(URLManager.buildURL(URLManager.URI_TALK_LIST, "id=" + talk.getConference().getId(), request));
+        }
+
+        renderView("talk/edit", request, response);
+    }
+
+    public void delete(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, ServiceException, HttpRedirectException, HttpNotFoundException {
+        if (!"POST".equals(request.getMethod())) {
+            response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+            return;
+        }
+
+        final int id = Integer.parseInt(request.getParameter("id"));
+        Talk talk = talkService.findOne(id)
+                .orElseThrow(HttpNotFoundException::new);
+
+        talkService.delete(talk);
+
+        final HttpSession session = request.getSession();
+        SessionScope.setFlashMessage(session, "Deleted successfully", "success");
+        redirect((String) session.getAttribute("previousURL"));
     }
 }

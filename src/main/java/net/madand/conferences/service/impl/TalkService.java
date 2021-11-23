@@ -11,6 +11,7 @@ import net.madand.conferences.service.ServiceException;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Optional;
 
 public class TalkService extends AbstractService {
     public TalkService(DataSource dataSource) {
@@ -22,6 +23,29 @@ public class TalkService extends AbstractService {
                 connection -> TalkDao.findAll(connection, conference, language),
                 "Error fetching talks"
         );
+    }
+
+    public Optional<Talk> findOneWithTranslations(int id, List<Language> languages) throws ServiceException {
+        return callNoTransaction(
+                connection -> {
+                    Optional<Talk> talkOptional = TalkDao.findOne(connection, id);
+                    if (talkOptional.isPresent()) {
+                        final Talk talk = talkOptional.get();
+                        for (Language language : languages) {
+                            TalkTranslationDao.findOne(connection, talk, language)
+                                    .ifPresent(talk::addTranslation);
+                        }
+                    }
+
+                    return talkOptional;
+                },
+                "Error fetching talks");
+    }
+
+    public Optional<Talk> findOne(int id) throws ServiceException {
+        return callNoTransaction(
+                connection -> TalkDao.findOne(connection, id),
+                "Error fetching talk");
     }
 
     public void create(Talk talk) throws ServiceException {

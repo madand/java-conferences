@@ -33,14 +33,12 @@ public class ConferenceService extends AbstractService {
         return callNoTransaction(
                 connection -> {
                     Optional<Conference> conferenceOptional = ConferenceDao.findOne(connection, id);
-                    if (!conferenceOptional.isPresent()) {
-                        return conferenceOptional;
-                    }
-
-                    final Conference conference = conferenceOptional.get();
-                    for (Language language : languages) {
-                        ConferenceTranslationDao.findOne(connection, conference, language)
-                                .ifPresent(conference::addTranslation);
+                    if (conferenceOptional.isPresent()) {
+                        final Conference conference = conferenceOptional.get();
+                        for (Language language : languages) {
+                            ConferenceTranslationDao.findOne(connection, conference, language)
+                                    .ifPresent(conference::addTranslation);
+                        }
                     }
 
                     return conferenceOptional;

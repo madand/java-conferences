@@ -22,10 +22,15 @@ public class TalkTranslationDao {
 
     public static Optional<TalkTranslation> findOne(Connection conn, Talk talk, Language language) throws SQLException {
         return QueryHelper.findOne(conn, FIND_ONE, stmt -> {
-                    stmt.setInt(1, talk.getId());
-                    stmt.setInt(2, language.getId());
-                },
-                TalkTranslationDao::mapRow);
+                            stmt.setInt(1, talk.getId());
+                            stmt.setInt(2, language.getId());
+                        },
+                        TalkTranslationDao::mapRow)
+                .map(translation -> {
+                    translation.setTalk(talk);
+                    translation.setLanguage(language);
+                    return translation;
+                });
     }
 
     public static void insert(Connection conn, TalkTranslation talkTranslation) throws SQLException {

@@ -50,8 +50,13 @@ public class TalkDao {
 
     public static Optional<Talk> findOne(Connection conn, int id) throws SQLException {
         return QueryHelper.findOne(conn, FIND_ONE,
-                stmt -> stmt.setInt(1, id),
-                makeRowMapper(conn));
+                        stmt -> stmt.setInt(1, id),
+                        rs -> {
+                            Talk talk = makeRowMapper(conn).mapRow(rs);
+                            talk.setConference(
+                                    ConferenceDao.findOne(conn, rs.getInt(Fields.CONFERENCE_ID)).get());
+                            return talk;
+                        });
     }
 
     public static void insert(Connection conn, Talk talk) throws SQLException {
