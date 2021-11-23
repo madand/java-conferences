@@ -1,18 +1,18 @@
 * Implementation plan for Conferences
 
-** Basic functionality [3/4]
+** Basic functionality [4/4]
 
 - [X] DB schema
-- [ ] DB demo data
+- [X] DB demo data
 - [X] Logging setup
 - [X] App (ServletContext) initialization
 
-** Required features [5/12]
+** Required features [7/12]
 
 - [X] Conferences list page (home page)
-- [ ] Detailed view of a conference (talks list page)
+- [X] Detailed view of a conference (talks list page)
 - [X] Login page
-- [ ] Registration page
+- [X] Registration page
 - [X] DB localization
 - [X] UI localization
 - [X] Password encryption
@@ -31,9 +31,9 @@
 - [ ] Pagination
 - [ ] Sort conferences by date, talks count, attendees count
 
-** Additional features [0/3]
+** Additional features [1/5]
 
-- [ ] Save selected language in a cookie
+- [X] Save selected language in a cookie
 - [ ] Save selected language in the DB
 - [ ] Email notifications
 - [ ] CAPTCHA on registration
