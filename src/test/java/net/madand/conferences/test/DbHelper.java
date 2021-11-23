@@ -41,7 +41,7 @@ public class DbHelper {
     }
 
     public void truncateDbTables() throws IOException, SQLException {
-        Reader reader = Resources.getResourceAsReader(DbInflator.SQL_TRUNCATE_ALL_TABLES_FILE);
+        Reader reader = Resources.getResourceAsReader(DbInflator.TRUNCATE_ALL_TABLES_FILE);
         connection.setAutoCommit(false);
         ScriptRunner scriptRunner = new ScriptRunner(connection);
         scriptRunner.setLogWriter(null);
