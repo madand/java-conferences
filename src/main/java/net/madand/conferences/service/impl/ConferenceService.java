@@ -40,7 +40,7 @@ public class ConferenceService extends AbstractService {
                     final Conference conference = conferenceOptional.get();
                     for (Language language : languages) {
                         ConferenceTranslationDao.findOne(connection, conference, language)
-                                .ifPresent(conference::getTranslations);
+                                .ifPresent(conference::addTranslation);
                     }
 
                     return conferenceOptional;

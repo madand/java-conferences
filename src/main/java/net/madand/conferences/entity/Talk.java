@@ -1,8 +1,12 @@
 package net.madand.conferences.entity;
 
+import net.madand.conferences.l10n.Languages;
+
 import java.io.Serializable;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Talk implements Serializable {
@@ -16,6 +20,8 @@ public class Talk implements Serializable {
     private LocalTime startTime;
     private int duration;
     private LocalTime endTime;
+
+    private final List<TalkTranslation> translations = new ArrayList<>();
 
     // The following properties are only set when fetching data from v_conference view.
     private String name;
@@ -35,6 +41,15 @@ public class Talk implements Serializable {
         talk.setSpeaker(speaker);
         talk.setStartTime(startTime);
         talk.setDuration(duration);
+        return talk;
+    }
+
+    public static Talk makeInstanceWithTranslations(Conference conference) {
+        final Talk talk = new Talk();
+        talk.setConference(conference);
+        Languages.list().stream()
+                .map(language -> TalkTranslation.makeInstance(talk, language))
+                .forEach(talk::addTranslation);
         return talk;
     }
 
@@ -112,6 +127,14 @@ public class Talk implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<TalkTranslation> getTranslations() {
+        return translations;
+    }
+
+    public void addTranslation(TalkTranslation translation) {
+        translations.add(translation);
     }
 
     /**

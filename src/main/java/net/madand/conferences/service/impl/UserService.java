@@ -1,11 +1,13 @@
 package net.madand.conferences.service.impl;
 
+import net.madand.conferences.auth.Role;
 import net.madand.conferences.db.dao.UserDao;
 import net.madand.conferences.entity.User;
 import net.madand.conferences.service.AbstractService;
 import net.madand.conferences.service.ServiceException;
 
 import javax.sql.DataSource;
+import java.util.List;
 import java.util.Optional;
 
 public class UserService extends AbstractService {
@@ -43,5 +45,12 @@ public class UserService extends AbstractService {
         runWithinTransaction(
                 connection -> UserDao.delete(connection, user),
                 "Failed to delete the user from the database");
+    }
+
+    public List<User> speakersList() throws ServiceException {
+        return callNoTransaction(
+                connection -> UserDao.findAllByRole(connection, Role.SPEAKER),
+                "Failed to fetch the speakers list"
+        );
     }
 }

@@ -6,11 +6,12 @@
 
 <%@ attribute  name="action"  required="true" %>
 <%@ attribute  name="entityId"  required="true" %>
+<%@ attribute  name="icon" %>
 
 <c:url var="actionUrl" value="${action}">
     <c:param name="id" value="${entityId}" />
 </c:url>
 
 <form method="post" action="${actionUrl}" class="delete-item-form">
-    <mytags:buttonSubmit labelKey="form.button.delete" btnClass="danger" />
+    <mytags:buttonSubmit labelKey="form.button.delete" btnClass="danger" icon="${icon}" />
 </form>

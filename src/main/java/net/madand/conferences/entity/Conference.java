@@ -42,7 +42,7 @@ public class Conference implements Serializable {
         final Conference conference = new Conference();
         Languages.list().stream()
                 .map(language -> ConferenceTranslation.makeInstance(conference, language))
-                .forEach(conference::getTranslations);
+                .forEach(conference::addTranslation);
         return conference;
     }
 
@@ -114,7 +114,7 @@ public class Conference implements Serializable {
         return translations;
     }
 
-    public void getTranslations(ConferenceTranslation translation) {
+    public void addTranslation(ConferenceTranslation translation) {
         translations.add(translation);
     }
 

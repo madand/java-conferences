@@ -32,15 +32,6 @@
                                          buttonType="success"
                                          messageKey="conference.list.button.details"
                                          icon="eye" />
-
-                    <mytags:actionButton action="edit-conference"
-                                         entityId="${conference.id}"
-                                         buttonType="primary"
-                                         messageKey="form.button.edit"
-                                         icon="pencil" />
-
-                    <mytags:deleteButton action="delete-conference"
-                                         entityId="${conference.id}" />
                 </div>
             </div>
         </div>

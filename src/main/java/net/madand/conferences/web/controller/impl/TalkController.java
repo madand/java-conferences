@@ -1,13 +1,14 @@
 package net.madand.conferences.web.controller.impl;
 
-import net.madand.conferences.entity.Conference;
-import net.madand.conferences.entity.Language;
+import net.madand.conferences.entity.*;
 import net.madand.conferences.service.ServiceException;
 import net.madand.conferences.service.impl.TalkService;
 import net.madand.conferences.web.controller.AbstractController;
 import net.madand.conferences.web.controller.exception.HttpNotFoundException;
+import net.madand.conferences.web.controller.exception.HttpRedirectException;
 import net.madand.conferences.web.scope.ContextScope;
 import net.madand.conferences.web.scope.SessionScope;
+import net.madand.conferences.web.util.HtmlSupport;
 import net.madand.conferences.web.util.URLManager;
 
 import javax.servlet.ServletContext;
@@ -15,19 +16,21 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalTime;
+import java.util.List;
 
 public class TalkController extends AbstractController {
-    private final TalkService service;
+    private final TalkService talkService;
 
     {
         // Register the controller's actions.
         handlersMap.put(URLManager.URI_TALK_LIST, this::list);
-//            handlersMap.put(URLManager.URI_TALK_CREATE, this::create);
+        handlersMap.put(URLManager.URI_TALK_CREATE, this::create);
     }
 
     public TalkController(ServletContext servletContext) {
         super(servletContext);
-        service = ContextScope.getServiceFactory(servletContext).getTalkService();
+        talkService = ContextScope.getServiceFactory(servletContext).getTalkService();
     }
 
     public void list(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException, HttpNotFoundException {
@@ -38,8 +41,45 @@ public class TalkController extends AbstractController {
                 .orElseThrow(HttpNotFoundException::new);
 
         request.setAttribute("conference", conference);
-        request.setAttribute("talks", service.findAllTranslated(conference, currentLanguage));
+        request.setAttribute("talks", talkService.findAllTranslated(conference, currentLanguage));
 
         renderView("talk/list", request, response);
+    }
+
+    public void create(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, ServiceException, HttpRedirectException, HttpNotFoundException {
+        final Language currentLanguage = SessionScope.getCurrentLanguage(request.getSession());
+        final int conferenceId = Integer.parseInt(request.getParameter("id"));
+
+        Conference conference = serviceFactory.getConferenceService().findOne(conferenceId, currentLanguage)
+                .orElseThrow(HttpNotFoundException::new);
+        request.setAttribute("conference", conference);
+
+        Talk talk = Talk.makeInstanceWithTranslations(conference);
+        request.setAttribute("talk", talk);
+
+        request.setAttribute("speakersList", serviceFactory.getUserService().speakersList());
+
+        if ("POST".equals(request.getMethod())) {
+            String speakerIdStr = request.getParameter("speakerId");
+            if (speakerIdStr != null && !speakerIdStr.isEmpty()) {
+                final int speakerId = Integer.parseInt(speakerIdStr);
+                talk.setSpeaker(serviceFactory.getUserService().findById(speakerId)
+                        .orElseThrow(HttpNotFoundException::new));
+            }
+            talk.setStartTime(LocalTime.parse(request.getParameter("startTime")));
+            talk.setDuration(Integer.parseInt(request.getParameter("duration")));
+
+            for (TalkTranslation translation : talk.getTranslations()) {
+                final Language lang = translation.getLanguage();
+                translation.setName(request.getParameter(HtmlSupport.localizedParamName("name", lang)));
+                translation.setDescription(request.getParameter(HtmlSupport.localizedParamName("description", lang)));
+            }
+
+            talkService.create(talk);
+            SessionScope.setFlashMessage(request.getSession(), "Saved successfully", "success");
+            redirect(URLManager.buildURL(URLManager.URI_TALK_LIST, "id=" + conference.getId(), request));
+        }
+
+        renderView("talk/create", request, response);
     }
 }

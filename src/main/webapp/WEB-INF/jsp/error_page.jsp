@@ -19,9 +19,9 @@
 
                     <h3>${pageContext.errorData.statusCode}</h3>
                     <h3>${pageContext.errorData.requestURI}</h3>
-                    <h3>${requestScope['javax.servlet.error.message']}</h3>
+                    <h3>${fn:escapeXml(requestScope['javax.servlet.error.message'])}</h3>
 
-                    <h3>${pageContext.exception}</h3>
+                    <h3>${fn:escapeXml(pageContext.exception)}</h3>
 
                     <p>
                         <c:forEach var="stackTraceEl" items="${pageContext.exception.stackTrace}">

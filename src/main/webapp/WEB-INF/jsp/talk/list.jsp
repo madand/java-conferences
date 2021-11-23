@@ -10,6 +10,22 @@
 </c:set>
 <%@ include file="/WEB-INF/jspf/head.jspf" %>
 
+<div class="actions">
+    <mytags:actionButton action="edit-conference"
+                         entityId="${conference.id}"
+                         buttonType="primary"
+                         messageKey="form.button.edit"
+                         icon="pencil" />
+    <mytags:deleteButton action="delete-conference"
+                         entityId="${conference.id}"
+                         icon="trash" />
+    <mytags:actionButton action="create-talk"
+                         entityId="${conference.id}"
+                         buttonType="success"
+                         messageKey="form.button.createTalk"
+                         icon="plus-circle" />
+</div>
+
 <div class="row">
     <div class="col mb-4">
         <p class="text-muted event-date">

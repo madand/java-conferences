@@ -16,6 +16,20 @@ public class TalkTranslation implements Serializable {
      *
      * @param talk
      * @param language
+     * @return
+     */
+    public static TalkTranslation makeInstance(Talk talk, Language language) {
+        TalkTranslation talkTranslation = new TalkTranslation();
+        talkTranslation.setTalk(talk);
+        talkTranslation.setLanguage(language);
+        return talkTranslation;
+    }
+
+    /**
+     * Static factory of {@link TalkTranslation} instances.
+     *
+     * @param talk
+     * @param language
      * @param name
      * @param description
      * @return
