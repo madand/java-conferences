@@ -16,7 +16,7 @@ public class ContextScope {
     private static final String DEFAULT_LANGUAGE = "defaultLanguage";
 
     private static final Logger log = Logger.getLogger(ContextScope.class);
-    private static final ScopeHelper support = new ScopeHelper(log);
+    private static final ScopeSupport support = new ScopeSupport(log);
 
     private ContextScope() {}
 

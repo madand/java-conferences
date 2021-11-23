@@ -51,7 +51,7 @@ public class HttpRouter extends HttpServlet {
      */
     private void process(HttpServletRequest request,
                          HttpServletResponse response) throws IOException, ServletException {
-        log.trace("HttpRouter process begin");
+        log.trace("HttpRouter process began");
 
         boolean handled = false;
         for (Controller controller : controllers) {
@@ -62,22 +62,19 @@ public class HttpRouter extends HttpServlet {
                 }
             } catch (ServiceException e) {
                 log.error(e);
-                response.sendError(500, e.getMessage());
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
                 return;
             } catch (HttpRedirectException e) {
                 response.sendRedirect(response.encodeRedirectURL(e.getUrl()));
                 return;
             } catch (HttpNotFoundException e) {
-                response.sendError(404);
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
                 return;
             }
         }
 
-//        handled = true;
-//        request.getRequestDispatcher("/WEB-INF/jsp/index.jsp").forward(request, response);
-
         if (!handled) {
-            response.sendError(404);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
     }
 }

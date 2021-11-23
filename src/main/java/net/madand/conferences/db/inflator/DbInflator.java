@@ -156,9 +156,6 @@ public class DbInflator {
                 }
             }
         }
-//
-//        Talk talk= Talk.makeInstance(conference1, speaker1, LocalTime.of(10, 0), LocalTime.of(10, 45));
-//        TalkDao.insert(connection, talk);
     }
 
     private final SecureRandom rng = new SecureRandom();
@@ -174,7 +171,7 @@ public class DbInflator {
                         conference,
                         speakers.get(rng.nextInt(speakers.size())),
                         LocalTime.of(12 + i, 00),
-                        20 + rng.nextInt(31)
+                        20 + rng.nextInt(4) * 10
                 );
                 TalkDao.insert(connection, talk);
 

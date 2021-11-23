@@ -23,6 +23,12 @@ Top Navigation (main menu).
                         <li class="nav-item">
                             <a class="nav-link" href="${baseURI}/create-conference">New Conf</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="${baseURI}/users">Users</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="${baseURI}/edit-user">Edit Profile</a>
+                        </li>
 
                         <c:choose>
                             <c:when test="${empty user}">

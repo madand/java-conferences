@@ -16,7 +16,7 @@ public class SessionScope {
     public static final String PREVIOUS_URL = "previousURL";
 
     private static final Logger log = Logger.getLogger(SessionScope.class);
-    private static final ScopeHelper support = new ScopeHelper(log);
+    private static final ScopeSupport support = new ScopeSupport(log);
 
     private SessionScope() {}
 
@@ -40,6 +40,18 @@ public class SessionScope {
 
     public static void removeCurrentUserId(HttpSession session) {
         support.removeAttributeAndLog(session, CURRENT_USER_ID);
+    }
+
+    public static void setFlashMessageSuccess(HttpSession session, String message) {
+        setFlashMessage(session, message, "success");
+    }
+
+    public static void setFlashMessageError(HttpSession session, String message) {
+        setFlashMessage(session, message, "danger");
+    }
+
+    public static void setFlashMessageInfo(HttpSession session, String message) {
+        setFlashMessage(session, message, "info");
     }
 
     public static void setFlashMessage(HttpSession session, String message, String type) {

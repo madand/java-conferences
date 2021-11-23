@@ -65,7 +65,7 @@ public class ConferenceController extends AbstractController {
             }
 
             conferenceService.create(conference);
-            SessionScope.setFlashMessage(request.getSession(), "Saved successfully", "success");
+            SessionScope.setFlashMessageSuccess(request.getSession(), "Saved successfully");
             redirect(URLManager.buildURL(URLManager.URI_TALK_LIST, "id=" + conference.getId(), request));
         }
 
@@ -97,7 +97,7 @@ public class ConferenceController extends AbstractController {
             conferenceService.update(conference);
 
             final HttpSession session = request.getSession();
-            SessionScope.setFlashMessage(session, "Saved successfully", "success");
+            SessionScope.setFlashMessageSuccess(session, "Saved successfully");
             redirect(URLManager.buildURL(URLManager.URI_TALK_LIST, "id=" + conference.getId(), request));
         }
 
@@ -117,7 +117,7 @@ public class ConferenceController extends AbstractController {
         conferenceService.delete(conference);
 
         final HttpSession session = request.getSession();
-        SessionScope.setFlashMessage(session, "Deleted successfully", "success");
+        SessionScope.setFlashMessageSuccess(session, "Deleted successfully");
         redirect((String) session.getAttribute("previousURL"));
     }
 }

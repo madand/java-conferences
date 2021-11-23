@@ -8,10 +8,10 @@ import javax.servlet.http.HttpSession;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-class ScopeHelper {
+class ScopeSupport {
     private final Logger logger;
 
-    public ScopeHelper(Logger logger) {
+    public ScopeSupport(Logger logger) {
         this.logger = logger;
     }
 

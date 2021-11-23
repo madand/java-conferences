@@ -30,6 +30,8 @@ public class UserController extends AbstractController {
         handlersMap.put(URLManager.URI_USER_LOGOUT, this::logout);
         handlersMap.put(URLManager.URI_USER_REGISTER, this::register);
         handlersMap.put(URLManager.URI_USER_DELETE, this::delete);
+        handlersMap.put(URLManager.URI_USER_EDIT, this::edit);
+        handlersMap.put(URLManager.URI_USER_CHANGE_PASSWORD, this::changePassword);
     }
 
     public UserController(ServletContext servletContext) {
@@ -53,14 +55,14 @@ public class UserController extends AbstractController {
                 User user = userOptional.get();
                 if (PasswordHelper.checkPassword(bean.getPassword(), user.getPasswordHash())) {
                     SessionScope.setCurrentUserId(session, user.getId());
-                    SessionScope.setFlashMessage(session,
-                            String.format("Successfully logged in as %s.", user.getRealName()), "success");
+                    SessionScope.setFlashMessageSuccess(session,
+                            String.format("Successfully logged in as %s.", user.getRealName()));
 
                     redirect(URLManager.homepage(request));
                 }
             }
 
-            SessionScope.setFlashMessage(session, "Invalid login or password", "danger");
+            SessionScope.setFlashMessageError(session, "Invalid login or password");
         }
 
         renderView("user/login", request, response);
@@ -84,21 +86,44 @@ public class UserController extends AbstractController {
                 user.setPassword(password);
                 userService.create(user);
                 SessionScope.setCurrentUserId(session, user.getId());
-                SessionScope.setFlashMessage(session,
-                        String.format("Successfully registered as %s.", user.getRealName()), "success");
+                SessionScope.setFlashMessageSuccess(session,
+                        String.format("Successfully registered as %s.", user.getRealName()));
 
                 redirect(URLManager.homepage(request));
             } else {
-                SessionScope.setFlashMessage(session, "Entered passwords are not the same", "error");
+                SessionScope.setFlashMessageError(session, "Entered passwords are not the same");
             }
-
-//            SessionScope.setFlashMessage(session, "Invalid login or password", "danger");
         }
 
         renderView("user/register", request, response);
     }
 
-    public void delete(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, ServiceException, HttpRedirectException, HttpNotFoundException {
+    private void edit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException, HttpRedirectException {
+        final Optional<User> userOptional = RequestScope.getUser(request);
+        if (!userOptional.isPresent()) {
+            // If no user is logged in, just show them the home page.
+            redirect(URLManager.homepage(request));
+        }
+
+        User user = userOptional.get();
+        request.setAttribute("bean", user);
+
+        if ("POST".equals(request.getMethod())) {
+            final HttpSession session = request.getSession();
+
+            user.setEmail(request.getParameter("email"));
+            user.setRealName(request.getParameter("realName"));
+
+            userService.update(user);
+
+            SessionScope.setFlashMessageSuccess(session, "Successfully updated user profile");
+            redirect(URLManager.homepage(request));
+        }
+
+        renderView("user/edit", request, response);
+    }
+
+    private void delete(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, ServiceException, HttpRedirectException, HttpNotFoundException {
         if (!"POST".equals(request.getMethod())) {
             response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
             return;
@@ -109,7 +134,7 @@ public class UserController extends AbstractController {
 
         userService.delete(user);
         final HttpSession session = request.getSession();
-        SessionScope.setFlashMessage(session, "Deleted successfully", "success");
+        SessionScope.setFlashMessageSuccess(session, "Successfully deleted user profile");
 
         // Also, logout the user.
         logout(request, response);
@@ -124,5 +149,37 @@ public class UserController extends AbstractController {
         SessionScope.removeCurrentUserId(request.getSession());
 
         redirect(URLManager.homepage(request));
+    }
+
+    private void changePassword(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException, HttpRedirectException {
+        final Optional<User> userOptional = RequestScope.getUser(request);
+        if (!userOptional.isPresent()) {
+            // If no user is logged in, just show them the home page.
+            redirect(URLManager.homepage(request));
+        }
+
+        User user = userOptional.get();
+        request.setAttribute("bean", user);
+
+        if ("POST".equals(request.getMethod())) {
+            final HttpSession session = request.getSession();
+
+            String password = Optional.ofNullable(request.getParameter("password")).orElse("");
+            String passwordNew = Optional.ofNullable(request.getParameter("passwordNew")).orElse("");
+            String passwordNewRepeat = Optional.ofNullable(request.getParameter("passwordNewRepeat")).orElse("");
+
+            if (PasswordHelper.checkPassword(password, user.getPasswordHash())
+                    && passwordNew.equals(passwordNewRepeat)) {
+                user.setPassword(passwordNew);
+                userService.update(user);
+                SessionScope.setFlashMessageSuccess(session, "Successfully changed password");
+
+                redirect(URLManager.buildURL(URLManager.URI_USER_EDIT, null, request));
+            } else {
+                SessionScope.setFlashMessageError(session, "Entered passwords are not the same");
+            }
+        }
+
+        renderView("user/changePassword", request, response);
     }
 }

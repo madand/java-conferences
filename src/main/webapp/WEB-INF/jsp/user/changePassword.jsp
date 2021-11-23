@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/jspf/directive/taglib.jspf" %>
 
 <c:set var="pageTitle" scope="request">
-    <fmt:message key="user.register.title"/>
+    <fmt:message key="user.changePassword.title"/>
 </c:set>
 <%@ include file="/WEB-INF/jspf/head.jspf" %>
 
@@ -11,30 +11,23 @@
         <form method="post" action="${requestScope['javax.servlet.forward.request_uri']}">
             <div class="row">
                 <div class="col">
-                    <mytags:inputText name="email" labelKey="user.label.email"
-                                      type="email"
-                                      value="${bean.email}" required="true" />
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <mytags:inputText name="realName" labelKey="user.label.realName"
-                                      type="text"
-                                      value="${bean.realName}" required="true" />
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <mytags:inputText name="password" labelKey="user.label.passwordNew"
+                    <mytags:inputText name="password" labelKey="user.label.password"
                                       type="password"
-                                      value=""  required="true" />
+                                      value="" required="true" />
                 </div>
             </div>
             <div class="row">
                 <div class="col">
-                    <mytags:inputText name="passwordRepeat" labelKey="user.label.passwordNewRepeat"
+                    <mytags:inputText name="passwordNew" labelKey="user.label.passwordNew"
                                       type="password"
-                                      value=""  required="true" />
+                                      value="" required="true" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <mytags:inputText name="passwordNewRepeat" labelKey="user.label.passwordNewRepeat"
+                                      type="password"
+                                      value="" required="true" />
                 </div>
             </div>
 
