@@ -161,7 +161,7 @@ public class DbInflator {
 //        TalkDao.insert(connection, talk);
     }
 
-    private SecureRandom rng = new SecureRandom();
+    private final SecureRandom rng = new SecureRandom();
 
     private void generateTalks() throws SQLException {
         final List<Conference> conferences = ConferenceDao.findAll(connection);

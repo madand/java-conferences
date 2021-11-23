@@ -1,27 +1,21 @@
 <%@ include file="/WEB-INF/jspf/directive/taglib.jspf" %>
 
-
 <c:url var="actionUrl" value="${requestScope['javax.servlet.forward.servlet_path']}">
     <c:param name="id" value="${conference.id}" />
 </c:url>
 <form method="post" action="${actionUrl}">
     <div class="row">
         <div class="col-4 mb-3">
-            <jsp:useBean id="now" class="java.util.Date" />
-            <fmt:formatDate var="minDate" value="${now}" pattern="yyyy-MM-dd"/>
-            <label for="event_date" class="form-label">
-                <fmt:message key="conference.label.eventDate"/>
-            </label>
-            <input name="eventDate" type="date"  id="event_date" value="${conference.eventDate}"
-                   min="${minDate}" class="form-control" required />
+            <mytags:inputText name="eventDate" type="date"
+                              labelKey="conference.label.eventDate"
+                              entity="${conference}" required="true" />
         </div>
 
         <c:if test="${empty isNewEntity}">
-            <div class="col-4 md-3">
+            <div class="col-4 mb-3">
                 <mytags:inputText name="actuallyAttendedCount" type="number"
                                   labelKey="conference.label.actuallyAttendedCount"
-                                  entity="${conference}"
-                                  required="${true}" />
+                                  entity="${conference}" required="${true}" />
             </div>
         </c:if>
 

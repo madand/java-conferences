@@ -18,7 +18,7 @@ public class Conference implements Serializable {
     private LocalDate eventDate;
     private int actuallyAttendedCount;
 
-    private List<ConferenceTranslation> translations = new ArrayList<>();
+    private final List<ConferenceTranslation> translations = new ArrayList<>();
 
     // The following properties are only set when fetching data from v_conference view.
     private String name;

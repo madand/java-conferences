@@ -73,11 +73,11 @@ public class ConferenceService extends AbstractService {
                         ConferenceTranslationDao.update(connection, translation);
                     }
                 },
-                "Failed to save the conference into the database");
+                "Failed to update the conference in the database");
     }
 
     public void delete(Conference conference) throws ServiceException {
         runWithinTransaction(connection -> ConferenceDao.delete(connection, conference),
-                "Failed to save the conference into the database");
+                "Failed to delete the conference from the database");
     }
 }

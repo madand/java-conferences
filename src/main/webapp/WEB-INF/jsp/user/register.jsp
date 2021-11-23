@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/jspf/directive/taglib.jspf" %>
 
 <c:set var="pageTitle" scope="request">
-    <fmt:message key="user.login.title"/>
+    <fmt:message key="user.register.title"/>
 </c:set>
 <%@ include file="/WEB-INF/jspf/head.jspf" %>
 
@@ -18,7 +18,21 @@
             </div>
             <div class="row">
                 <div class="col">
+                    <mytags:inputText name="realName" labelKey="user.label.realName"
+                                      type="text"
+                                      value="${bean.realName}" required="true" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
                     <mytags:inputText name="password" labelKey="user.label.password"
+                                      type="password"
+                                      value="" required="true" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <mytags:inputText name="passwordRepeat" labelKey="user.label.passwordRepeat"
                                       type="password"
                                       value="" required="true" />
                 </div>
@@ -26,15 +40,7 @@
 
             <div class="row">
                 <div class="col">
-                    <mytags:buttonSubmit labelKey="form.button.login" />
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <c:url var="registerUrl" value="/register"/>
-                    <a href="${registerUrl}">
-                        <fmt:message key="user.register.linkText"/>
-                    </a>
+                    <mytags:buttonSubmit labelKey="form.button.register" />
                 </div>
             </div>
         </form>

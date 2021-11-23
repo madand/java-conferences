@@ -5,7 +5,7 @@ package net.madand.conferences.web.controller.exception;
  * rendering the view.
  */
 public class HttpRedirectException extends Exception {
-    private String url;
+    private final String url;
 
     public HttpRedirectException(String url) {
         this.url = url;

@@ -6,9 +6,10 @@
     <%@ include file="/WEB-INF/jspf/head.jspf" %>
 
     <body>
+        <c:url value="/rel-path">
+            <c:param name="id" value="11" />
+        </c:url>
 
         <%@ include file="/WEB-INF/jspf/footer.jspf" %>
-
-        <%@ include file="/WEB-INF/jspf/debug.jspf" %>
     </body>
 </html>

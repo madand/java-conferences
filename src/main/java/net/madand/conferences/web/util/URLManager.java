@@ -1,7 +1,5 @@
 package net.madand.conferences.web.util;
 
-import net.madand.conferences.entity.Conference;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 
@@ -11,6 +9,7 @@ public class URLManager {
     public static final String URI_USER_LOGIN = "login";
     public static final String URI_USER_REGISTER = "register";
     public static final String URI_USER_LOGOUT = "logout";
+    public static final String URI_USER_DELETE = "delete-user";
 
     public static final String URI_CONFERENCE_LIST = "";
     public static final String URI_CONFERENCE_VIEW = "view-conference";
@@ -31,7 +30,7 @@ public class URLManager {
     public static String buildURL(String uri, String query, HttpServletRequest request) {
         String contextPath = request.getContextPath();
         String builtUri = contextPath + ensureLeadingSlash(uri);
-        if (query == null) {
+        if (query == null || query.isEmpty()) {
             return builtUri;
         }
         return builtUri + "?" + query;
@@ -41,30 +40,27 @@ public class URLManager {
         return uri.startsWith("/") ? uri : "/" + uri;
     }
 
-    public static String makeListTalksURL(HttpServletRequest request, Conference conference) {
-        return buildURL(URI_TALK_LIST, "conference_id=" + conference.getId(), request);
-    }
-
     public static String resolveUrl(String url, String context, HttpServletRequest request) throws JspException {
         // normalize relative URLs against a context root
         if (context == null) {
-            if (url.startsWith("/"))
-                return (request.getContextPath() + url);
-            else
-                return url;
-        } else {
-            if (!context.startsWith("/") || !url.startsWith("/")) {
-                throw new RuntimeException("Bad relative path.");
+            if (url.startsWith("/")) {
+                return request.getContextPath() + url;
             }
-            if (context.equals("/")) {
-                // Don't produce string starting with '//', many
-                // browsers interpret this as host name, not as
-                // path on same host.
-                return url;
-            } else {
-                return (context + url);
-            }
+            return url;
         }
+
+        if (!context.startsWith("/") || !url.startsWith("/")) {
+            throw new RuntimeException("Bad relative path.");
+        }
+
+        if (context.equals("/")) {
+            // Don't produce string starting with '//', many
+            // browsers interpret this as host name, not as
+            // path on same host.
+            return url;
+        }
+
+        return context + url;
     }
 
     public static String homepage(HttpServletRequest request) {

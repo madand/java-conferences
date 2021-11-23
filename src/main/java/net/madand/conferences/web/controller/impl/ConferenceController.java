@@ -1,6 +1,5 @@
 package net.madand.conferences.web.controller.impl;
 
-import net.madand.conferences.db.Fields;
 import net.madand.conferences.entity.Conference;
 import net.madand.conferences.entity.ConferenceTranslation;
 import net.madand.conferences.entity.Language;

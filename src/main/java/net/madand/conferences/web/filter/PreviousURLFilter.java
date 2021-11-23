@@ -1,5 +1,6 @@
 package net.madand.conferences.web.filter;
 
+import net.madand.conferences.web.scope.SessionScope;
 import net.madand.conferences.web.util.URLManager;
 import org.apache.log4j.Logger;
 
@@ -23,13 +24,13 @@ public class PreviousURLFilter implements Filter {
         log.trace("PreviousURLFilter started");
 
         final HttpServletRequest httpRequest = (HttpServletRequest) request;
-        if (((HttpServletResponse) response).getStatus() != 200) {
+        if (((HttpServletResponse) response).getStatus() != HttpServletResponse.SC_OK) {
             return;
         }
 
         final HttpSession session = httpRequest.getSession();
         if ("GET".equals(httpRequest.getMethod()) && httpRequest.getParameter("lang") == null) {
-            session.setAttribute("previousURL",
+            SessionScope.setPreviousUrl(session,
                     URLManager.buildURLPreserveQuery(httpRequest.getServletPath(), httpRequest));
         }
     }

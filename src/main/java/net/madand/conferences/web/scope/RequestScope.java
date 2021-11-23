@@ -4,6 +4,7 @@ import net.madand.conferences.entity.User;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletRequest;
+import java.util.Optional;
 
 /**
  * Convenience accessors for request attributes.
@@ -16,8 +17,8 @@ public class RequestScope {
 
     private RequestScope() {}
 
-    public static User getUser(ServletRequest request) {
-        return (User) request.getAttribute(USER);
+    public static Optional<User> getUser(ServletRequest request) {
+        return Optional.ofNullable((User) request.getAttribute(USER));
     }
 
     public static void setUser(ServletRequest request, User user) {

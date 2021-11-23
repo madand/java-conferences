@@ -8,7 +8,6 @@ import net.madand.conferences.service.ServiceException;
 import javax.sql.DataSource;
 import java.util.Optional;
 
-
 public class UserService extends AbstractService {
     public UserService(DataSource dataSource) {
         super(dataSource);
@@ -26,5 +25,23 @@ public class UserService extends AbstractService {
                 connection -> UserDao.findOneById(connection, id),
                 "Failed to find the user"
         );
+    }
+
+    public void create(User user) throws ServiceException {
+        runWithinTransaction(
+                connection -> UserDao.insert(connection, user),
+                "Failed to save the user into the database");
+    }
+
+    public void update(User user) throws ServiceException {
+        runWithinTransaction(
+                connection -> UserDao.update(connection, user),
+                "Failed to update the user in the database");
+    }
+
+    public void delete(User user) throws ServiceException {
+        runWithinTransaction(
+                connection -> UserDao.delete(connection, user),
+                "Failed to delete the user from the database");
     }
 }

@@ -36,3 +36,7 @@ label.required:after {
 .delete-item-form {
     display: inline-block;
 }
+
+.card-footer form {
+    margin: 0px;
+}

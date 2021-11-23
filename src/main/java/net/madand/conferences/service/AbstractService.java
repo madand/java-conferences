@@ -2,7 +2,6 @@ package net.madand.conferences.service;
 
 import net.madand.conferences.db.util.RunnableUnitOfWork;
 import net.madand.conferences.db.util.CallableUnitOfWork;
-import net.madand.conferences.web.controller.impl.TalkController;
 import org.apache.log4j.Logger;
 
 import javax.sql.DataSource;

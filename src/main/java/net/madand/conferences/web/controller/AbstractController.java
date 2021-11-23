@@ -20,7 +20,7 @@ public abstract class AbstractController implements Controller {
     /**
      * Every concrete controller fills this map with [URL => action handler] pairs.
      */
-    protected Map<String, Action> handlersMap = new HashMap<>();
+    protected final Map<String, Action> handlersMap = new HashMap<>();
 
     protected AbstractController(ServletContext servletContext) {
         this.serviceFactory = ContextScope.getServiceFactory(servletContext);

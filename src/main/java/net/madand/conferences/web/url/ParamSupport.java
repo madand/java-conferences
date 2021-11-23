@@ -57,7 +57,7 @@ public abstract class ParamSupport extends BodyTagSupport {
      * vestige in case custom subclasses want to use our functionality
      * but NOT encode parameters.
      */
-    protected boolean encode = true;
+    protected final boolean encode = true;
 
     //*********************************************************************
     // Constructor and initialization
@@ -125,9 +125,9 @@ public abstract class ParamSupport extends BodyTagSupport {
         //*********************************
         // Private state
 
-	private List names = new LinkedList();
-        private List values = new LinkedList();
-	private boolean done = false;
+	private final List names = new LinkedList();
+        private final List values = new LinkedList();
+  private boolean done = false;
         
 	//*********************************
         // Public interface

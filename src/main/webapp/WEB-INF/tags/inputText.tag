@@ -12,13 +12,18 @@
 <%@ attribute  name="value" %>
 <%@ attribute  name="type" %>
 
+<c:set var="inputType" value="text" />
+<c:if test="${not empty type}">
+    <c:set var="inputType" value="${type}" />
+</c:if>
+
 <mytags:genericInput name="${name}" labelKey="${labelKey}" entity="${entity}"
                      language="${language}" value="${value}" required="${required}">
     <div class="mb-3">
         <label for="${computedId}" class="form-label ${computedRequired}">
             ${computedLabelText}
         </label>
-        <input type="text" class="form-control" name="${computedName}"
+        <input type="${inputType}" class="form-control" name="${computedName}"
                value="${fn:escapeXml(computedValue)}" id="${computedId}"
                ${computedRequired} />
     </div>

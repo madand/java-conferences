@@ -73,6 +73,9 @@ public class HttpRouter extends HttpServlet {
             }
         }
 
+//        handled = true;
+//        request.getRequestDispatcher("/WEB-INF/jsp/index.jsp").forward(request, response);
+
         if (!handled) {
             response.sendError(404);
         }
