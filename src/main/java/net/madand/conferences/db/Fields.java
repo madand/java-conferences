@@ -27,4 +27,7 @@ public class Fields {
     public static final String NAME = "name";
     public static final String DESCRIPTION = "description";
     public static final String LOCATION = "location";
+
+    // virtual columns in views
+    public static final String ATTENDEE_ID = "attendee_id";
 }

@@ -38,7 +38,7 @@
         <servlet-name>HttpRouter</servlet-name>
         <servlet-class>net.madand.conferences.web.HttpRouter</servlet-class>
     </servlet>
-    <!-- Make FrontController the default servlet -->
+    <!-- Make HttpRouter the single entry point of the app -->
     <servlet-mapping>
         <servlet-name>HttpRouter</servlet-name>
         <url-pattern>/</url-pattern>
@@ -48,37 +48,6 @@
     <listener>
         <listener-class>net.madand.conferences.web.listener.ContextListener</listener-class>
     </listener>
-
-    <!--  Intelligently set up the session language  -->
-    <filter>
-        <filter-name>LanguageFilter</filter-name>
-        <filter-class>net.madand.conferences.web.filter.LanguageFilter</filter-class>
-    </filter>
-    <!-- Load current user's entity from the database into the request scope  -->
-    <filter>
-        <filter-name>LoadUserFilter</filter-name>
-        <filter-class>net.madand.conferences.web.filter.LoadUserFilter</filter-class>
-    </filter>
-    <!-- Remember previous GET URL in the session scope  -->
-    <filter>
-        <filter-name>PreviousURLFilter</filter-name>
-        <filter-class>net.madand.conferences.web.filter.PreviousURLFilter</filter-class>
-    </filter>
-
-
-    <!-- Order matters here! -->
-    <filter-mapping>
-        <filter-name>LoadUserFilter</filter-name>
-        <servlet-name>HttpRouter</servlet-name>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>LanguageFilter</filter-name>
-        <servlet-name>HttpRouter</servlet-name>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>PreviousURLFilter</filter-name>
-        <servlet-name>HttpRouter</servlet-name>
-    </filter-mapping>
 
     <!--  Set POST requests encoding to UTF-8  -->
     <filter>
@@ -90,10 +59,32 @@
         </init-param>
         <async-supported>true</async-supported>
     </filter>
+    <!--  Intelligently set up the session language  -->
+    <filter>
+        <filter-name>LanguageFilter</filter-name>
+        <filter-class>net.madand.conferences.web.filter.LanguageFilter</filter-class>
+    </filter>
+    <!-- Load current user's entity from the database into the request scope  -->
+    <filter>
+        <filter-name>LoadUserFilter</filter-name>
+        <filter-class>net.madand.conferences.web.filter.LoadUserFilter</filter-class>
+    </filter>
+
+
+    <!-- Order matters here! -->
     <filter-mapping>
         <filter-name>setCharacterEncodingFilter</filter-name>
-        <url-pattern>/*</url-pattern>
+        <servlet-name>HttpRouter</servlet-name>
     </filter-mapping>
+    <filter-mapping>
+        <filter-name>LoadUserFilter</filter-name>
+        <servlet-name>HttpRouter</servlet-name>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>LanguageFilter</filter-name>
+        <servlet-name>HttpRouter</servlet-name>
+    </filter-mapping>
+
 
     <error-page>
         <location>/WEB-INF/jsp/error_page.jsp</location>

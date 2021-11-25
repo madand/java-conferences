@@ -1,10 +1,12 @@
 package net.madand.conferences.service.impl;
 
+import net.madand.conferences.db.dao.ConferenceAttendeeDao;
 import net.madand.conferences.db.dao.ConferenceDao;
 import net.madand.conferences.db.dao.ConferenceTranslationDao;
 import net.madand.conferences.entity.Conference;
 import net.madand.conferences.entity.ConferenceTranslation;
 import net.madand.conferences.entity.Language;
+import net.madand.conferences.entity.User;
 import net.madand.conferences.service.AbstractService;
 import net.madand.conferences.service.ServiceException;
 
@@ -20,13 +22,19 @@ public class ConferenceService extends AbstractService {
     public List<Conference> findAllTranslated(Language language) throws ServiceException {
         return callNoTransaction(
                 connection -> ConferenceDao.findAll(connection, language),
-                "Error fetching conferences");
+                "Failed to fetch conferences");
+    }
+
+    public List<Conference> findAllTranslatedWithAttendee(Language language, Optional<User> user) throws ServiceException {
+        return callNoTransaction(
+                connection -> ConferenceDao.findAll(connection, language, user),
+                "Failed to fetch conferences");
     }
 
     public Optional<Conference> findOne(int id, Language language) throws ServiceException {
         return callNoTransaction(
                 connection -> ConferenceDao.findOne(connection, id, language),
-                "Error fetching conference");
+                "Failed to fetch conference");
     }
 
     public Optional<Conference> findOneWithTranslations(int id, List<Language> languages) throws ServiceException {
@@ -43,13 +51,13 @@ public class ConferenceService extends AbstractService {
 
                     return conferenceOptional;
                 },
-                "Error fetching conference");
+                "Failed to fetch conference");
     }
 
     public Optional<Conference> findOne(int id) throws ServiceException {
         return callNoTransaction(
                 connection -> ConferenceDao.findOne(connection, id),
-                "Error fetching conference");
+                "Failed to fetch a conference");
     }
 
     public void create(Conference conference) throws ServiceException {
@@ -77,5 +85,15 @@ public class ConferenceService extends AbstractService {
     public void delete(Conference conference) throws ServiceException {
         runWithinTransaction(connection -> ConferenceDao.delete(connection, conference),
                 "Failed to delete the conference from the database");
+    }
+
+    public void addAttendee(Conference conference, User user) throws ServiceException {
+        runWithinTransaction(connection -> ConferenceAttendeeDao.insert(connection, conference, user),
+                "Failed to add the attendee into the database");
+    }
+
+    public void removeAttendee(Conference conference, User user) throws ServiceException {
+        runWithinTransaction(connection -> ConferenceAttendeeDao.delete(connection, conference, user),
+                "Failed to delete the attendee from the database");
     }
 }

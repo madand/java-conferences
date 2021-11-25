@@ -20,6 +20,11 @@
                          buttonType="success"
                          messageKey="form.button.createTalk"
                          icon="plus-circle" />
+    <mytags:actionButton action="create-talk-proposal"
+                         entityId="${conference.id}"
+                         buttonType="success"
+                         messageKey="form.button.createTalkProposal"
+                         icon="plus-circle" />
 </div>
 
 <div class="row">

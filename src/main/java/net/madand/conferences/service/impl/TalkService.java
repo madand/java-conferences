@@ -21,7 +21,7 @@ public class TalkService extends AbstractService {
     public List<Talk> findAllTranslated(Conference conference, Language language) throws ServiceException {
         return callNoTransaction(
                 connection -> TalkDao.findAll(connection, conference, language),
-                "Error fetching talks"
+                "Failed to fetch talks"
         );
     }
 
@@ -39,13 +39,13 @@ public class TalkService extends AbstractService {
 
                     return talkOptional;
                 },
-                "Error fetching talks");
+                "Failed to fetch talks");
     }
 
     public Optional<Talk> findOne(int id) throws ServiceException {
         return callNoTransaction(
                 connection -> TalkDao.findOne(connection, id),
-                "Error fetching talk");
+                "Failed to fetch talk");
     }
 
     public void create(Talk talk) throws ServiceException {

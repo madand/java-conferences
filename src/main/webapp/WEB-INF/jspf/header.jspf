@@ -21,13 +21,46 @@ Top Navigation (main menu).
                 <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                     <ul class="navbar-nav ">
                         <li class="nav-item">
-                            <a class="nav-link" href="${baseURI}/create-conference">New Conf</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link" href="${baseURI}/users">Users</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="${baseURI}/edit-user">Edit Profile</a>
+                        </li>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                Moderator
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" href="${baseURI}/create-conference">
+                                        New Conference
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="${baseURI}/create-conference">
+                                        Users
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="${baseURI}/list-talk-proposals-moderator">
+                                        New Talk Proposals
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                Speaker
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" href="${baseURI}/list-talk-proposals-speaker">
+                                        New Talk Proposals
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
 
                         <c:choose>

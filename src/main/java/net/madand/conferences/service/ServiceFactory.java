@@ -1,9 +1,6 @@
 package net.madand.conferences.service;
 
-import net.madand.conferences.service.impl.ConferenceService;
-import net.madand.conferences.service.impl.LanguageService;
-import net.madand.conferences.service.impl.TalkService;
-import net.madand.conferences.service.impl.UserService;
+import net.madand.conferences.service.impl.*;
 
 import javax.sql.DataSource;
 
@@ -28,5 +25,9 @@ public class ServiceFactory {
 
     public TalkService getTalkService() {
         return new TalkService(dataSource);
+    }
+
+    public TalkProposalService getTalkProposalService() {
+        return new TalkProposalService(dataSource);
     }
 }

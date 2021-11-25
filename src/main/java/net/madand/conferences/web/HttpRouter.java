@@ -2,10 +2,11 @@ package net.madand.conferences.web;
 
 import net.madand.conferences.service.ServiceException;
 import net.madand.conferences.web.controller.Controller;
-import net.madand.conferences.web.controller.exception.HttpNotFoundException;
+import net.madand.conferences.web.controller.exception.HttpException;
 import net.madand.conferences.web.controller.exception.HttpRedirectException;
 import net.madand.conferences.web.controller.impl.ConferenceController;
 import net.madand.conferences.web.controller.impl.TalkController;
+import net.madand.conferences.web.controller.impl.TalkProposalController;
 import net.madand.conferences.web.controller.impl.UserController;
 import org.apache.log4j.Logger;
 
@@ -32,6 +33,7 @@ public class HttpRouter extends HttpServlet {
                 new ConferenceController(servletContext),
                 new UserController(servletContext),
                 new TalkController(servletContext),
+                new TalkProposalController(servletContext),
         };
     }
 
@@ -67,8 +69,8 @@ public class HttpRouter extends HttpServlet {
             } catch (HttpRedirectException e) {
                 response.sendRedirect(response.encodeRedirectURL(e.getUrl()));
                 return;
-            } catch (HttpNotFoundException e) {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            } catch (HttpException e) {
+                response.sendError(e.getStatusCode());
                 return;
             }
         }

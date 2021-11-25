@@ -4,10 +4,7 @@ import net.madand.conferences.db.Fields;
 import net.madand.conferences.db.util.Mapper;
 import net.madand.conferences.db.util.QueryHelper;
 import net.madand.conferences.db.util.StatementParametersSetter;
-import net.madand.conferences.entity.Conference;
-import net.madand.conferences.entity.Language;
-import net.madand.conferences.entity.Talk;
-import net.madand.conferences.entity.TalkTranslation;
+import net.madand.conferences.entity.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -39,24 +36,20 @@ public class TalkDao {
                 },
                 (rs) -> {
                     Talk talk = makeRowMapper(connection).mapRow(rs);
-
-                    TalkTranslation translation = TalkTranslationDao.mapRow(rs);
-                    talk.setName(translation.getName());
-                    talk.setDescription(translation.getDescription());
-
+                    talk.loadTranslation(TalkTranslationDao.mapRow(rs));
                     return talk;
                 });
     }
 
     public static Optional<Talk> findOne(Connection conn, int id) throws SQLException {
         return QueryHelper.findOne(conn, FIND_ONE,
-                        stmt -> stmt.setInt(1, id),
-                        rs -> {
-                            Talk talk = makeRowMapper(conn).mapRow(rs);
-                            talk.setConference(
-                                    ConferenceDao.findOne(conn, rs.getInt(Fields.CONFERENCE_ID)).get());
-                            return talk;
-                        });
+                stmt -> stmt.setInt(1, id),
+                rs -> {
+                    Talk talk = makeRowMapper(conn).mapRow(rs);
+                    talk.setConference(
+                            ConferenceDao.findOne(conn, rs.getInt(Fields.CONFERENCE_ID)).get());
+                    return talk;
+                });
     }
 
     public static void insert(Connection conn, Talk talk) throws SQLException {

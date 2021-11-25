@@ -18,6 +18,8 @@ public class Conference implements Serializable {
     private LocalDate eventDate;
     private int actuallyAttendedCount;
 
+    private boolean currentUserAttending;
+
     private final List<ConferenceTranslation> translations = new ArrayList<>();
 
     // The following properties are only set when fetching data from v_conference view.
@@ -84,6 +86,14 @@ public class Conference implements Serializable {
 
     public void setActuallyAttendedCount(int actuallyAttendedCount) {
         this.actuallyAttendedCount = actuallyAttendedCount;
+    }
+
+    public boolean isCurrentUserAttending() {
+        return currentUserAttending;
+    }
+
+    public void setCurrentUserAttending(boolean currentUserAttending) {
+        this.currentUserAttending = currentUserAttending;
     }
 
     public String getName() {

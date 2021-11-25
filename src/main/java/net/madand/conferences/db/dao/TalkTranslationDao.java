@@ -18,7 +18,6 @@ public class TalkTranslationDao {
     private static final String UPDATE = "UPDATE talk_translation SET " +
             "talk_id = ?, language_id = ?, name = ?, description = ? " +
             "WHERE talk_id = ? AND language_id = ?";
-    private static final String DELETE = "DELETE FROM talk_translation WHERE talk_id = ? AND language_id = ?";
 
     public static Optional<TalkTranslation> findOne(Connection conn, Talk talk, Language language) throws SQLException {
         return QueryHelper.findOne(conn, FIND_ONE, stmt -> {

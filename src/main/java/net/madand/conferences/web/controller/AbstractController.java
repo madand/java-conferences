@@ -2,7 +2,7 @@ package net.madand.conferences.web.controller;
 
 import net.madand.conferences.service.ServiceException;
 import net.madand.conferences.service.ServiceFactory;
-import net.madand.conferences.web.controller.exception.HttpNotFoundException;
+import net.madand.conferences.web.controller.exception.HttpException;
 import net.madand.conferences.web.controller.exception.HttpRedirectException;
 import net.madand.conferences.web.scope.ContextScope;
 
@@ -28,7 +28,7 @@ public abstract class AbstractController implements Controller {
 
     @Override
     public boolean maybeHandleRequest(HttpServletRequest request, HttpServletResponse response) throws
-            ServletException, IOException, ServiceException, HttpNotFoundException, HttpRedirectException {
+            ServletException, IOException, ServiceException, HttpException, HttpRedirectException {
         // Remove the leading slash.
         final String path = request.getServletPath().substring(1);
         Action action = handlersMap.get(path);
@@ -46,5 +46,11 @@ public abstract class AbstractController implements Controller {
 
     protected void redirect(String url) throws HttpRedirectException {
         throw new HttpRedirectException(url);
+    }
+
+    protected void ensureIsPost(HttpServletRequest request) throws HttpException {
+        if (!"POST".equals(request.getMethod())) {
+            throw new HttpException(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+        }
     }
 }

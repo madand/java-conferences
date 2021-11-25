@@ -7,7 +7,7 @@ import net.madand.conferences.service.ServiceException;
 import net.madand.conferences.service.impl.UserService;
 import net.madand.conferences.web.bean.LoginBean;
 import net.madand.conferences.web.controller.AbstractController;
-import net.madand.conferences.web.controller.exception.HttpNotFoundException;
+import net.madand.conferences.web.controller.exception.HttpException;
 import net.madand.conferences.web.controller.exception.HttpRedirectException;
 import net.madand.conferences.web.scope.RequestScope;
 import net.madand.conferences.web.scope.SessionScope;
@@ -58,7 +58,7 @@ public class UserController extends AbstractController {
                     SessionScope.setFlashMessageSuccess(session,
                             String.format("Successfully logged in as %s.", user.getRealName()));
 
-                    redirect(URLManager.homepage(request));
+                    redirect(URLManager.homePage(request));
                 }
             }
 
@@ -89,7 +89,7 @@ public class UserController extends AbstractController {
                 SessionScope.setFlashMessageSuccess(session,
                         String.format("Successfully registered as %s.", user.getRealName()));
 
-                redirect(URLManager.homepage(request));
+                redirect(URLManager.homePage(request));
             } else {
                 SessionScope.setFlashMessageError(session, "Entered passwords are not the same");
             }
@@ -102,7 +102,7 @@ public class UserController extends AbstractController {
         final Optional<User> userOptional = RequestScope.getUser(request);
         if (!userOptional.isPresent()) {
             // If no user is logged in, just show them the home page.
-            redirect(URLManager.homepage(request));
+            redirect(URLManager.homePage(request));
         }
 
         User user = userOptional.get();
@@ -117,20 +117,20 @@ public class UserController extends AbstractController {
             userService.update(user);
 
             SessionScope.setFlashMessageSuccess(session, "Successfully updated user profile");
-            redirect(URLManager.homepage(request));
+            redirect(URLManager.homePage(request));
         }
 
         renderView("user/edit", request, response);
     }
 
-    private void delete(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, ServiceException, HttpRedirectException, HttpNotFoundException {
+    private void delete(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, ServiceException, HttpRedirectException, HttpException {
         if (!"POST".equals(request.getMethod())) {
             response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
             return;
         }
 
         User user = RequestScope.getUser(request)
-                .orElseThrow(HttpNotFoundException::new);
+                .orElseThrow(HttpException::new);
 
         userService.delete(user);
         final HttpSession session = request.getSession();
@@ -140,22 +140,22 @@ public class UserController extends AbstractController {
         logout(request, response);
     }
 
-    private void logout(HttpServletRequest request, HttpServletResponse response) throws IOException, HttpRedirectException, HttpNotFoundException {
+    private void logout(HttpServletRequest request, HttpServletResponse response) throws IOException, HttpRedirectException, HttpException {
         if (!RequestScope.getUser(request).isPresent()) {
             // If no user is logged in, just show them the home page.
-            redirect(URLManager.homepage(request));
+            redirect(URLManager.homePage(request));
         }
 
         SessionScope.removeCurrentUserId(request.getSession());
 
-        redirect(URLManager.homepage(request));
+        redirect(URLManager.homePage(request));
     }
 
     private void changePassword(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException, HttpRedirectException {
         final Optional<User> userOptional = RequestScope.getUser(request);
         if (!userOptional.isPresent()) {
             // If no user is logged in, just show them the home page.
-            redirect(URLManager.homepage(request));
+            redirect(URLManager.homePage(request));
         }
 
         User user = userOptional.get();

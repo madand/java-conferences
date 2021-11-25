@@ -1,16 +1,13 @@
 package net.madand.conferences.web.controller.impl;
 
-import net.madand.conferences.entity.Conference;
-import net.madand.conferences.entity.Language;
-import net.madand.conferences.entity.Talk;
-import net.madand.conferences.entity.TalkTranslation;
+import net.madand.conferences.entity.*;
 import net.madand.conferences.l10n.Languages;
 import net.madand.conferences.service.ServiceException;
-import net.madand.conferences.service.impl.TalkService;
+import net.madand.conferences.service.impl.TalkProposalService;
 import net.madand.conferences.web.controller.AbstractController;
 import net.madand.conferences.web.controller.exception.HttpException;
 import net.madand.conferences.web.controller.exception.HttpRedirectException;
-import net.madand.conferences.web.scope.ContextScope;
+import net.madand.conferences.web.scope.RequestScope;
 import net.madand.conferences.web.scope.SessionScope;
 import net.madand.conferences.web.util.HtmlSupport;
 import net.madand.conferences.web.util.URLManager;
@@ -21,123 +18,120 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.time.LocalTime;
 
-public class TalkController extends AbstractController {
-    private final TalkService talkService;
+public class TalkProposalController extends AbstractController {
+    private final TalkProposalService talkProposalService;
 
     {
         // Register the controller's actions.
-        handlersMap.put(URLManager.URI_TALK_LIST, this::list);
-        handlersMap.put(URLManager.URI_TALK_CREATE, this::create);
-        handlersMap.put(URLManager.URI_TALK_EDIT, this::edit);
-        handlersMap.put(URLManager.URI_TALK_DELETE, this::delete);
+        handlersMap.put(URLManager.URI_TALK_PROPOSAL_LIST_MODER, this::listForModerator);
+        handlersMap.put(URLManager.URI_TALK_PROPOSAL_LIST_SPEAKER, this::listForSpeaker);
+        handlersMap.put(URLManager.URI_TALK_PROPOSAL_CREATE, this::create);
+//        handlersMap.put(URLManager.URI_TALK_EDIT, this::edit);
+//        handlersMap.put(URLManager.URI_TALK_DELETE, this::delete);
     }
 
-    public TalkController(ServletContext servletContext) {
+    public TalkProposalController(ServletContext servletContext) {
         super(servletContext);
-        talkService = ContextScope.getServiceFactory(servletContext).getTalkService();
+        talkProposalService = serviceFactory.getTalkProposalService();
     }
 
-    public void list(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException, HttpException {
+    public void listForModerator(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException, HttpException {
         final Language currentLanguage = SessionScope.getCurrentLanguage(request.getSession());
-        final int id = Integer.parseInt(request.getParameter("id"));
 
-        Conference conference = serviceFactory.getConferenceService().findOne(id, currentLanguage)
-                .orElseThrow(HttpException::new);
+        request.setAttribute("proposals", talkProposalService.findAllTranslated(currentLanguage));
 
-        request.setAttribute("conference", conference);
-        request.setAttribute("talks", talkService.findAllTranslated(conference, currentLanguage));
+        renderView("talkProposal/listForModerator", request, response);
+    }
 
-        renderView("talk/list", request, response);
+    public void listForSpeaker(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException, HttpException {
+        final Language currentLanguage = SessionScope.getCurrentLanguage(request.getSession());
+
+        request.setAttribute("proposals", talkProposalService.findAllTranslated(currentLanguage));
+
+        renderView("talkProposal/listForSpeaker", request, response);
     }
 
     public void create(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, ServiceException, HttpRedirectException, HttpException {
         final Language currentLanguage = SessionScope.getCurrentLanguage(request.getSession());
         final int conferenceId = Integer.parseInt(request.getParameter("id"));
 
+        User user = RequestScope.getUser(request)
+                .orElseThrow(HttpException::new);
+        if (!user.getRole().isSpeaker()) {
+            throw new HttpException(HttpServletResponse.SC_FORBIDDEN);
+        }
+
         Conference conference = serviceFactory.getConferenceService().findOne(conferenceId, currentLanguage)
                 .orElseThrow(HttpException::new);
         request.setAttribute("conference", conference);
 
-        Talk talk = Talk.makeInstanceWithTranslations(conference);
-        request.setAttribute("talk", talk);
+        TalkProposal talkProposal = TalkProposal.makeInstanceWithTranslations(conference);
+        talkProposal.setSpeaker(user);
 
-        request.setAttribute("speakersList", serviceFactory.getUserService().speakersList());
+        request.setAttribute("talkProposal", talkProposal);
 
         if ("POST".equals(request.getMethod())) {
-            String speakerIdStr = request.getParameter("speakerId");
-            if (speakerIdStr != null && !speakerIdStr.isEmpty()) {
-                final int speakerId = Integer.parseInt(speakerIdStr);
-                talk.setSpeaker(serviceFactory.getUserService().findById(speakerId)
-                        .orElseThrow(HttpException::new));
-            }
-            talk.setStartTime(LocalTime.parse(request.getParameter("startTime")));
-            talk.setDuration(Integer.parseInt(request.getParameter("duration")));
+            talkProposal.setDuration(Integer.parseInt(request.getParameter("duration")));
 
-            for (TalkTranslation translation : talk.getTranslations()) {
+            for (TalkProposalTranslation translation : talkProposal.getTranslations()) {
                 final Language lang = translation.getLanguage();
                 translation.setName(request.getParameter(HtmlSupport.localizedParamName("name", lang)));
                 translation.setDescription(request.getParameter(HtmlSupport.localizedParamName("description", lang)));
             }
 
-            talkService.create(talk);
-            SessionScope.setFlashMessageSuccess(request.getSession(), "Saved successfully");
+            talkProposalService.create(talkProposal);
+            SessionScope.setFlashMessageSuccess(request.getSession(), "Successfully created a talk proposal");
             redirect(URLManager.buildURL(URLManager.URI_TALK_LIST, "id=" + conference.getId(), request));
         }
 
-        renderView("talk/create", request, response);
+        renderView("talkProposal/create", request, response);
     }
 
     public void edit(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, ServiceException, HttpRedirectException, HttpException {
         final int id = Integer.parseInt(request.getParameter("id"));
 
-        Talk talk = talkService.findOneWithTranslations(id, Languages.list())
+        TalkProposal talkProposal = talkProposalService.findOneWithTranslations(id, Languages.list())
                 .orElseThrow(HttpException::new);
-        request.setAttribute("talk", talk);
-
-        request.setAttribute("speakersList", serviceFactory.getUserService().speakersList());
+        request.setAttribute("conference", talkProposal.getConference());
+        request.setAttribute("talkProposal", talkProposal);
 
         if ("POST".equals(request.getMethod())) {
             String speakerIdStr = request.getParameter("speakerId");
             if (speakerIdStr != null && !speakerIdStr.isEmpty()) {
                 final int speakerId = Integer.parseInt(speakerIdStr);
-                talk.setSpeaker(serviceFactory.getUserService().findById(speakerId)
+                talkProposal.setSpeaker(serviceFactory.getUserService().findById(speakerId)
                         .orElseThrow(HttpException::new));
             }
-            talk.setStartTime(LocalTime.parse(request.getParameter("startTime")));
-            talk.setDuration(Integer.parseInt(request.getParameter("duration")));
+            talkProposal.setDuration(Integer.parseInt(request.getParameter("duration")));
 
-            for (TalkTranslation translation : talk.getTranslations()) {
+            for (TalkProposalTranslation translation : talkProposal.getTranslations()) {
                 final Language lang = translation.getLanguage();
                 translation.setName(request.getParameter(HtmlSupport.localizedParamName("name", lang)));
                 translation.setDescription(request.getParameter(HtmlSupport.localizedParamName("description", lang)));
             }
 
-            talkService.update(talk);
+            talkProposalService.update(talkProposal);
 
             final HttpSession session = request.getSession();
             SessionScope.setFlashMessageSuccess(session, "Saved successfully");
-            redirect(URLManager.buildURL(URLManager.URI_TALK_LIST, "id=" + talk.getConference().getId(), request));
+            redirect(URLManager.buildURL(URLManager.URI_TALK_LIST, "id=" + talkProposal.getConference().getId(), request));
         }
 
-        renderView("talk/edit", request, response);
+        renderView("talkProposal/edit", request, response);
     }
 
     public void delete(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, ServiceException, HttpRedirectException, HttpException {
-        if (!"POST".equals(request.getMethod())) {
-            response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-            return;
-        }
+        ensureIsPost(request);
 
         final int id = Integer.parseInt(request.getParameter("id"));
-        Talk talk = talkService.findOne(id)
+        TalkProposal talkProposal = talkProposalService.findOne(id)
                 .orElseThrow(HttpException::new);
 
-        talkService.delete(talk);
+        talkProposalService.delete(talkProposal);
 
         final HttpSession session = request.getSession();
         SessionScope.setFlashMessageSuccess(session, "Deleted successfully");
-        redirect((String) session.getAttribute("previousURL"));
+        redirect(SessionScope.getPreviousUrl(request.getSession(), URLManager.homePage(request)));
     }
 }

@@ -7,7 +7,7 @@ DROP VIEW IF EXISTS v_new_talk_proposal;
 DROP TRIGGER IF EXISTS compute_end_time ON talk;
 DROP FUNCTION IF EXISTS compute_end_time;
 
-DROP FUNCTION IF EXISTS ensure_translated(text, integer, integer, text, text);
+DROP FUNCTION IF EXISTS ensure_translated(TEXT, INTEGER, INTEGER, TEXT, TEXT);
 DROP FUNCTION IF EXISTS get_default_language_id();
 DROP TABLE IF EXISTS talk_speaker_request;
 DROP TABLE IF EXISTS talk_speaker_proposal;
@@ -58,22 +58,21 @@ COMMENT ON TABLE conference
   IS 'The conference.';
 
 CREATE TABLE conference_translation (
-  conference_id INTEGER NOT NULL REFERENCES conference(id) ON UPDATE CASCADE ON DELETE CASCADE,
   language_id INTEGER NOT NULL REFERENCES language(id) ON UPDATE CASCADE ON DELETE CASCADE,
+  conference_id INTEGER NOT NULL REFERENCES conference(id) ON UPDATE CASCADE ON DELETE CASCADE,
   name CHARACTER VARYING(255) NOT NULL,
   description TEXT NOT NULL,
   location TEXT NOT NULL,
-  PRIMARY KEY (conference_id, language_id)
+  PRIMARY KEY (language_id, conference_id)
 );
 COMMENT ON TABLE conference_translation
   IS 'Localization data for the "conference" table.';
 
 CREATE TABLE conference_attendee (
-  id SERIAL NOT NULL PRIMARY KEY,
-  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
   conference_id INTEGER NOT NULL REFERENCES conference(id) ON UPDATE CASCADE ON DELETE CASCADE,
   user_id INTEGER NOT NULL REFERENCES "user"(id) ON UPDATE CASCADE ON DELETE CASCADE,
-  UNIQUE (conference_id, user_id)
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (conference_id, user_id)
 );
 COMMENT ON TABLE conference_attendee
   IS 'A fact that the user will attend the conference.';
@@ -93,11 +92,11 @@ COMMENT ON TABLE talk
   IS 'A talk given at the conference.';
 
 CREATE TABLE talk_translation (
-    talk_id INTEGER NOT NULL REFERENCES talk(id) ON UPDATE CASCADE ON DELETE CASCADE,
     language_id INTEGER NOT NULL REFERENCES language(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    talk_id INTEGER NOT NULL REFERENCES talk(id) ON UPDATE CASCADE ON DELETE CASCADE,
     name CHARACTER VARYING(255) NOT NULL,
     description TEXT NOT NULL,
-    PRIMARY KEY (talk_id, language_id)
+    PRIMARY KEY (language_id, talk_id)
 );
 COMMENT ON TABLE talk_translation
   IS 'Localization data for the "talk" table.';
@@ -135,17 +134,17 @@ COMMENT ON TABLE new_talk_proposal
   IS 'A new talk proposed by the speaker. Should be accepted by a moderator.';
 
 CREATE TABLE new_talk_proposal_translation (
-  new_talk_proposal_id INTEGER NOT NULL REFERENCES new_talk_proposal(id) ON UPDATE CASCADE ON DELETE CASCADE,
   language_id INTEGER NOT NULL REFERENCES language(id) ON UPDATE CASCADE ON DELETE CASCADE,
+  new_talk_proposal_id INTEGER NOT NULL REFERENCES new_talk_proposal(id) ON UPDATE CASCADE ON DELETE CASCADE,
   name CHARACTER VARYING(255) NOT NULL,
   description TEXT NOT NULL,
-  PRIMARY KEY (new_talk_proposal_id, language_id)
+  PRIMARY KEY (language_id, new_talk_proposal_id)
 );
 COMMENT ON TABLE new_talk_proposal_translation
   IS 'Localization data for the "new_talk_proposal" table.';
 
 CREATE OR REPLACE FUNCTION get_default_language_id()
-    RETURNS integer
+    RETURNS INTEGER
     LANGUAGE 'sql'
   STABLE
 AS $BODY$
@@ -153,17 +152,16 @@ AS $BODY$
   $BODY$;
 
   CREATE OR REPLACE FUNCTION ensure_translated(
-    translated_value text,
-	  id integer,
-	  language_id integer,
-	  column_name text,
-	  base_name text)
-    RETURNS text
+    translated_value TEXT,
+	  id INTEGER,
+	  column_name TEXT,
+	  base_name TEXT)
+    RETURNS TEXT
     LANGUAGE 'plpgsql'
     STABLE
   AS $BODY$
     DECLARE
-    ret text;
+    ret TEXT;
   BEGIN
     IF translated_value <> '' THEN
       RETURN translated_value;
@@ -174,8 +172,7 @@ AS $BODY$
                    column_name,
                    base_name || '_translation',
                    base_name || '_id')
-      INTO ret
-      USING id, language_id;
+      INTO ret USING id;
     RETURN ret;
   END
   $BODY$;
@@ -202,9 +199,9 @@ CREATE VIEW v_conference
            t.event_date,
            t.actually_attended_count,
            l.language_id,
-           ensure_translated(l.name, t.id, l.language_id, 'name', 'conference') as name,
-           ensure_translated(l.description, t.id, l.language_id, 'description', 'conference') as description,
-           ensure_translated(l.location, t.id, l.language_id, 'location', 'conference') as location
+           ensure_translated(l.name, t.id, 'name', 'conference') as name,
+           ensure_translated(l.description, t.id, 'description', 'conference') as description,
+           ensure_translated(l.location, t.id, 'location', 'conference') as location
       FROM conference t
            JOIN conference_translation l ON l.conference_id = t.id;
   COMMENT ON VIEW v_conference
@@ -221,8 +218,8 @@ CREATE VIEW v_talk
            t.duration,
            t.end_time,
            l.language_id,
-           ensure_translated(l.name, t.id, l.language_id, 'name', 'talk') as name,
-           ensure_translated(l.description, t.id, l.language_id, 'description', 'talk') as description
+           ensure_translated(l.name, t.id, 'name', 'talk') as name,
+           ensure_translated(l.description, t.id, 'description', 'talk') as description
       FROM talk t
            JOIN talk_translation l ON l.talk_id = t.id;
   COMMENT ON VIEW v_talk
@@ -237,8 +234,8 @@ CREATE VIEW v_new_talk_proposal
            t.speaker_id,
            t.duration,
            l.language_id,
-           ensure_translated(l.name, t.id, l.language_id, 'name', 'new_talk_proposal') as name,
-           ensure_translated(l.description, t.id, l.language_id, 'description', 'new_talk_proposal') as description
+           ensure_translated(l.name, t.id, 'name', 'new_talk_proposal') as name,
+           ensure_translated(l.description, t.id, 'description', 'new_talk_proposal') as description
       FROM new_talk_proposal t
            JOIN new_talk_proposal_translation l ON l.new_talk_proposal_id = t.id;
   COMMENT ON VIEW v_new_talk_proposal

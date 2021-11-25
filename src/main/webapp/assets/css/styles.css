@@ -33,6 +33,8 @@ label.required:after {
     margin-bottom: 0.5em;
 }
 
+.post-action-button,
+.card-footer form,
 .delete-item-form {
     display: inline-block;
 }

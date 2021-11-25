@@ -32,12 +32,12 @@
       "id": "ed05e0ad-d581-4911-94be-f7c2bd9ad81e",
       "comment": "",
       "command": "click",
-      "target": "id=event_date",
+      "target": "id=eventDate",
       "targets": [
-        ["id=event_date", "id"],
+        ["id=eventDate", "id"],
         ["name=eventDate", "name"],
-        ["css=#event_date", "css:finder"],
-        ["xpath=//input[@id='event_date']", "xpath:attributes"],
+        ["css=#eventDate", "css:finder"],
+        ["xpath=//input[@id='eventDate']", "xpath:attributes"],
         ["xpath=//input", "xpath:position"]
       ],
       "value": ""
@@ -45,12 +45,12 @@
       "id": "050e029b-56dc-4570-aea1-24d401cac597",
       "comment": "",
       "command": "type",
-      "target": "id=event_date",
+      "target": "id=eventDate",
       "targets": [
-        ["id=event_date", "id"],
+        ["id=eventDate", "id"],
         ["name=eventDate", "name"],
-        ["css=#event_date", "css:finder"],
-        ["xpath=//input[@id='event_date']", "xpath:attributes"],
+        ["css=#eventDate", "css:finder"],
+        ["xpath=//input[@id='eventDate']", "xpath:attributes"],
         ["xpath=//input", "xpath:position"]
       ],
       "value": "2021-12-01"
@@ -174,12 +174,12 @@
       "id": "13a999a1-9524-4848-89a9-a0c50484cefd",
       "comment": "",
       "command": "click",
-      "target": "id=event_date",
+      "target": "id=eventDate",
       "targets": [
-        ["id=event_date", "id"],
+        ["id=eventDate", "id"],
         ["name=eventDate", "name"],
-        ["css=#event_date", "css:finder"],
-        ["xpath=//input[@id='event_date']", "xpath:attributes"],
+        ["css=#eventDate", "css:finder"],
+        ["xpath=//input[@id='eventDate']", "xpath:attributes"],
         ["xpath=//input", "xpath:position"]
       ],
       "value": ""
@@ -187,12 +187,12 @@
       "id": "4b1fbff5-cf11-4f1c-ab35-f6fbaaff56cb",
       "comment": "",
       "command": "type",
-      "target": "id=event_date",
+      "target": "id=eventDate",
       "targets": [
-        ["id=event_date", "id"],
+        ["id=eventDate", "id"],
         ["name=eventDate", "name"],
-        ["css=#event_date", "css:finder"],
-        ["xpath=//input[@id='event_date']", "xpath:attributes"],
+        ["css=#eventDate", "css:finder"],
+        ["xpath=//input[@id='eventDate']", "xpath:attributes"],
         ["xpath=//input", "xpath:position"]
       ],
       "value": "2021-12-01"
@@ -316,12 +316,12 @@
       "id": "ff366fd4-67b9-42fa-b1d0-c31fc0418386",
       "comment": "",
       "command": "click",
-      "target": "id=event_date",
+      "target": "id=eventDate",
       "targets": [
-        ["id=event_date", "id"],
+        ["id=eventDate", "id"],
         ["name=eventDate", "name"],
-        ["css=#event_date", "css:finder"],
-        ["xpath=//input[@id='event_date']", "xpath:attributes"],
+        ["css=#eventDate", "css:finder"],
+        ["xpath=//input[@id='eventDate']", "xpath:attributes"],
         ["xpath=//input", "xpath:position"]
       ],
       "value": ""
@@ -329,12 +329,12 @@
       "id": "48a7784b-185e-4c37-a227-4cfbb4b5267a",
       "comment": "",
       "command": "type",
-      "target": "id=event_date",
+      "target": "id=eventDate",
       "targets": [
-        ["id=event_date", "id"],
+        ["id=eventDate", "id"],
         ["name=eventDate", "name"],
-        ["css=#event_date", "css:finder"],
-        ["xpath=//input[@id='event_date']", "xpath:attributes"],
+        ["css=#eventDate", "css:finder"],
+        ["xpath=//input[@id='eventDate']", "xpath:attributes"],
         ["xpath=//input", "xpath:position"]
       ],
       "value": "2021-12-01"
@@ -445,12 +445,12 @@
       "id": "524a6983-59c3-4e99-92fd-eed0542c4ac5",
       "comment": "",
       "command": "click",
-      "target": "id=event_date",
+      "target": "id=eventDate",
       "targets": [
-        ["id=event_date", "id"],
+        ["id=eventDate", "id"],
         ["name=eventDate", "name"],
-        ["css=#event_date", "css:finder"],
-        ["xpath=//input[@id='event_date']", "xpath:attributes"],
+        ["css=#eventDate", "css:finder"],
+        ["xpath=//input[@id='eventDate']", "xpath:attributes"],
         ["xpath=//input", "xpath:position"]
       ],
       "value": ""
@@ -458,12 +458,12 @@
       "id": "50f8d695-ba4e-43a0-ad7c-27212b549081",
       "comment": "",
       "command": "type",
-      "target": "id=event_date",
+      "target": "id=eventDate",
       "targets": [
-        ["id=event_date", "id"],
+        ["id=eventDate", "id"],
         ["name=eventDate", "name"],
-        ["css=#event_date", "css:finder"],
-        ["xpath=//input[@id='event_date']", "xpath:attributes"],
+        ["css=#eventDate", "css:finder"],
+        ["xpath=//input[@id='eventDate']", "xpath:attributes"],
         ["xpath=//input", "xpath:position"]
       ],
       "value": "2021-12-01"

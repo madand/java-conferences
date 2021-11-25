@@ -21,13 +21,41 @@
                     <div class="card-text">
                         ${mytl:truncate(conference.description, 160)}
                     </div>
+
+                    <c:if test="${conference.currentUserAttending}">
+                        <div class="card-text">
+                            <span class="badge rounded-pill bg-success">
+                                <fmt:message key="conference.status.attending"/>
+                            </span>
+                            <fmt:message key="conference.status.attendingDescr"/>
+                        </div>
+                    </c:if>
                 </div>
                 <div class="card-footer">
                     <mytags:actionButton action="list-talks"
                                          entityId="${conference.id}"
-                                         buttonType="success"
+                                         buttonType="primary"
                                          messageKey="conference.list.button.details"
                                          icon="eye" />
+
+
+                    <c:choose>
+                        <c:when test="${conference.currentUserAttending}">
+                            <mytags:postActionButton action="cancel-attendance"
+                                                     entityId="${conference.id}"
+                                                     buttonType="danger"
+                                                     messageKey="button.cancelAttendance"
+                                                     icon="x-circle" />
+                        </c:when>
+                        <c:otherwise>
+                            <mytags:postActionButton action="attend-conference"
+                                                     entityId="${conference.id}"
+                                                     buttonType="success"
+                                                     messageKey="button.attend"
+                                                     icon="check-circle" />
+                        </c:otherwise>
+                    </c:choose>
+
                 </div>
             </div>
         </div>

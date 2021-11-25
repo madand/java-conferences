@@ -8,7 +8,7 @@
     </c:when>
     <c:otherwise>
         <c:url var="actionUrl" value="${requestScope['javax.servlet.forward.servlet_path']}">
-            <c:param name="id" value="${talk.id}" />
+            <c:param name="id" value="${talkProposal.id}" />
         </c:url>
     </c:otherwise>
 </c:choose>
@@ -16,29 +16,14 @@
 <form method="post" action="${actionUrl}">
     <div class="row">
         <div class="col-4 mb-3">
-            <mytags:speakersDropDown name="speakerId"
-                                     labelKey="talk.label.speaker"
-                                     speakersList="${speakersList}"
-                                     value="${talk.speaker}" required="true" />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-4 mb-3">
-            <mytags:inputText name="startTime" type="time"
-                              labelKey="talk.label.startTime"
-                              entity="${talk}" required="true" />
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-4 mb-3">
             <mytags:durationDropDown name="duration"
                                      labelKey="talk.label.duration"
-                                     value="${talk.duration}" required="true" />
+                                     value="${talkProposal.duration}" required="true" />
         </div>
     </div>
 
     <div class="row">
-        <c:forEach items="${talk.translations}" var="translation">
+        <c:forEach items="${talkProposal.translations}" var="translation">
             <c:set var="language" value="${translation.language}" />
             <c:set var="required" value="${translation.language == defaultLanguage}" />
 

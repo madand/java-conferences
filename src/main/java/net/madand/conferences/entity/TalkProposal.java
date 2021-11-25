@@ -3,54 +3,34 @@ package net.madand.conferences.entity;
 import net.madand.conferences.l10n.Languages;
 
 import java.io.Serializable;
-import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Talk implements Serializable {
-    private static final long serialVersionUID = -994800254257454614L;
+public class TalkProposal implements Serializable {
+    private static final long serialVersionUID = -974867029443241210L;
 
     private int id;
     private OffsetDateTime createdAt;
     private OffsetDateTime updatedAt;
     private Conference conference;
     private User speaker;
-    private LocalTime startTime;
     private int duration;
-    private LocalTime endTime;
 
-    private final List<TalkTranslation> translations = new ArrayList<>();
+    private final List<TalkProposalTranslation> translations = new ArrayList<>();
 
     // The following properties are only set when fetching data from v_conference view.
     private String name;
     private String description;
 
-    /**
-     * Static factory of {@link Talk} instances.
-     * @param conference
-     * @param speaker
-     * @param startTime
-     * @param duration
-     * @return
-     */
-    public static Talk makeInstance(Conference conference, User speaker, LocalTime startTime, int duration) {
-        Talk talk = new Talk();
-        talk.setConference(conference);
-        talk.setSpeaker(speaker);
-        talk.setStartTime(startTime);
-        talk.setDuration(duration);
-        return talk;
-    }
-
-    public static Talk makeInstanceWithTranslations(Conference conference) {
-        final Talk talk = new Talk();
-        talk.setConference(conference);
+    public static TalkProposal makeInstanceWithTranslations(Conference conference) {
+        final TalkProposal talkProposal = new TalkProposal();
+        talkProposal.setConference(conference);
         Languages.list().stream()
-                .map(language -> TalkTranslation.makeInstance(talk, language))
-                .forEach(talk::addTranslation);
-        return talk;
+                .map(language -> TalkProposalTranslation.makeInstance(talkProposal, language))
+                .forEach(talkProposal::addTranslation);
+        return talkProposal;
     }
 
     public int getId() {
@@ -93,24 +73,12 @@ public class Talk implements Serializable {
         this.speaker = speaker;
     }
 
-    public LocalTime getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(LocalTime startTime) {
-        this.startTime = startTime;
-    }
-
     public int getDuration() {
         return duration;
     }
 
     public void setDuration(int duration) {
         this.duration = duration;
-    }
-
-    public LocalTime getEndTime() {
-        return endTime;
     }
 
     public String getName() {
@@ -129,32 +97,24 @@ public class Talk implements Serializable {
         this.description = description;
     }
 
-    public List<TalkTranslation> getTranslations() {
+    public List<TalkProposalTranslation> getTranslations() {
         return translations;
     }
 
-    public void addTranslation(TalkTranslation translation) {
+    public void addTranslation(TalkProposalTranslation translation) {
         translations.add(translation);
     }
 
-    public void loadTranslation(TalkTranslation translation) {
+    public void loadTranslation(TalkProposalTranslation translation) {
         setName(translation.getName());
         setDescription(translation.getDescription());
-    }
-
-    /**
-     * Note that end_time field in the DB is computed by trigger, so this value is never directly saved into the DB!
-     * @param endTime
-     */
-    public void setEndTime(LocalTime endTime) {
-        this.endTime = endTime;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Talk talk = (Talk) o;
+        TalkProposal talk = (TalkProposal) o;
         return id == talk.id;
     }
 
@@ -165,11 +125,10 @@ public class Talk implements Serializable {
 
     @Override
     public String toString() {
-        return "Talk{" +
+        return "TalkProposal{" +
                 "id=" + id +
                 ", conference=" + conference +
                 ", speaker=" + speaker +
-                ", startTime=" + startTime +
                 ", duration=" + duration +
                 '}';
     }

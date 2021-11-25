@@ -1,7 +1,7 @@
 package net.madand.conferences.web.controller;
 
 import net.madand.conferences.service.ServiceException;
-import net.madand.conferences.web.controller.exception.HttpNotFoundException;
+import net.madand.conferences.web.controller.exception.HttpException;
 import net.madand.conferences.web.controller.exception.HttpRedirectException;
 
 import javax.servlet.ServletException;
@@ -20,13 +20,13 @@ public interface Controller {
      * @throws ServletException
      * @throws IOException
      */
-    boolean maybeHandleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException, HttpNotFoundException, HttpRedirectException;
+    boolean maybeHandleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException, HttpException, HttpRedirectException;
 
     /**
      * The concrete controller action (i.e. a handler method).
      */
     @FunctionalInterface
     interface Action {
-        void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException, HttpNotFoundException, HttpRedirectException;
+        void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException, HttpException, HttpRedirectException;
     }
 }

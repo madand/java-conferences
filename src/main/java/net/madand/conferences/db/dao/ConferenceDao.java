@@ -1,10 +1,12 @@
 package net.madand.conferences.db.dao;
 
 import net.madand.conferences.db.Fields;
+import net.madand.conferences.db.util.QueryBuilder;
 import net.madand.conferences.db.util.QueryHelper;
 import net.madand.conferences.db.util.StatementParametersSetter;
 import net.madand.conferences.entity.Conference;
 import net.madand.conferences.entity.Language;
+import net.madand.conferences.entity.User;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -18,6 +20,7 @@ import java.util.Optional;
 public class ConferenceDao {
     private static final String FIND_ALL = "SELECT * FROM conference ORDER BY id";
     private static final String FIND_ALL_LANG = "SELECT * FROM v_conference WHERE language_id = ? ORDER BY event_date";
+    private static final String FIND_ALL_FOR_USER = "SELECT * FROM v_conference_with_attendee WHERE language_id = ? AND  ORDER BY event_date";
     private static final String FIND_ONE = "SELECT * FROM conference WHERE id = ?";
     private static final String FIND_ONE_LANG = "SELECT * FROM v_conference WHERE id = ? AND language_id = ?";
     
@@ -30,9 +33,33 @@ public class ConferenceDao {
     }
 
     public static List<Conference> findAll(Connection connection, Language language) throws SQLException {
-        return QueryHelper.findAll(connection, FIND_ALL_LANG,
+        final String SQL = new QueryBuilder("v_conference")
+                .where("language_id = ?")
+                .orderBy("event_date")
+                .buildSelect();
+        return QueryHelper.findAll(connection, SQL,
                 stmt -> stmt.setInt(1, language.getId()),
                 ConferenceDao::mapRowWithTranslation);
+    }
+
+    public static List<Conference> findAll(Connection connection, Language language, Optional<User> user) throws SQLException {
+        final String SQL = new QueryBuilder("v_conference t")
+                .select("t.*, ca.user_id as attendee_id")
+                .leftJoin("conference_attendee ca ON ca.conference_id = t.id AND ca.user_id = ?")
+                .where("language_id = ?")
+                .orderBy("event_date")
+                .buildSelect();
+        int attendeeId = user.map(User::getId).orElse(-1);
+        return QueryHelper.findAll(connection, SQL,
+                stmt -> {
+                    stmt.setInt(1, attendeeId);
+                    stmt.setInt(2, language.getId());
+                },
+                rs -> {
+                    Conference conference = ConferenceDao.mapRowWithTranslation(rs);
+                    conference.setCurrentUserAttending(rs.getInt(Fields.ATTENDEE_ID) > 0);
+                    return conference;
+                });
     }
 
     public static Optional<Conference> findOne(Connection conn, int id, Language language) throws SQLException {
