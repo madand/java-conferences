@@ -48,7 +48,7 @@ public abstract class AbstractController implements Controller {
         throw new HttpRedirectException(url);
     }
 
-    protected void ensureIsPost(HttpServletRequest request) throws HttpException {
+    protected void checkIsPOST(HttpServletRequest request) throws HttpException {
         if (!"POST".equals(request.getMethod())) {
             throw new HttpException(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
         }

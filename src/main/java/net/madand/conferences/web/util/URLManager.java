@@ -1,5 +1,7 @@
 package net.madand.conferences.web.util;
 
+import net.madand.conferences.web.scope.SessionScope;
+
 import javax.servlet.http.HttpServletRequest;
 
 public class URLManager {
@@ -49,5 +51,15 @@ public class URLManager {
 
     public static String homePage(HttpServletRequest request) {
         return buildURL(URI_CONFERENCE_LIST, null, request);
+    }
+
+    public static void rememberUrlIfGET(HttpServletRequest request) {
+        if ("GET".equals(request.getMethod())) {
+            SessionScope.setPreviousUrl(request.getSession(), buildURLPreserveQuery(request.getServletPath(), request));
+        }
+    }
+
+    public static String previousUrl(HttpServletRequest request) {
+        return SessionScope.getPreviousUrl(request.getSession(), URLManager.homePage(request));
     }
 }

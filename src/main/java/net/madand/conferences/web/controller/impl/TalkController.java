@@ -42,9 +42,10 @@ public class TalkController extends AbstractController {
     public void list(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException, HttpException {
         final Language currentLanguage = SessionScope.getCurrentLanguage(request.getSession());
         final int id = Integer.parseInt(request.getParameter("id"));
-
-        Conference conference = serviceFactory.getConferenceService().findOne(id, currentLanguage)
+        final Conference conference = serviceFactory.getConferenceService().findOne(id, currentLanguage)
                 .orElseThrow(HttpException::new);
+
+        URLManager.rememberUrlIfGET(request);
 
         request.setAttribute("conference", conference);
         request.setAttribute("talks", talkService.findAllTranslated(conference, currentLanguage));
@@ -58,11 +59,10 @@ public class TalkController extends AbstractController {
 
         Conference conference = serviceFactory.getConferenceService().findOne(conferenceId, currentLanguage)
                 .orElseThrow(HttpException::new);
-        request.setAttribute("conference", conference);
-
         Talk talk = Talk.makeInstanceWithTranslations(conference);
-        request.setAttribute("talk", talk);
 
+        request.setAttribute("conference", conference);
+        request.setAttribute("talk", talk);
         request.setAttribute("speakersList", serviceFactory.getUserService().speakersList());
 
         if ("POST".equals(request.getMethod())) {
@@ -91,11 +91,9 @@ public class TalkController extends AbstractController {
 
     public void edit(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, ServiceException, HttpRedirectException, HttpException {
         final int id = Integer.parseInt(request.getParameter("id"));
+        Talk talk = talkService.findOneWithTranslations(id, Languages.list()).orElseThrow(HttpException::new);
 
-        Talk talk = talkService.findOneWithTranslations(id, Languages.list())
-                .orElseThrow(HttpException::new);
         request.setAttribute("talk", talk);
-
         request.setAttribute("speakersList", serviceFactory.getUserService().speakersList());
 
         if ("POST".equals(request.getMethod())) {
@@ -125,19 +123,14 @@ public class TalkController extends AbstractController {
     }
 
     public void delete(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, ServiceException, HttpRedirectException, HttpException {
-        if (!"POST".equals(request.getMethod())) {
-            response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-            return;
-        }
+        checkIsPOST(request);
 
         final int id = Integer.parseInt(request.getParameter("id"));
-        Talk talk = talkService.findOne(id)
-                .orElseThrow(HttpException::new);
+        Talk talk = talkService.findOne(id).orElseThrow(HttpException::new);
 
         talkService.delete(talk);
 
-        final HttpSession session = request.getSession();
-        SessionScope.setFlashMessageSuccess(session, "Deleted successfully");
-        redirect((String) session.getAttribute("previousURL"));
+        SessionScope.setFlashMessageSuccess(request.getSession(), "Deleted successfully");
+        redirect(URLManager.previousUrl(request));
     }
 }

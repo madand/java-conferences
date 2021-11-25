@@ -43,6 +43,7 @@ public class TalkProposalController extends AbstractController {
 
         request.setAttribute("proposals", talkProposalService.findAllTranslated(currentLanguage));
 
+        URLManager.rememberUrlIfGET(request);
         renderView("talkProposal/listForModerator", request, response);
     }
 
@@ -55,6 +56,7 @@ public class TalkProposalController extends AbstractController {
 
         request.setAttribute("proposals", talkProposalService.findAllTranslated(currentLanguage, user));
 
+        URLManager.rememberUrlIfGET(request);
         renderView("talkProposal/listForSpeaker", request, response);
     }
 
@@ -62,8 +64,7 @@ public class TalkProposalController extends AbstractController {
         final Language currentLanguage = SessionScope.getCurrentLanguage(request.getSession());
         final int conferenceId = Integer.parseInt(request.getParameter("id"));
 
-        User user = RequestScope.getUser(request)
-                .orElseThrow(HttpException::new);
+        User user = RequestScope.getUser(request).orElseThrow(HttpException::new);
         if (!user.getRole().isSpeaker()) {
             throw new HttpException(HttpServletResponse.SC_FORBIDDEN);
         }
@@ -128,7 +129,7 @@ public class TalkProposalController extends AbstractController {
     }
 
     public void delete(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, ServiceException, HttpRedirectException, HttpException {
-        ensureIsPost(request);
+        checkIsPOST(request);
 
         final int id = Integer.parseInt(request.getParameter("id"));
         TalkProposal talkProposal = talkProposalService.findOne(id)
@@ -144,7 +145,7 @@ public class TalkProposalController extends AbstractController {
 
         final HttpSession session = request.getSession();
         SessionScope.setFlashMessageSuccess(session, "Deleted successfully");
-        redirect(SessionScope.getPreviousUrl(request.getSession(), URLManager.homePage(request)));
+        redirect(URLManager.previousUrl(request));
     }
 
     public void review(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, ServiceException, HttpRedirectException, HttpException {
@@ -173,14 +174,8 @@ public class TalkProposalController extends AbstractController {
 
             talkProposalService.acceptProposal(talkProposal);
 
-            final HttpSession session = request.getSession();
-            SessionScope.setFlashMessageSuccess(session, "Accepted proposal successfully");
-
-            User user = RequestScope.getUser(request).orElseThrow(HttpException::forbidden);
-            if (user.getRole().isModerator()) {
-                redirect(URLManager.buildURL(URLManager.URI_TALK_PROPOSAL_LIST_MODER, null, request));
-            }
-            redirect(URLManager.buildURL(URLManager.URI_TALK_PROPOSAL_LIST_SPEAKER, null,request));
+            SessionScope.setFlashMessageSuccess(request.getSession(), "Accepted proposal successfully");
+            redirect(URLManager.buildURL(URLManager.URI_TALK_PROPOSAL_LIST_MODER, null, request));
         }
 
         renderView("talkProposal/review", request, response);

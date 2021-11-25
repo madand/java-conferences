@@ -60,14 +60,14 @@
         </c:forEach>
     </div>
 
-    <c:choose>
-        <c:when test="${isNewEntity}">
-            <%@ include file="/WEB-INF/jspf/form/buttonBlockCreate.jspf" %>
-        </c:when>
-        <c:otherwise>
-            <%@ include file="/WEB-INF/jspf/form/buttonBlockEdit.jspf" %>
-        </c:otherwise>
-    </c:choose>
+    <div class="row">
+        <div class="col-12">
+            <button class="btn btn-primary" type="submit" >
+                <i class="bi-check"></i>
+                <fmt:message key="button.acceptProposal"/>
+            </button>
+        </div>
+    </div>
 
 </form>
 

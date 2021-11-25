@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 public class ConferenceController extends AbstractController {
@@ -47,10 +48,12 @@ public class ConferenceController extends AbstractController {
 
     public void list(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException {
         final HttpSession session = request.getSession();
-        request.setAttribute("conferences",
-                conferenceService.findAllTranslatedWithAttendee(
-                        SessionScope.getCurrentLanguage(session),
-                        RequestScope.getUser(request)));
+        final Language currentLanguage = SessionScope.getCurrentLanguage(session);
+        final List<Conference> conferences = conferenceService.findAllTranslatedWithAttendee(currentLanguage, RequestScope.getUser(request));
+
+        request.setAttribute("conferences", conferences);
+
+        URLManager.rememberUrlIfGET(request);
 
         renderView("conference/list", request, response);
     }
@@ -81,10 +84,11 @@ public class ConferenceController extends AbstractController {
 
     public void edit(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, ServiceException, HttpRedirectException, HttpException {
         final int id = Integer.parseInt(request.getParameter("id"));
-
         Conference conference = conferenceService.findOneWithTranslations(id, Languages.list())
                 .orElseThrow(HttpException::new);
         request.setAttribute("conference", conference);
+
+        URLManager.rememberUrlIfGET(request);
 
         if ("POST".equals(request.getMethod())) {
             String eventDateStr = request.getParameter("eventDate");
@@ -112,10 +116,7 @@ public class ConferenceController extends AbstractController {
     }
 
     public void delete(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, ServiceException, HttpRedirectException, HttpException {
-        if (!"POST".equals(request.getMethod())) {
-            response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-            return;
-        }
+        checkIsPOST(request);
 
         final int id = Integer.parseInt(request.getParameter("id"));
         Conference conference = conferenceService.findOne(id)
@@ -125,14 +126,11 @@ public class ConferenceController extends AbstractController {
 
         final HttpSession session = request.getSession();
         SessionScope.setFlashMessageSuccess(session, "Deleted successfully");
-        redirect((String) session.getAttribute("previousURL"));
+        redirect(URLManager.previousUrl(request));
     }
 
     public void attendConference(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, ServiceException, HttpRedirectException, HttpException {
-        if (!"POST".equals(request.getMethod())) {
-            response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-            return;
-        }
+        checkIsPOST(request);
 
         final int id = Integer.parseInt(request.getParameter("id"));
         Conference conference = conferenceService.findOne(id)
@@ -145,14 +143,11 @@ public class ConferenceController extends AbstractController {
 
         conferenceService.addAttendee(conference, userOptional.get());
 
-        redirect(SessionScope.getPreviousUrl(request.getSession(), URLManager.homePage(request)));
+        redirect(URLManager.previousUrl(request));
     }
 
     public void cancelAttendance(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, ServiceException, HttpRedirectException, HttpException {
-        if (!"POST".equals(request.getMethod())) {
-            response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-            return;
-        }
+        checkIsPOST(request);
 
         final int id = Integer.parseInt(request.getParameter("id"));
         Conference conference = conferenceService.findOne(id)
@@ -165,6 +160,6 @@ public class ConferenceController extends AbstractController {
 
         conferenceService.removeAttendee(conference, userOptional.get());
 
-        redirect(SessionScope.getPreviousUrl(request.getSession(), URLManager.homePage(request)));
+        redirect(URLManager.previousUrl(request));
     }
 }

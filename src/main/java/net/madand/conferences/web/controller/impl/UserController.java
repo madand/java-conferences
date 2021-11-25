@@ -58,7 +58,7 @@ public class UserController extends AbstractController {
                     SessionScope.setFlashMessageSuccess(session,
                             String.format("Successfully logged in as %s.", user.getRealName()));
 
-                    redirect(URLManager.homePage(request));
+                    redirect(URLManager.previousUrl(request));
                 }
             }
 
@@ -67,7 +67,6 @@ public class UserController extends AbstractController {
 
         renderView("user/login", request, response);
     }
-
 
     private void register(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException, HttpRedirectException {
         User user = new User();
@@ -89,7 +88,7 @@ public class UserController extends AbstractController {
                 SessionScope.setFlashMessageSuccess(session,
                         String.format("Successfully registered as %s.", user.getRealName()));
 
-                redirect(URLManager.homePage(request));
+                redirect(URLManager.previousUrl(request));
             } else {
                 SessionScope.setFlashMessageError(session, "Entered passwords are not the same");
             }
@@ -98,15 +97,11 @@ public class UserController extends AbstractController {
         renderView("user/register", request, response);
     }
 
-    private void edit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException, HttpRedirectException {
-        final Optional<User> userOptional = RequestScope.getUser(request);
-        if (!userOptional.isPresent()) {
-            // If no user is logged in, just show them the home page.
-            redirect(URLManager.homePage(request));
-        }
-
-        User user = userOptional.get();
+    private void edit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException, HttpRedirectException, HttpException {
+        final User user = RequestScope.getUser(request).orElseThrow(HttpException::forbidden);
         request.setAttribute("bean", user);
+
+        URLManager.rememberUrlIfGET(request);
 
         if ("POST".equals(request.getMethod())) {
             final HttpSession session = request.getSession();
@@ -117,67 +112,49 @@ public class UserController extends AbstractController {
             userService.update(user);
 
             SessionScope.setFlashMessageSuccess(session, "Successfully updated user profile");
-            redirect(URLManager.homePage(request));
+            redirect(URLManager.previousUrl(request));
         }
 
         renderView("user/edit", request, response);
     }
 
     private void delete(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, ServiceException, HttpRedirectException, HttpException {
-        if (!"POST".equals(request.getMethod())) {
-            response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-            return;
-        }
+        checkIsPOST(request);
 
-        User user = RequestScope.getUser(request)
-                .orElseThrow(HttpException::new);
+        User user = RequestScope.getUser(request).orElseThrow(HttpException::new);
 
         userService.delete(user);
-        final HttpSession session = request.getSession();
-        SessionScope.setFlashMessageSuccess(session, "Successfully deleted user profile");
-
-        // Also, logout the user.
+        SessionScope.setFlashMessageSuccess(request.getSession(), "Successfully deleted user profile");
         logout(request, response);
     }
 
     private void logout(HttpServletRequest request, HttpServletResponse response) throws IOException, HttpRedirectException, HttpException {
-        if (!RequestScope.getUser(request).isPresent()) {
-            // If no user is logged in, just show them the home page.
-            redirect(URLManager.homePage(request));
-        }
-
         SessionScope.removeCurrentUserId(request.getSession());
 
         redirect(URLManager.homePage(request));
     }
 
-    private void changePassword(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException, HttpRedirectException {
-        final Optional<User> userOptional = RequestScope.getUser(request);
-        if (!userOptional.isPresent()) {
-            // If no user is logged in, just show them the home page.
-            redirect(URLManager.homePage(request));
-        }
-
-        User user = userOptional.get();
+    private void changePassword(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException, HttpRedirectException, HttpException {
+        final User user = RequestScope.getUser(request).orElseThrow(HttpException::forbidden);
         request.setAttribute("bean", user);
 
         if ("POST".equals(request.getMethod())) {
             final HttpSession session = request.getSession();
 
-            String password = Optional.ofNullable(request.getParameter("password")).orElse("");
+            String oldPassword = Optional.ofNullable(request.getParameter("password")).orElse("");
             String passwordNew = Optional.ofNullable(request.getParameter("passwordNew")).orElse("");
             String passwordNewRepeat = Optional.ofNullable(request.getParameter("passwordNewRepeat")).orElse("");
 
-            if (PasswordHelper.checkPassword(password, user.getPasswordHash())
+            if (PasswordHelper.checkPassword(oldPassword, user.getPasswordHash())
                     && passwordNew.equals(passwordNewRepeat)) {
                 user.setPassword(passwordNew);
                 userService.update(user);
                 SessionScope.setFlashMessageSuccess(session, "Successfully changed password");
 
-                redirect(URLManager.buildURL(URLManager.URI_USER_EDIT, null, request));
-            } else {
-                SessionScope.setFlashMessageError(session, "Entered passwords are not the same");
+                redirect(URLManager.previousUrl(request));
             }
+
+            SessionScope.setFlashMessageError(session, "Entered passwords did not match");
         }
 
         renderView("user/changePassword", request, response);
