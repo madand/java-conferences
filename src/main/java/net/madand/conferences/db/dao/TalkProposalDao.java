@@ -6,6 +6,7 @@ import net.madand.conferences.db.util.QueryHelper;
 import net.madand.conferences.db.util.StatementParametersSetter;
 import net.madand.conferences.entity.Language;
 import net.madand.conferences.entity.TalkProposal;
+import net.madand.conferences.entity.User;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -17,8 +18,20 @@ public class TalkProposalDao {
     public static List<TalkProposal> findAll(Connection connection, Language language) throws SQLException {
         final String SQL = "SELECT * FROM v_new_talk_proposal WHERE language_id = ? ORDER BY conference_id, created_at DESC";
         return QueryHelper.findAll(connection, SQL,
+                stmt -> stmt.setInt(1, language.getId()),
+                (rs) -> {
+                    TalkProposal talk = makeRowMapper(connection, language).mapRow(rs);
+                    talk.loadTranslation(TalkProposalTranslationDao.mapRow(rs));
+                    return talk;
+                });
+    }
+
+    public static List<TalkProposal> findAll(Connection connection, Language language, User speaker) throws SQLException {
+        final String SQL = "SELECT * FROM v_new_talk_proposal WHERE language_id = ? AND speaker_id = ? ORDER BY conference_id, created_at DESC";
+        return QueryHelper.findAll(connection, SQL,
                 stmt -> {
                     stmt.setInt(1, language.getId());
+                    stmt.setInt(2, speaker.getId());
                 },
                 (rs) -> {
                     TalkProposal talk = makeRowMapper(connection, language).mapRow(rs);

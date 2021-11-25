@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.time.LocalTime;
+import java.util.List;
 
 public class TalkProposalController extends AbstractController {
     private final TalkProposalService talkProposalService;
@@ -27,8 +29,8 @@ public class TalkProposalController extends AbstractController {
         handlersMap.put(URLManager.URI_TALK_PROPOSAL_LIST_MODER, this::listForModerator);
         handlersMap.put(URLManager.URI_TALK_PROPOSAL_LIST_SPEAKER, this::listForSpeaker);
         handlersMap.put(URLManager.URI_TALK_PROPOSAL_CREATE, this::create);
-//        handlersMap.put(URLManager.URI_TALK_EDIT, this::edit);
-//        handlersMap.put(URLManager.URI_TALK_DELETE, this::delete);
+        handlersMap.put(URLManager.URI_TALK_PROPOSAL_REVIEW, this::review);
+        handlersMap.put(URLManager.URI_TALK_PROPOSAL_DELETE, this::delete);
     }
 
     public TalkProposalController(ServletContext servletContext) {
@@ -46,8 +48,12 @@ public class TalkProposalController extends AbstractController {
 
     public void listForSpeaker(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException, HttpException {
         final Language currentLanguage = SessionScope.getCurrentLanguage(request.getSession());
+        User user = RequestScope.getUser(request).orElseThrow(HttpException::forbidden);
+        if (!user.getRole().isSpeaker()) {
+            throw HttpException.forbidden();
+        }
 
-        request.setAttribute("proposals", talkProposalService.findAllTranslated(currentLanguage));
+        request.setAttribute("proposals", talkProposalService.findAllTranslated(currentLanguage, user));
 
         renderView("talkProposal/listForSpeaker", request, response);
     }
@@ -128,10 +134,55 @@ public class TalkProposalController extends AbstractController {
         TalkProposal talkProposal = talkProposalService.findOne(id)
                 .orElseThrow(HttpException::new);
 
+        User user = RequestScope.getUser(request).orElseThrow(HttpException::forbidden);
+        // Only a moderator or a speaker, who created the proposal, can delete it.
+        if (!user.getRole().isModerator() && !user.equals(talkProposal.getSpeaker())) {
+            throw HttpException.forbidden();
+        }
+
         talkProposalService.delete(talkProposal);
 
         final HttpSession session = request.getSession();
         SessionScope.setFlashMessageSuccess(session, "Deleted successfully");
         redirect(SessionScope.getPreviousUrl(request.getSession(), URLManager.homePage(request)));
+    }
+
+    public void review(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, ServiceException, HttpRedirectException, HttpException {
+        final Language currentLanguage = SessionScope.getCurrentLanguage(request.getSession());
+        final int id = Integer.parseInt(request.getParameter("id"));
+
+        final TalkProposal talkProposal = talkProposalService.findOneWithTranslations(id, Languages.list())
+                .orElseThrow(HttpException::new);
+        final Conference conference = serviceFactory.getConferenceService()
+                .findOne(talkProposal.getConference().getId(), currentLanguage).get();
+        final List<Talk> existingTalks = serviceFactory.getTalkService().findAllTranslated(conference, currentLanguage);
+
+        request.setAttribute("conference", conference);
+        request.setAttribute("existingTalks", existingTalks);
+        request.setAttribute("talk", talkProposal);
+
+        if ("POST".equals(request.getMethod())) {
+            talkProposal.setStartTime(LocalTime.parse(request.getParameter("startTime")));
+            talkProposal.setDuration(Integer.parseInt(request.getParameter("duration")));
+
+            for (TalkProposalTranslation translation : talkProposal.getTranslations()) {
+                final Language lang = translation.getLanguage();
+                translation.setName(request.getParameter(HtmlSupport.localizedParamName("name", lang)));
+                translation.setDescription(request.getParameter(HtmlSupport.localizedParamName("description", lang)));
+            }
+
+            talkProposalService.acceptProposal(talkProposal);
+
+            final HttpSession session = request.getSession();
+            SessionScope.setFlashMessageSuccess(session, "Accepted proposal successfully");
+
+            User user = RequestScope.getUser(request).orElseThrow(HttpException::forbidden);
+            if (user.getRole().isModerator()) {
+                redirect(URLManager.buildURL(URLManager.URI_TALK_PROPOSAL_LIST_MODER, null, request));
+            }
+            redirect(URLManager.buildURL(URLManager.URI_TALK_PROPOSAL_LIST_SPEAKER, null,request));
+        }
+
+        renderView("talkProposal/review", request, response);
     }
 }

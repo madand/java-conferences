@@ -25,16 +25,14 @@
                     </td>
                     <td> <c:out value="${talk.speaker.realName}"/> </td>
                     <td>
-                        <mytags:actionButton action="view-talk-proposal"
+                        <mytags:actionButton action="review-talk-proposal"
                                              entityId="${talk.id}"
                                              buttonType="primary"
                                              messageKey="button.review"
                                              icon="eye" />
-                        <mytags:postActionButton action="reject-talk-proposal"
-                                                 entityId="${talk.id}"
-                                                 buttonType="danger"
-                                                 messageKey="button.reject"
-                                                 icon="trash" />
+                        <mytags:deleteButton action="delete-talk-proposal"
+                                             entityId="${talk.id}"
+                                             icon="trash" />
                     </td>
                 </tr>
             </c:forEach>

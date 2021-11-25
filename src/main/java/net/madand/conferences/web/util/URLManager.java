@@ -27,8 +27,8 @@ public class URLManager {
     public static final String URI_TALK_PROPOSAL_LIST_MODER = "list-talk-proposals-moderator";
     public static final String URI_TALK_PROPOSAL_LIST_SPEAKER = "list-talk-proposals-speaker";
     public static final String URI_TALK_PROPOSAL_CREATE = "create-talk-proposal";
-    public static final String URI_TALK_PROPOSAL_VIEW = "view-talk-proposal";
-    public static final String URI_TALK_PROPOSAL_REJECT = "reject-talk-proposal";
+    public static final String URI_TALK_PROPOSAL_REVIEW = "review-talk-proposal";
+    public static final String URI_TALK_PROPOSAL_DELETE = "delete-talk-proposal";
 
     public static String buildURLPreserveQuery(String uri, HttpServletRequest request) {
         return buildURL(uri, request.getQueryString(), request);

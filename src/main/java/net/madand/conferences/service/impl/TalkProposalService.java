@@ -1,7 +1,9 @@
 package net.madand.conferences.service.impl;
 
+import net.madand.conferences.db.dao.TalkDao;
 import net.madand.conferences.db.dao.TalkProposalDao;
 import net.madand.conferences.db.dao.TalkProposalTranslationDao;
+import net.madand.conferences.db.dao.TalkTranslationDao;
 import net.madand.conferences.entity.*;
 import net.madand.conferences.service.AbstractService;
 import net.madand.conferences.service.ServiceException;
@@ -22,9 +24,9 @@ public class TalkProposalService extends AbstractService {
         );
     }
 
-    public List<TalkProposal> findAllTranslated(User speaker, Language language) throws ServiceException {
+    public List<TalkProposal> findAllTranslated(Language language, User speaker) throws ServiceException {
         return callNoTransaction(
-                connection -> TalkProposalDao.findAll(connection, language),
+                connection -> TalkProposalDao.findAll(connection, language, speaker),
                 "Failed to fetch talk proposals"
         );
     }
@@ -77,5 +79,19 @@ public class TalkProposalService extends AbstractService {
     public void delete(TalkProposal talk) throws ServiceException {
         runWithinTransaction(connection -> TalkProposalDao.delete(connection, talk),
                 "Failed to delete the talk proposal from the database");
+    }
+
+    public void acceptProposal(TalkProposal talkProposal) throws ServiceException {
+        final Talk talk = Talk.makeInstanceWithTranslations(talkProposal.getConference());
+        talkProposal.populateTalk(talk);
+        runWithinTransaction(
+                connection -> {
+                    TalkProposalDao.delete(connection, talkProposal);
+                    TalkDao.insert(connection, talk);
+                    for (TalkTranslation translation : talk.getTranslations()) {
+                        TalkTranslationDao.insert(connection, translation);
+                    }
+                },
+                "Failed to create a talk from the talk proposal");
     }
 }

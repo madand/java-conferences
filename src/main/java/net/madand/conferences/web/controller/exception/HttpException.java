@@ -24,6 +24,10 @@ public class HttpException extends Exception {
         this.statusCode = statusCode;
     }
 
+    public static HttpException forbidden() {
+        return new HttpException(HttpServletResponse.SC_FORBIDDEN);
+    }
+
     public int getStatusCode() {
         return statusCode;
     }

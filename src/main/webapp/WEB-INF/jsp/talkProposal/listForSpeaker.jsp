@@ -23,11 +23,6 @@
                         (${talk.duration} <fmt:message key="general.minutes"/>)
                     </td>
                     <td>
-                        <mytags:actionButton action="view-talk-proposal"
-                                             entityId="${talk.id}"
-                                             buttonType="primary"
-                                             messageKey="button.review"
-                                             icon="eye" />
                         <mytags:deleteButton action="delete-talk-proposal"
                                              entityId="${talk.id}"
                                              icon="trash" />

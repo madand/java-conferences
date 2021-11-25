@@ -3,6 +3,7 @@ package net.madand.conferences.entity;
 import net.madand.conferences.l10n.Languages;
 
 import java.io.Serializable;
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,9 @@ public class TalkProposal implements Serializable {
     private Conference conference;
     private User speaker;
     private int duration;
+
+    // This field is for review form only, not in the DB.
+    private LocalTime startTime;
 
     private final List<TalkProposalTranslation> translations = new ArrayList<>();
 
@@ -97,6 +101,14 @@ public class TalkProposal implements Serializable {
         this.description = description;
     }
 
+    public LocalTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalTime startTime) {
+        this.startTime = startTime;
+    }
+
     public List<TalkProposalTranslation> getTranslations() {
         return translations;
     }
@@ -108,6 +120,25 @@ public class TalkProposal implements Serializable {
     public void loadTranslation(TalkProposalTranslation translation) {
         setName(translation.getName());
         setDescription(translation.getDescription());
+    }
+
+    /**
+     * Populate the given talk with data from this talk proposal and its translations.
+     *
+     * @param talk the talk to populate with data.
+     */
+    public void populateTalk(Talk talk) {
+        talk.setConference(conference);
+        talk.setSpeaker(speaker);
+        talk.setStartTime(startTime);
+        talk.setDuration(duration);
+
+        List<TalkTranslation> talkTranslations = talk.getTranslations();
+        List<TalkProposalTranslation> proposalTranslations = getTranslations();
+        for (int i = 0; i < talkTranslations.size(); i++) {
+            talkTranslations.get(i).setName(proposalTranslations.get(i).getName());
+            talkTranslations.get(i).setDescription(proposalTranslations.get(i).getDescription());
+        }
     }
 
     @Override
