@@ -12,6 +12,7 @@ public class Fields {
     // foreign key fields
     public static final String LANGUAGE_ID = "language_id";
     public static final String CONFERENCE_ID = "conference_id";
+    public static final String TALK_ID = "talk_id";
     public static final String SPEAKER_ID = "speaker_id";
 
     // conference
@@ -30,4 +31,8 @@ public class Fields {
 
     // virtual columns in views
     public static final String ATTENDEE_ID = "attendee_id";
+    public static final String TALK_NAME = "talk_name";
+    public static final String CONFERENCE_NAME = "conference_name";
+    public static final String SPEAKER_NAME = "speaker_name";
+    public static final String SPEAKER_EMAIL = "speaker_email";
 }

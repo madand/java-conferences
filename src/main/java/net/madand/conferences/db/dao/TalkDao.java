@@ -6,9 +6,7 @@ import net.madand.conferences.db.util.QueryHelper;
 import net.madand.conferences.db.util.StatementParametersSetter;
 import net.madand.conferences.entity.*;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Time;
+import java.sql.*;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -69,11 +67,26 @@ public class TalkDao {
                 stmt -> stmt.setInt(1, talk.getId()));
     }
 
+    public static void setSpeaker(Connection conn, int talkId, int speakerId) throws SQLException {
+         final String SQL = "UPDATE talk SET speaker_id = ? WHERE id = ?";
+        QueryHelper.update(conn, SQL, stmt -> {
+            stmt.setInt(1, speakerId);
+            stmt.setInt(2, talkId);
+        });
+    }
+
     private static StatementParametersSetter makeStatementParametersSetter(Talk talk) {
         return (stmt) -> {
             int i = 0;
             stmt.setInt(++i, talk.getConference().getId());
-            stmt.setInt(++i, talk.getSpeaker().getId());
+
+            User speaker = talk.getSpeaker();
+            if (speaker != null) {
+                stmt.setInt(++i, speaker.getId());
+            } else {
+                stmt.setNull(++i, Types.INTEGER);
+            }
+
             stmt.setTime(++i, Time.valueOf(talk.getStartTime()));
             stmt.setInt(++i, talk.getDuration());
         };
@@ -91,7 +104,10 @@ public class TalkDao {
             talk.setDuration(rs.getInt(Fields.DURATION));
             talk.setEndTime(rs.getObject(Fields.END_TIME, LocalTime.class));
 
-            talk.setSpeaker(UserDao.findOneById(conn, rs.getInt(Fields.SPEAKER_ID)).get());
+            final int speakerId = rs.getInt(Fields.SPEAKER_ID);
+            if (speakerId > 0) {
+                talk.setSpeaker(UserDao.findOneById(conn, speakerId).get());
+            }
 
             return talk;
         };

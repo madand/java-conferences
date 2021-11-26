@@ -1,5 +1,6 @@
 
 -- Clean-up the database
+DROP VIEW IF EXISTS v_talk_speaker_request;
 DROP VIEW IF EXISTS v_conference;
 DROP VIEW IF EXISTS v_talk;
 DROP VIEW IF EXISTS v_new_talk_proposal;
@@ -241,3 +242,22 @@ CREATE VIEW v_new_talk_proposal
   COMMENT ON VIEW v_new_talk_proposal
     IS 'View that joins new_talk_proposal and its translation.';
 
+
+DROP VIEW v_talk_speaker_request;
+CREATE VIEW v_talk_speaker_request
+  AS
+  SELECT t.id,
+         t.created_at,
+         t.talk_id,
+         t.speaker_id,
+         vt.language_id,
+         vt.name as talk_name,
+         vc.name as conference_name,
+         u.real_name as speaker_name,
+         u.email as speaker_email
+    FROM talk_speaker_request t
+         JOIN "user" u ON u.id = t.speaker_id
+         JOIN v_talk vt ON vt.id = t.talk_id
+         JOIN v_conference vc ON (vc.id = vt.conference_id AND vt.language_id = vc.language_id);
+COMMENT ON VIEW v_new_talk_proposal
+  IS 'View that joins talk_speaker_request with translated talk and conference.';

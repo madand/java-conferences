@@ -169,7 +169,8 @@ public class DbInflator {
             for (int i = 0; i < talksCount; i++) {
                 final Talk talk = Talk.makeInstance(
                         conference,
-                        speakers.get(rng.nextInt(speakers.size())),
+                        // 50% of talks should have no speaker
+                        rng.nextInt(2) > 0 ? speakers.get(rng.nextInt(speakers.size())) : null,
                         LocalTime.of(12 + i, 00),
                         20 + rng.nextInt(4) * 10
                 );

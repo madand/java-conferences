@@ -8,6 +8,7 @@
 <%@ attribute  name="entityId"  required="true" %>
 <%@ attribute  name="messageKey"  required="true" %>
 <%@ attribute  name="buttonType"  required="true" %>
+<%@ attribute name="extraClasses" %>
 <%@ attribute  name="icon" %>
 
 <c:url var="actionUrl" value="${action}">
@@ -15,5 +16,6 @@
 </c:url>
 
 <form method="post" action="${actionUrl}" class="post-action-button">
-    <mytags:buttonSubmit labelKey="${messageKey}" btnClass="${buttonType}" icon="${icon}" />
+    <mytags:buttonSubmit labelKey="${messageKey}" btnClass="${buttonType}"
+                         icon="${icon}" extraClasses="${extraClasses}" />
 </form>

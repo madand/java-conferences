@@ -50,11 +50,41 @@
                         <mytl:formatDate value="${talk.startTime}" type="time"
                                          format="SHORT" />
                         (${talk.duration} <fmt:message key="general.minutes"/>)
-                        <c:if test="${not empty talk.speaker}">
-                            <br/> <b>Speaker: </b>
-                            <c:out value="${talk.speaker.realName}" />
-                        </c:if>
                     </p>
+
+                    <div class="card-text">
+                        <b>Speaker: </b>
+                        <c:choose>
+                            <c:when test="${not empty talk.speaker}">
+                                <c:out value="${talk.speaker.realName}" />
+                            </c:when>
+                            <c:otherwise>
+                                <fmt:message key="talk.speaker.unknown"/>
+                                <c:if test="${user.role.speaker}">
+
+                                    <c:choose>
+                                        <c:when test="${not empty talkSpeakerRequestsMap[talk.id]}">
+                                            <mytags:postActionButton action="delete-talk-speaker-request"
+                                                                     entityId="${talkSpeakerRequestsMap[talk.id]}"
+                                                                     buttonType="danger"
+                                                                     messageKey="talk.speaker.cancelRequest"
+                                                                     icon="x-circle"
+                                                                     extraClasses="btn-sm" />
+                                        </c:when>
+                                        <c:otherwise>
+                                            <mytags:postActionButton action="request-being-speaker-for-talk"
+                                                                     entityId="${talk.id}"
+                                                                     buttonType="primary"
+                                                                     messageKey="talk.speaker.makeRequest"
+                                                                     icon="chat-dots"
+                                                                     extraClasses="btn-sm" />
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:if>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
+
                     <div class="card-text">
                         ${mytl:linesToParagraphs(talk.description)}
                     </div>

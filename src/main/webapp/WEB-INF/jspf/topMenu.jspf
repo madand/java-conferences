@@ -1,0 +1,73 @@
+
+
+<c:if test="${user.role.moderator}">
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+            Actions
+        </a>
+        <ul class="dropdown-menu">
+            <li>
+                <a class="dropdown-item" href="${baseURI}/create-conference">
+                    Create Conference
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" href="${baseURI}/create-conference">
+                    Users
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" href="${baseURI}/list-talk-proposals-moderator">
+                    New Talk Proposals
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" href="${baseURI}/list-talk-speaker-requests-moderator">
+                    Talk Speaker Requests
+                </a>
+            </li>
+        </ul>
+    </li>
+</c:if>
+
+<c:if test="${user.role.speaker}">
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+            Actions
+        </a>
+        <ul class="dropdown-menu">
+            <li>
+                <a class="dropdown-item" href="${baseURI}/list-talk-proposals-speaker">
+                    New Talk Proposals
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" href="${baseURI}/list-talk-speaker-requests-speaker">
+                    Talk Speaker Requests
+                </a>
+            </li>
+        </ul>
+    </li>
+</c:if>
+
+<c:choose>
+    <c:when test="${empty user}">
+        <li class="nav-item">
+            <a class="nav-link" href="${baseURI}/login">
+                <fmt:message key="menu.login"/>
+            </a>
+        </li>
+    </c:when>
+
+    <c:otherwise>
+        <li class="nav-item">
+            <a class="nav-link" href="${baseURI}/edit-user">Edit Profile</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="${baseURI}/logout">
+                <fmt:message key="menu.logout"/>
+                (<c:out value="${user.realName}"/>)
+            </a>
+        </li>
+    </c:otherwise>
+</c:choose>

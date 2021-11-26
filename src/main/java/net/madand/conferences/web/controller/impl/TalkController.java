@@ -1,16 +1,16 @@
 package net.madand.conferences.web.controller.impl;
 
-import net.madand.conferences.entity.Conference;
-import net.madand.conferences.entity.Language;
-import net.madand.conferences.entity.Talk;
-import net.madand.conferences.entity.TalkTranslation;
+import net.madand.conferences.auth.Role;
+import net.madand.conferences.entity.*;
 import net.madand.conferences.l10n.Languages;
 import net.madand.conferences.service.ServiceException;
 import net.madand.conferences.service.impl.TalkService;
+import net.madand.conferences.service.impl.TalkSpeakerRequestService;
 import net.madand.conferences.web.controller.AbstractController;
 import net.madand.conferences.web.controller.exception.HttpException;
 import net.madand.conferences.web.controller.exception.HttpRedirectException;
 import net.madand.conferences.web.scope.ContextScope;
+import net.madand.conferences.web.scope.RequestScope;
 import net.madand.conferences.web.scope.SessionScope;
 import net.madand.conferences.web.util.HtmlSupport;
 import net.madand.conferences.web.util.URLManager;
@@ -22,6 +22,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class TalkController extends AbstractController {
     private final TalkService talkService;
@@ -50,6 +54,16 @@ public class TalkController extends AbstractController {
         request.setAttribute("conference", conference);
         request.setAttribute("talks", talkService.findAllTranslated(conference, currentLanguage));
 
+        // If current user is a Speaker, load info on what talks he requested being the talker.
+        final Optional<User> userOptional = RequestScope.getUser(request);
+        if (userOptional.map(User::getRole).map(Role::isSpeaker).orElse(false)) {
+            TalkSpeakerRequestService talkSpeakerRequestService = serviceFactory.getTalkSpeakerRequestService();
+            final List<TalkSpeakerRequest> talkSpeakerRequests = talkSpeakerRequestService.findAllTranslated(currentLanguage, userOptional.get());
+            final Map<Integer, Integer> talkSpeakerRequestsMap = talkSpeakerRequests.stream()
+                    .collect(Collectors.toMap(TalkSpeakerRequest::getTalkId, TalkSpeakerRequest::getId));
+            request.setAttribute("talkSpeakerRequestsMap", talkSpeakerRequestsMap);
+        }
+
         renderView("talk/list", request, response);
     }
 
@@ -66,11 +80,13 @@ public class TalkController extends AbstractController {
         request.setAttribute("speakersList", serviceFactory.getUserService().speakersList());
 
         if ("POST".equals(request.getMethod())) {
-            String speakerIdStr = request.getParameter("speakerId");
-            if (speakerIdStr != null && !speakerIdStr.isEmpty()) {
+            String speakerIdStr = Optional.ofNullable(request.getParameter("speakerId")).orElse("");
+            if (!speakerIdStr.isEmpty()) {
                 final int speakerId = Integer.parseInt(speakerIdStr);
                 talk.setSpeaker(serviceFactory.getUserService().findById(speakerId)
                         .orElseThrow(HttpException::new));
+            } else {
+                talk.setSpeaker(null);
             }
             talk.setStartTime(LocalTime.parse(request.getParameter("startTime")));
             talk.setDuration(Integer.parseInt(request.getParameter("duration")));
@@ -97,11 +113,13 @@ public class TalkController extends AbstractController {
         request.setAttribute("speakersList", serviceFactory.getUserService().speakersList());
 
         if ("POST".equals(request.getMethod())) {
-            String speakerIdStr = request.getParameter("speakerId");
-            if (speakerIdStr != null && !speakerIdStr.isEmpty()) {
+            String speakerIdStr = Optional.ofNullable(request.getParameter("speakerId")).orElse("");
+            if (!speakerIdStr.isEmpty()) {
                 final int speakerId = Integer.parseInt(speakerIdStr);
                 talk.setSpeaker(serviceFactory.getUserService().findById(speakerId)
                         .orElseThrow(HttpException::new));
+            } else {
+                talk.setSpeaker(null);
             }
             talk.setStartTime(LocalTime.parse(request.getParameter("startTime")));
             talk.setDuration(Integer.parseInt(request.getParameter("duration")));

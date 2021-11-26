@@ -19,7 +19,7 @@
             <mytags:speakersDropDown name="speakerId"
                                      labelKey="talk.label.speaker"
                                      speakersList="${speakersList}"
-                                     value="${talk.speaker}" required="true" />
+                                     value="${talk.speaker}" />
         </div>
     </div>
     <div class="row">

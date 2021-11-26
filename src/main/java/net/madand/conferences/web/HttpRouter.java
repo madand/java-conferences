@@ -4,10 +4,7 @@ import net.madand.conferences.service.ServiceException;
 import net.madand.conferences.web.controller.Controller;
 import net.madand.conferences.web.controller.exception.HttpException;
 import net.madand.conferences.web.controller.exception.HttpRedirectException;
-import net.madand.conferences.web.controller.impl.ConferenceController;
-import net.madand.conferences.web.controller.impl.TalkController;
-import net.madand.conferences.web.controller.impl.TalkProposalController;
-import net.madand.conferences.web.controller.impl.UserController;
+import net.madand.conferences.web.controller.impl.*;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
@@ -34,6 +31,7 @@ public class HttpRouter extends HttpServlet {
                 new UserController(servletContext),
                 new TalkController(servletContext),
                 new TalkProposalController(servletContext),
+                new TalkSpeakerRequestController(servletContext),
         };
     }
 
