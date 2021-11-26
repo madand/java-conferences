@@ -11,16 +11,20 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
 import java.security.InvalidParameterException;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.time.temporal.Temporal;
 import java.util.Locale;
+import java.util.Optional;
+import java.util.TimeZone;
 
 public class FormatDateTag extends TagSupport {
     protected Temporal value;
     protected String type;
     protected String format;
     protected String locale;
+    protected String timeZone;
     private String var;
     private int scope;
 
@@ -69,6 +73,10 @@ public class FormatDateTag extends TagSupport {
         this.type = type;
     }
 
+    public void setTimeZone(String timeZone) {
+        this.timeZone = timeZone;
+    }
+
     @Override
 
     public int doEndTag() throws JspException {
@@ -81,6 +89,9 @@ public class FormatDateTag extends TagSupport {
 
         if (locale == null) {
             locale = detectLocale();
+        }
+        if (timeZone == null) {
+            timeZone = detectTimeZone();
         }
 
         DateTimeFormatter formatter = null;
@@ -98,7 +109,14 @@ public class FormatDateTag extends TagSupport {
                 throw new InvalidParameterException("Unknown date format type: " + type);
         }
 
-        String formatted = formatter.withLocale(new Locale(locale)).format(value);
+        String formatted = formatter
+                .withLocale(new Locale(locale))
+                .withZone(ZoneId.of(timeZone))
+                .format(value);
+
+        // Must unset locale and time zone because of tag pooling by the container.
+        locale = null;
+        timeZone = null;
 
         if (var != null) {
             pageContext.setAttribute(var, formatted, scope);
@@ -113,7 +131,6 @@ public class FormatDateTag extends TagSupport {
         return EVAL_PAGE;
     }
 
-
     @Override
     public void release() {
         init();
@@ -126,5 +143,11 @@ public class FormatDateTag extends TagSupport {
         }
 
         return ContextScope.getDefaultLanguage(pageContext.getServletContext()).getCode();
+    }
+
+    private String detectTimeZone() {
+        final String TZ_KEY = "javax.servlet.jsp.jstl.fmt.timeZone.application";
+        return Optional.ofNullable((String) pageContext.getServletContext().getAttribute(TZ_KEY))
+                .orElse(ZoneId.systemDefault().toString());
     }
 }

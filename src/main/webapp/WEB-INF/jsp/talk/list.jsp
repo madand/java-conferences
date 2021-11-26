@@ -30,8 +30,7 @@
 <div class="row">
     <div class="col mb-4">
         <p class="text-muted event-date">
-            <mytl:formatDate value="${conference.eventDate}" format="LONG"
-                             locale="${currentLanguage.code}" />
+            <mytl:formatDate value="${conference.eventDate}" format="LONG" />
         </p>
         <div class="text-muted event-location">
             ${mytl:linesToParagraphs(conference.location)}
@@ -49,7 +48,7 @@
                     <h3 class="card-title"><c:out value="${talk.name}" /></h3>
                     <p class="card-subtitle text-muted event-date">
                         <mytl:formatDate value="${talk.startTime}" type="time"
-                                         format="SHORT" locale="currentLanguage.code" />
+                                         format="SHORT" />
                         (${talk.duration} <fmt:message key="general.minutes"/>)
                         <c:if test="${not empty talk.speaker}">
                             <br/> <b>Speaker: </b>

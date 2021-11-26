@@ -28,10 +28,10 @@
                         <td> <c:out value="${talk.name}"/> </td>
                         <td>
                             <mytl:formatDate value="${talk.startTime}" type="time"
-                                             format="SHORT" locale="currentLanguage.code" />
+                                             format="SHORT" />
                             -
                             <mytl:formatDate value="${talk.endTime}" type="time"
-                                             format="SHORT" locale="currentLanguage.code" />
+                                             format="SHORT" />
 
                         </td>
                         <td>
