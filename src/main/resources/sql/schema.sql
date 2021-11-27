@@ -1,5 +1,6 @@
 
 -- Clean-up the database
+DROP VIEW IF EXISTS v_talk_speaker_proposal;
 DROP VIEW IF EXISTS v_talk_speaker_request;
 DROP VIEW IF EXISTS v_conference;
 DROP VIEW IF EXISTS v_talk;
@@ -8,7 +9,7 @@ DROP VIEW IF EXISTS v_new_talk_proposal;
 DROP TRIGGER IF EXISTS compute_end_time ON talk;
 DROP FUNCTION IF EXISTS compute_end_time;
 
-DROP FUNCTION IF EXISTS ensure_translated(TEXT, INTEGER, INTEGER, TEXT, TEXT);
+DROP FUNCTION IF EXISTS ensure_translated(TEXT, INTEGER, TEXT, TEXT);
 DROP FUNCTION IF EXISTS get_default_language_id();
 DROP TABLE IF EXISTS talk_speaker_request;
 DROP TABLE IF EXISTS talk_speaker_proposal;
@@ -253,11 +254,34 @@ CREATE VIEW v_talk_speaker_request
          vt.language_id,
          vt.name as talk_name,
          vc.name as conference_name,
-         u.real_name as speaker_name,
-         u.email as speaker_email
+         us.real_name as speaker_name,
+         us.email as speaker_email
     FROM talk_speaker_request t
-         JOIN "user" u ON u.id = t.speaker_id
+         JOIN "user" us ON us.id = t.speaker_id
          JOIN v_talk vt ON vt.id = t.talk_id
          JOIN v_conference vc ON (vc.id = vt.conference_id AND vt.language_id = vc.language_id);
 COMMENT ON VIEW v_new_talk_proposal
   IS 'View that joins talk_speaker_request with translated talk and conference.';
+
+DROP VIEW IF EXISTS v_talk_speaker_proposal;
+CREATE VIEW v_talk_speaker_proposal
+  AS
+  SELECT t.id,
+         t.created_at,
+         t.talk_id,
+         t.speaker_id,
+         t.moderator_id,
+         vt.language_id,
+         vt.name as talk_name,
+         vc.name as conference_name,
+         us.real_name as speaker_name,
+         us.email as speaker_email,
+         um.real_name as moderator_name,
+         um.email as moderator_email
+    FROM talk_speaker_proposal t
+         JOIN "user" us ON us.id = t.speaker_id
+         JOIN "user" um ON um.id = t.moderator_id
+         JOIN v_talk vt ON vt.id = t.talk_id
+         JOIN v_conference vc ON (vc.id = vt.conference_id AND vt.language_id = vc.language_id);
+COMMENT ON VIEW v_new_talk_proposal
+  IS 'View that joins talk_speaker_proposal with translated talk, conference and user.';

@@ -7,24 +7,29 @@
 <%@ include file="/WEB-INF/jspf/head.jspf" %>
 
 <div class="actions">
-    <mytags:actionButton action="edit-conference"
-                         entityId="${conference.id}"
-                         buttonType="primary"
-                         messageKey="form.button.edit"
-                         icon="pencil" />
-    <mytags:deleteButton action="delete-conference"
-                         entityId="${conference.id}"
-                         icon="trash" />
-    <mytags:actionButton action="create-talk"
-                         entityId="${conference.id}"
-                         buttonType="success"
-                         messageKey="form.button.createTalk"
-                         icon="plus-circle" />
-    <mytags:actionButton action="create-talk-proposal"
-                         entityId="${conference.id}"
-                         buttonType="success"
-                         messageKey="form.button.createTalkProposal"
-                         icon="plus-circle" />
+    <c:if test="${user.role.moderator}">
+        <mytags:actionButton action="edit-conference"
+                             entityId="${conference.id}"
+                             buttonType="primary"
+                             messageKey="form.button.edit"
+                             icon="pencil" />
+        <mytags:deleteButton action="delete-conference"
+                             entityId="${conference.id}"
+                             icon="trash" />
+        <mytags:actionButton action="create-talk"
+                             entityId="${conference.id}"
+                             buttonType="success"
+                             messageKey="form.button.createTalk"
+                             icon="plus-circle" />
+    </c:if>
+
+    <c:if test="${user.role.speaker}">
+        <mytags:actionButton action="create-talk-proposal"
+                             entityId="${conference.id}"
+                             buttonType="success"
+                             messageKey="form.button.createTalkProposal"
+                             icon="plus-circle" />
+    </c:if>
 </div>
 
 <div class="row">
@@ -60,8 +65,8 @@
                             </c:when>
                             <c:otherwise>
                                 <fmt:message key="talk.speaker.unknown"/>
-                                <c:if test="${user.role.speaker}">
 
+                                <c:if test="${user.role.speaker}">
                                     <c:choose>
                                         <c:when test="${not empty talkSpeakerRequestsMap[talk.id]}">
                                             <mytags:postActionButton action="delete-talk-speaker-request"
@@ -81,6 +86,14 @@
                                         </c:otherwise>
                                     </c:choose>
                                 </c:if>
+
+                                <c:if test="${user.role.moderator}">
+                                    <mytags:actionButton action="propose-being-speaker-for-talk"
+                                                         entityId="${talk.id}"
+                                                         buttonType="primary"
+                                                         messageKey="button.talkSpeakerProposal.create"
+                                                         icon="chat" />
+                                </c:if>
                             </c:otherwise>
                         </c:choose>
                     </div>
@@ -89,16 +102,19 @@
                         ${mytl:linesToParagraphs(talk.description)}
                     </div>
                 </div>
-                <div class="card-footer">
-                    <mytags:actionButton action="edit-talk"
-                                         entityId="${talk.id}"
-                                         buttonType="primary"
-                                         messageKey="form.button.edit"
-                                         icon="pencil" />
-                    <mytags:deleteButton action="delete-talk"
-                                         entityId="${talk.id}"
-                                         icon="trash" />
-                </div>
+
+                <c:if test="${user.role.moderator}">
+                    <div class="card-footer">
+                        <mytags:actionButton action="edit-talk"
+                                             entityId="${talk.id}"
+                                             buttonType="primary"
+                                             messageKey="form.button.edit"
+                                             icon="pencil" />
+                        <mytags:deleteButton action="delete-talk"
+                                             entityId="${talk.id}"
+                                             icon="trash" />
+                    </div>
+                </c:if>
             </div>
         </div>
     </c:forEach>

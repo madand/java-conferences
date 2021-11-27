@@ -3,27 +3,30 @@
 <c:if test="${user.role.moderator}">
     <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-            Actions
+            Moderator
         </a>
         <ul class="dropdown-menu">
             <li>
-                <a class="dropdown-item" href="${baseURI}/create-conference">
-                    Create Conference
-                </a>
-            </li>
-            <li>
-                <a class="dropdown-item" href="${baseURI}/create-conference">
-                    Users
-                </a>
-            </li>
-            <li>
                 <a class="dropdown-item" href="${baseURI}/list-talk-proposals-moderator">
-                    New Talk Proposals
+                    List New Talk Proposals (by Speakers)
                 </a>
             </li>
             <li>
                 <a class="dropdown-item" href="${baseURI}/list-talk-speaker-requests-moderator">
                     Talk Speaker Requests
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" href="${baseURI}/list-talk-speaker-proposals-moderator">
+                    Talk Speaker Proposals
+                </a>
+            </li>
+
+            <li><hr class="dropdown-divider"></li>
+
+            <li>
+                <a class="dropdown-item" href="${baseURI}/create-conference">
+                    Create Conference
                 </a>
             </li>
         </ul>
@@ -33,7 +36,7 @@
 <c:if test="${user.role.speaker}">
     <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-            Actions
+            Speaker
         </a>
         <ul class="dropdown-menu">
             <li>
@@ -44,6 +47,11 @@
             <li>
                 <a class="dropdown-item" href="${baseURI}/list-talk-speaker-requests-speaker">
                     Talk Speaker Requests
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" href="${baseURI}/list-talk-speaker-proposals-speaker">
+                    Talk Speaker Proposals
                 </a>
             </li>
         </ul>

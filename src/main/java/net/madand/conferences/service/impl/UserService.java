@@ -2,6 +2,7 @@ package net.madand.conferences.service.impl;
 
 import net.madand.conferences.auth.Role;
 import net.madand.conferences.db.dao.UserDao;
+import net.madand.conferences.entity.Talk;
 import net.madand.conferences.entity.User;
 import net.madand.conferences.service.AbstractService;
 import net.madand.conferences.service.ServiceException;
@@ -50,6 +51,13 @@ public class UserService extends AbstractService {
     public List<User> speakersList() throws ServiceException {
         return callNoTransaction(
                 connection -> UserDao.findAllByRole(connection, Role.SPEAKER),
+                "Failed to fetch the speakers list"
+        );
+    }
+
+    public List<User> unproposedSpeakersForTalk(Talk talk) throws ServiceException {
+        return callNoTransaction(
+                connection -> UserDao.findAllUnproposedSpeakersForTalk(connection, talk),
                 "Failed to fetch the speakers list"
         );
     }

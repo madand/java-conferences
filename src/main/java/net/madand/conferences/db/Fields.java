@@ -14,6 +14,7 @@ public class Fields {
     public static final String CONFERENCE_ID = "conference_id";
     public static final String TALK_ID = "talk_id";
     public static final String SPEAKER_ID = "speaker_id";
+    public static final String MODERATOR_ID = "speaker_id";
 
     // conference
     public static final String EVENT_DATE = "event_date";
@@ -35,4 +36,6 @@ public class Fields {
     public static final String CONFERENCE_NAME = "conference_name";
     public static final String SPEAKER_NAME = "speaker_name";
     public static final String SPEAKER_EMAIL = "speaker_email";
+    public static final String MODERATOR_NAME = "moderator_name";
+    public static final String MODERATOR_EMAIL = "moderator_email";
 }

@@ -34,4 +34,8 @@ public class ServiceFactory {
     public TalkSpeakerRequestService getTalkSpeakerRequestService() {
         return new TalkSpeakerRequestService(dataSource);
     }
+
+    public TalkSpeakerProposalService getTalkSpeakerProposalService() {
+        return new TalkSpeakerProposalService(dataSource);
+    }
 }

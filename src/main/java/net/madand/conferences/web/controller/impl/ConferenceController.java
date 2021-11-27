@@ -24,6 +24,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class ConferenceController extends AbstractController {
@@ -76,6 +77,7 @@ public class ConferenceController extends AbstractController {
 
             conferenceService.create(conference);
             SessionScope.setFlashMessageSuccess(request.getSession(), "Saved successfully");
+
             redirect(URLManager.buildURL(URLManager.URI_TALK_LIST, "id=" + conference.getId(), request));
         }
 

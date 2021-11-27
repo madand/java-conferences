@@ -48,6 +48,12 @@ public class TalkService extends AbstractService {
                 "Failed to fetch talk");
     }
 
+    public Optional<Talk> findOne(int id, Language language) throws ServiceException {
+        return callNoTransaction(
+                connection -> TalkDao.findOne(connection, id, language),
+                "Failed to fetch talk");
+    }
+
     public void create(Talk talk) throws ServiceException {
         runWithinTransaction(
                 connection -> {

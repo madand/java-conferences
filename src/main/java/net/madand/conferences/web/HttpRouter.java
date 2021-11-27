@@ -32,6 +32,7 @@ public class HttpRouter extends HttpServlet {
                 new TalkController(servletContext),
                 new TalkProposalController(servletContext),
                 new TalkSpeakerRequestController(servletContext),
+                new TalkSpeakerProposalController(servletContext),
         };
     }
 

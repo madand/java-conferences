@@ -32,7 +32,7 @@ public class TalkDao {
                     stmt.setInt(1, conference.getId());
                     stmt.setInt(2, language.getId());
                 },
-                (rs) -> {
+                rs -> {
                     Talk talk = makeRowMapper(connection).mapRow(rs);
                     talk.loadTranslation(TalkTranslationDao.mapRow(rs));
                     return talk;
@@ -46,6 +46,20 @@ public class TalkDao {
                     Talk talk = makeRowMapper(conn).mapRow(rs);
                     talk.setConference(
                             ConferenceDao.findOne(conn, rs.getInt(Fields.CONFERENCE_ID)).get());
+                    return talk;
+                });
+    }
+
+    public static Optional<Talk> findOne(Connection conn, int id, Language language) throws SQLException {
+        final String SQL = "SELECT * FROM v_talk WHERE id = ? AND language_id = ?";
+        return QueryHelper.findOne(conn, SQL,
+                stmt -> {
+                    stmt.setInt(1, id);
+                    stmt.setInt(2, language.getId());
+                },
+                rs -> {
+                    Talk talk = makeRowMapper(conn).mapRow(rs);
+                    talk.loadTranslation(TalkTranslationDao.mapRow(rs));
                     return talk;
                 });
     }

@@ -5,6 +5,7 @@ import net.madand.conferences.entity.*;
 import net.madand.conferences.l10n.Languages;
 import net.madand.conferences.service.ServiceException;
 import net.madand.conferences.service.impl.TalkService;
+import net.madand.conferences.service.impl.TalkSpeakerProposalService;
 import net.madand.conferences.service.impl.TalkSpeakerRequestService;
 import net.madand.conferences.web.controller.AbstractController;
 import net.madand.conferences.web.controller.exception.HttpException;
@@ -54,7 +55,7 @@ public class TalkController extends AbstractController {
         request.setAttribute("conference", conference);
         request.setAttribute("talks", talkService.findAllTranslated(conference, currentLanguage));
 
-        // If current user is a Speaker, load info on what talks he requested being the talker.
+        // If current user is a Speaker, load info on what talks had he requested being a talker.
         final Optional<User> userOptional = RequestScope.getUser(request);
         if (userOptional.map(User::getRole).map(Role::isSpeaker).orElse(false)) {
             TalkSpeakerRequestService talkSpeakerRequestService = serviceFactory.getTalkSpeakerRequestService();

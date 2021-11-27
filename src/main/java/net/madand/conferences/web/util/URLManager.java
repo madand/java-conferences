@@ -38,6 +38,12 @@ public class URLManager {
     public static final String URI_TALK_SPEAKER_REQUEST_ACCEPT = "accept-talk-speaker-request";
     public static final String URI_TALK_SPEAKER_REQUEST_DELETE = "delete-talk-speaker-request";
 
+    public static final String URI_TALK_SPEAKER_PROPOSAL_LIST_MODER = "list-talk-speaker-proposals-moderator";
+    public static final String URI_TALK_SPEAKER_PROPOSAL_LIST_SPEAKER = "list-talk-speaker-proposals-speaker";
+    public static final String URI_TALK_SPEAKER_PROPOSAL_CREATE = "propose-being-speaker-for-talk";
+    public static final String URI_TALK_SPEAKER_PROPOSAL_ACCEPT = "accept-talk-speaker-proposal";
+    public static final String URI_TALK_SPEAKER_PROPOSAL_DELETE = "delete-talk-speaker-proposal";
+
     public static String buildURLPreserveQuery(String uri, HttpServletRequest request) {
         return buildURL(uri, request.getQueryString(), request);
     }
