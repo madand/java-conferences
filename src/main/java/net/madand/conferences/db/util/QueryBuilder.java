@@ -7,9 +7,10 @@ import java.util.List;
 public class QueryBuilder {
     private String select = "*";
     private String table;
-    private final List<String> join = new ArrayList<>();
+    private final List<String> joins = new ArrayList<>();
     private final List<String> where = new ArrayList<>();
-    private final List<String> orderBy = new ArrayList<>();
+    private String orderBy = "";
+    private String limitAndOffset = "";
 
     public QueryBuilder(String table) {
         this.table = table;
@@ -21,7 +22,7 @@ public class QueryBuilder {
     }
 
     public QueryBuilder leftJoin(String leftJoin) {
-        join.add(" LEFT JOIN " + leftJoin);
+        joins.add(" LEFT JOIN " + leftJoin);
         return this;
     }
 
@@ -30,16 +31,37 @@ public class QueryBuilder {
         return this;
     }
 
-    public QueryBuilder orderBy(String... orders) {
-        Collections.addAll(orderBy, orders);
+    public QueryBuilder orderBy(String orderBy) {
+        this.orderBy = orderBy;
+        return this;
+    }
+
+    public QueryBuilder limitAndOffset(int limit, int offset) {
+        limitAndOffset = String.format(" LIMIT %d OFFSET %d", limit, offset);
         return this;
     }
 
     public String buildSelect() {
         StringBuilder sb = new StringBuilder(String.format("SELECT %s FROM %s", select, table));
+        buildCommonParts(sb);
+        sb.append(limitAndOffset);
+        return sb.toString();
+    }
 
-        if (!join.isEmpty()) {
-            sb.append(String.join(" ", join));
+    /**
+     * Build the SQL SELECT COUNT(*) query, that returns a total number of entries (disregarding any LIMIT and OFFSET).
+     *
+     * @return the built SQL query.
+     */
+    public String buildCountTotal() {
+        StringBuilder sb = new StringBuilder(String.format("SELECT COUNT(*) FROM %s", table));
+        buildCommonParts(sb);
+        return sb.toString();
+    }
+
+    private void buildCommonParts(StringBuilder sb) {
+        if (!joins.isEmpty()) {
+            sb.append(String.join(" ", joins));
         }
 
         if (!where.isEmpty()) {
@@ -47,9 +69,7 @@ public class QueryBuilder {
         }
 
         if (!orderBy.isEmpty()) {
-            sb.append(" ORDER BY ").append(String.join(", ", orderBy));
+            sb.append(" ORDER BY ").append(orderBy);
         }
-
-        return sb.toString();
     }
 }

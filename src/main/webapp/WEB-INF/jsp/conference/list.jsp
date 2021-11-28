@@ -6,6 +6,7 @@
 </c:set>
 <%@ include file="/WEB-INF/jspf/head.jspf" %>
 
+
 <div class="row row-cols-1 row-cols-xl-2">
     <c:forEach items="${conferences}" var="conference">
         <div class="col mb-4">
@@ -61,5 +62,7 @@
         </div>
     </c:forEach>
 </div>
+
+<mytags:pagination queryOptions="${queryOptions}" />
 
 <%@ include file="/WEB-INF/jspf/footer.jspf" %>

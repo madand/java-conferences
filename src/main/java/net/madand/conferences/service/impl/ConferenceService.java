@@ -3,6 +3,7 @@ package net.madand.conferences.service.impl;
 import net.madand.conferences.db.dao.ConferenceAttendeeDao;
 import net.madand.conferences.db.dao.ConferenceDao;
 import net.madand.conferences.db.dao.ConferenceTranslationDao;
+import net.madand.conferences.db.web.QueryOptions;
 import net.madand.conferences.entity.Conference;
 import net.madand.conferences.entity.ConferenceTranslation;
 import net.madand.conferences.entity.Language;
@@ -25,9 +26,9 @@ public class ConferenceService extends AbstractService {
                 "Failed to fetch conferences");
     }
 
-    public List<Conference> findAllTranslatedWithAttendee(Language language, Optional<User> user) throws ServiceException {
+    public List<Conference> findAllTranslatedWithAttendee(Language language, Optional<User> user, QueryOptions queryOptions) throws ServiceException {
         return callNoTransaction(
-                connection -> ConferenceDao.findAll(connection, language, user),
+                connection -> ConferenceDao.findAll(connection, language, user, queryOptions),
                 "Failed to fetch conferences");
     }
 

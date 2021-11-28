@@ -1,5 +1,6 @@
 package net.madand.conferences.web.controller.impl;
 
+import net.madand.conferences.db.web.QueryOptions;
 import net.madand.conferences.entity.Conference;
 import net.madand.conferences.entity.ConferenceTranslation;
 import net.madand.conferences.entity.Language;
@@ -50,9 +51,22 @@ public class ConferenceController extends AbstractController {
     public void list(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException {
         final HttpSession session = request.getSession();
         final Language currentLanguage = SessionScope.getCurrentLanguage(session);
-        final List<Conference> conferences = conferenceService.findAllTranslatedWithAttendee(currentLanguage, RequestScope.getUser(request));
+
+        int currentPage = Optional.ofNullable(request.getParameter("page")).map(Integer::parseInt).orElse(1);
+
+        final String ITEMS_PER_PAGE_SESSION_KEY = "conferenceListItemsPerPage";
+        Optional.ofNullable(request.getParameter("itemsPerPage")).map(Integer::parseInt)
+                .ifPresent(value -> session.setAttribute(ITEMS_PER_PAGE_SESSION_KEY, value));
+        final int itemsPerPage = Optional.ofNullable((Integer) session.getAttribute(ITEMS_PER_PAGE_SESSION_KEY)).orElse(2);
+
+        QueryOptions queryOptions = new QueryOptions()
+                .withPagination(currentPage, itemsPerPage);
+
+        final List<Conference> conferences = conferenceService.findAllTranslatedWithAttendee(
+                currentLanguage, RequestScope.getUser(request), queryOptions);
 
         request.setAttribute("conferences", conferences);
+        request.setAttribute("queryOptions", queryOptions);
 
         URLManager.rememberUrlIfGET(request);
 

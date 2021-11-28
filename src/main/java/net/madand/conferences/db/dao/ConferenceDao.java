@@ -4,6 +4,7 @@ import net.madand.conferences.db.Fields;
 import net.madand.conferences.db.util.QueryBuilder;
 import net.madand.conferences.db.util.QueryHelper;
 import net.madand.conferences.db.util.StatementParametersSetter;
+import net.madand.conferences.db.web.QueryOptions;
 import net.madand.conferences.entity.Conference;
 import net.madand.conferences.entity.Language;
 import net.madand.conferences.entity.User;
@@ -42,19 +43,25 @@ public class ConferenceDao {
                 ConferenceDao::mapRowWithTranslation);
     }
 
-    public static List<Conference> findAll(Connection connection, Language language, Optional<User> user) throws SQLException {
-        final String SQL = new QueryBuilder("v_conference t")
+    public static List<Conference> findAll(Connection connection, Language language, Optional<User> user,
+                                           QueryOptions queryOptions) throws SQLException {
+        final QueryBuilder queryBuilder = new QueryBuilder("v_conference t")
                 .select("t.*, ca.user_id as attendee_id")
                 .leftJoin("conference_attendee ca ON ca.conference_id = t.id AND ca.user_id = ?")
-                .where("language_id = ?")
-                .orderBy("event_date")
-                .buildSelect();
+                .where("language_id = ?");
+
         int attendeeId = user.map(User::getId).orElse(-1);
-        return QueryHelper.findAll(connection, SQL,
-                stmt -> {
-                    stmt.setInt(1, attendeeId);
-                    stmt.setInt(2, language.getId());
-                },
+        final StatementParametersSetter paramsSetter = stmt -> {
+            stmt.setInt(1, attendeeId);
+            stmt.setInt(2, language.getId());
+        };
+
+        final String SQL_TOTAL_COUNT = queryBuilder.buildCountTotal();
+        queryOptions.getPagination().setTotalItemsCount(QueryHelper.count(connection, SQL_TOTAL_COUNT, paramsSetter));
+
+        queryOptions.applyTo(queryBuilder);
+        final String SQL_SELECT = queryBuilder.buildSelect();
+        return QueryHelper.findAll(connection, SQL_SELECT, paramsSetter,
                 rs -> {
                     Conference conference = ConferenceDao.mapRowWithTranslation(rs);
                     conference.setCurrentUserAttending(rs.getInt(Fields.ATTENDEE_ID) > 0);
