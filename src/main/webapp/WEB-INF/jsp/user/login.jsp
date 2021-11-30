@@ -26,7 +26,7 @@
 
             <div class="row">
                 <div class="col">
-                    <mytags:buttonSubmit labelKey="form.button.login" />
+                    <mytags:buttonSubmit labelKey="button.login" />
                 </div>
             </div>
             <div class="row">

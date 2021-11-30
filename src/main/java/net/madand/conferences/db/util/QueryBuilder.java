@@ -44,7 +44,12 @@ public class QueryBuilder {
     public String buildSelect() {
         StringBuilder sb = new StringBuilder(String.format("SELECT %s FROM %s", select, table));
         buildCommonParts(sb);
+
+        if (!orderBy.isEmpty()) {
+            sb.append(" ORDER BY ").append(orderBy);
+        }
         sb.append(limitAndOffset);
+
         return sb.toString();
     }
 
@@ -68,8 +73,5 @@ public class QueryBuilder {
             sb.append(" WHERE ").append(String.join(" AND ", where));
         }
 
-        if (!orderBy.isEmpty()) {
-            sb.append(" ORDER BY ").append(orderBy);
-        }
     }
 }

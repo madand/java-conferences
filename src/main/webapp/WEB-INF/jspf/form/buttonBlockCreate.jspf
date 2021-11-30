@@ -4,7 +4,7 @@
     <div class="col-12">
         <button class="btn btn-primary" type="submit" >
             <i class="bi-file-earmark-plus"></i>
-            <fmt:message key="form.button.create"/>
+            <fmt:message key="button.create"/>
         </button>
     </div>
 </div>

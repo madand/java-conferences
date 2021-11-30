@@ -64,7 +64,7 @@
         <div class="col-12">
             <button class="btn btn-primary" type="submit" >
                 <i class="bi-check"></i>
-                <fmt:message key="button.acceptProposal"/>
+                <fmt:message key="button.submit"/>
             </button>
         </div>
     </div>

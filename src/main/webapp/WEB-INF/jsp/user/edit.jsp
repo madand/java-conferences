@@ -35,7 +35,7 @@
 
     <div class="row">
         <div class="col">
-            <mytags:buttonSubmit labelKey="form.button.save" />
+            <mytags:buttonSubmit labelKey="button.save" />
         </div>
     </div>
 </form>

@@ -14,7 +14,9 @@ public class URLManager {
     public static final String URI_USER_CHANGE_PASSWORD = "change-password";
     public static final String URI_USER_DELETE = "delete-user";
 
-    public static final String URI_CONFERENCE_LIST = "";
+    public static final String URI_CONFERENCE_LIST_UPCOMING = "";
+    public static final String URI_CONFERENCE_LIST_PAST = "past";
+    public static final String URI_CONFERENCE_LIST_ALL = "all";
     public static final String URI_CONFERENCE_CREATE = "create-conference";
     public static final String URI_CONFERENCE_EDIT = "edit-conference";
     public static final String URI_CONFERENCE_DELETE = "delete-conference";
@@ -62,7 +64,7 @@ public class URLManager {
     }
 
     public static String homePage(HttpServletRequest request) {
-        return buildURL(URI_CONFERENCE_LIST, null, request);
+        return buildURL(URI_CONFERENCE_LIST_UPCOMING, null, request);
     }
 
     public static void rememberUrlIfGET(HttpServletRequest request) {

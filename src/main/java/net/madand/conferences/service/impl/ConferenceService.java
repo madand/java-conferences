@@ -26,9 +26,21 @@ public class ConferenceService extends AbstractService {
                 "Failed to fetch conferences");
     }
 
-    public List<Conference> findAllTranslatedWithAttendee(Language language, Optional<User> user, QueryOptions queryOptions) throws ServiceException {
+    public List<Conference> findAllWithAttendee(Language language, Optional<User> user, QueryOptions queryOptions) throws ServiceException {
         return callNoTransaction(
                 connection -> ConferenceDao.findAll(connection, language, user, queryOptions),
+                "Failed to fetch conferences");
+    }
+
+    public List<Conference> findAllUpcomingWithAttendee(Language language, Optional<User> user, QueryOptions queryOptions) throws ServiceException {
+        return callNoTransaction(
+                connection -> ConferenceDao.findAllUpcoming(connection, language, user, queryOptions),
+                "Failed to fetch conferences");
+    }
+
+    public List<Conference> findAllPastWithAttendee(Language language, Optional<User> user, QueryOptions queryOptions) throws ServiceException {
+        return callNoTransaction(
+                connection -> ConferenceDao.findAllPast(connection, language, user, queryOptions),
                 "Failed to fetch conferences");
     }
 

@@ -13,5 +13,5 @@
 </c:url>
 
 <form method="post" action="${actionUrl}" class="delete-item-form">
-    <mytags:buttonSubmit labelKey="form.button.delete" btnClass="danger" icon="${icon}" />
+    <mytags:buttonSubmit labelKey="button.delete" btnClass="danger" icon="${icon}" />
 </form>

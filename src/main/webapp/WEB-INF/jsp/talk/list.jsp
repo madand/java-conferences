@@ -11,7 +11,7 @@
         <mytags:actionButton action="edit-conference"
                              entityId="${conference.id}"
                              buttonType="primary"
-                             messageKey="form.button.edit"
+                             messageKey="button.edit"
                              icon="pencil" />
         <mytags:deleteButton action="delete-conference"
                              entityId="${conference.id}"
@@ -19,7 +19,7 @@
         <mytags:actionButton action="create-talk"
                              entityId="${conference.id}"
                              buttonType="success"
-                             messageKey="form.button.createTalk"
+                             messageKey="button.createTalk"
                              icon="plus-circle" />
     </c:if>
 
@@ -27,7 +27,7 @@
         <mytags:actionButton action="create-talk-proposal"
                              entityId="${conference.id}"
                              buttonType="success"
-                             messageKey="form.button.createTalkProposal"
+                             messageKey="button.createTalkProposal"
                              icon="plus-circle" />
     </c:if>
 </div>
@@ -108,7 +108,7 @@
                         <mytags:actionButton action="edit-talk"
                                              entityId="${talk.id}"
                                              buttonType="primary"
-                                             messageKey="form.button.edit"
+                                             messageKey="button.edit"
                                              icon="pencil" />
                         <mytags:deleteButton action="delete-talk"
                                              entityId="${talk.id}"

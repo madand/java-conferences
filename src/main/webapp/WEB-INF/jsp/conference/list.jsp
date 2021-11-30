@@ -6,6 +6,14 @@
 </c:set>
 <%@ include file="/WEB-INF/jspf/head.jspf" %>
 
+<ul class="nav nav-pills mb-3">
+    <mytags:conferenceListModeItem labelKey="conferences.list.mode.upcoming"
+                                   linkUrl="" />
+    <mytags:conferenceListModeItem labelKey="conferences.list.mode.past"
+                                   linkUrl="past" />
+    <mytags:conferenceListModeItem labelKey="conferences.list.mode.all"
+                                   linkUrl="all" />
+</ul>
 
 <div class="row row-cols-1 row-cols-xl-2">
     <c:forEach items="${conferences}" var="conference">

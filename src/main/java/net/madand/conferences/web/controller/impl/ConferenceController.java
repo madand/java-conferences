@@ -25,7 +25,6 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public class ConferenceController extends AbstractController {
@@ -35,7 +34,9 @@ public class ConferenceController extends AbstractController {
 
     {
         // Register the controller's actions.
-        handlersMap.put(URLManager.URI_CONFERENCE_LIST, this::list);
+        handlersMap.put(URLManager.URI_CONFERENCE_LIST_UPCOMING, this::listUpcoming);
+        handlersMap.put(URLManager.URI_CONFERENCE_LIST_PAST, this::listPast);
+        handlersMap.put(URLManager.URI_CONFERENCE_LIST_ALL, this::listAll);
         handlersMap.put(URLManager.URI_CONFERENCE_CREATE, this::create);
         handlersMap.put(URLManager.URI_CONFERENCE_EDIT, this::edit);
         handlersMap.put(URLManager.URI_CONFERENCE_DELETE, this::delete);
@@ -47,8 +48,7 @@ public class ConferenceController extends AbstractController {
         super(servletContext);
         conferenceService = serviceFactory.getConferenceService();
     }
-
-    public void list(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException {
+    public void listUpcoming(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException {
         final HttpSession session = request.getSession();
         final Language currentLanguage = SessionScope.getCurrentLanguage(session);
 
@@ -62,7 +62,57 @@ public class ConferenceController extends AbstractController {
         QueryOptions queryOptions = new QueryOptions()
                 .withPagination(currentPage, itemsPerPage);
 
-        final List<Conference> conferences = conferenceService.findAllTranslatedWithAttendee(
+        final List<Conference> conferences = conferenceService.findAllUpcomingWithAttendee(
+                currentLanguage, RequestScope.getUser(request), queryOptions);
+
+        request.setAttribute("conferences", conferences);
+        request.setAttribute("queryOptions", queryOptions);
+
+        URLManager.rememberUrlIfGET(request);
+
+        renderView("conference/list", request, response);
+    }
+
+    public void listPast(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException {
+        final HttpSession session = request.getSession();
+        final Language currentLanguage = SessionScope.getCurrentLanguage(session);
+
+        int currentPage = Optional.ofNullable(request.getParameter("page")).map(Integer::parseInt).orElse(1);
+
+        final String ITEMS_PER_PAGE_SESSION_KEY = "conferenceListItemsPerPage";
+        Optional.ofNullable(request.getParameter("itemsPerPage")).map(Integer::parseInt)
+                .ifPresent(value -> session.setAttribute(ITEMS_PER_PAGE_SESSION_KEY, value));
+        final int itemsPerPage = Optional.ofNullable((Integer) session.getAttribute(ITEMS_PER_PAGE_SESSION_KEY)).orElse(2);
+
+        QueryOptions queryOptions = new QueryOptions()
+                .withPagination(currentPage, itemsPerPage);
+
+        final List<Conference> conferences = conferenceService.findAllPastWithAttendee(
+                currentLanguage, RequestScope.getUser(request), queryOptions);
+
+        request.setAttribute("conferences", conferences);
+        request.setAttribute("queryOptions", queryOptions);
+
+        URLManager.rememberUrlIfGET(request);
+
+        renderView("conference/list", request, response);
+    }
+
+    public void listAll(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException {
+        final HttpSession session = request.getSession();
+        final Language currentLanguage = SessionScope.getCurrentLanguage(session);
+
+        int currentPage = Optional.ofNullable(request.getParameter("page")).map(Integer::parseInt).orElse(1);
+
+        final String ITEMS_PER_PAGE_SESSION_KEY = "conferenceListItemsPerPage";
+        Optional.ofNullable(request.getParameter("itemsPerPage")).map(Integer::parseInt)
+                .ifPresent(value -> session.setAttribute(ITEMS_PER_PAGE_SESSION_KEY, value));
+        final int itemsPerPage = Optional.ofNullable((Integer) session.getAttribute(ITEMS_PER_PAGE_SESSION_KEY)).orElse(2);
+
+        QueryOptions queryOptions = new QueryOptions()
+                .withPagination(currentPage, itemsPerPage);
+
+        final List<Conference> conferences = conferenceService.findAllWithAttendee(
                 currentLanguage, RequestScope.getUser(request), queryOptions);
 
         request.setAttribute("conferences", conferences);
