@@ -9,10 +9,10 @@
 <div class="row row-cols-1">
     <table class="table table-striped">
         <thead>
-            <th scope="col">Conference</th>
-            <th scope="col">Talk Name</th>
-            <th scope="col">Speaker</th>
-            <th scope="col">Actions</th>
+            <th scope="col"><fmt:message key="table.column.conference"/></th>
+            <th scope="col"><fmt:message key="table.column.talkName"/></th>
+            <th scope="col"><fmt:message key="table.column.speaker"/></th>
+            <th scope="col"><fmt:message key="table.column.actions"/></th>
         </thead>
         <tbody>
             <c:forEach items="${proposals}" var="talk">
