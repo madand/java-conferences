@@ -19,6 +19,7 @@ public class Conference implements Serializable {
     private int actuallyAttendedCount;
 
     private boolean currentUserAttending;
+    private int attendeesCount;
 
     private final List<ConferenceTranslation> translations = new ArrayList<>();
 
@@ -132,6 +133,14 @@ public class Conference implements Serializable {
         setName(translation.getName());
         setDescription(translation.getDescription());
         setLocation(translation.getLocation());
+    }
+
+    public int getAttendeesCount() {
+        return attendeesCount;
+    }
+
+    public void setAttendeesCount(int attendantsCount) {
+        this.attendeesCount = attendantsCount;
     }
 
     @Override

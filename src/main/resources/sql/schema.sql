@@ -203,7 +203,8 @@ CREATE VIEW v_conference
            l.language_id,
            ensure_translated(l.name, t.id, 'name', 'conference') as name,
            ensure_translated(l.description, t.id, 'description', 'conference') as description,
-           ensure_translated(l.location, t.id, 'location', 'conference') as location
+           ensure_translated(l.location, t.id, 'location', 'conference') as location,
+           (SELECT count(*) FROM conference_attendee WHERE conference_id = t.id) as attendees_count
       FROM conference t
            JOIN conference_translation l ON l.conference_id = t.id;
   COMMENT ON VIEW v_conference

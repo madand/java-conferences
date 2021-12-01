@@ -183,6 +183,7 @@ public class ConferenceDao {
 
     private static Conference mapRowWithTranslation(ResultSet rs) throws SQLException {
         Conference conference = mapRow(rs);
+        conference.setAttendeesCount(rs.getInt(Fields.ATTENDEES_COUNT));
         conference.loadTranslation(ConferenceTranslationDao.mapRow(rs));
         return conference;
     }

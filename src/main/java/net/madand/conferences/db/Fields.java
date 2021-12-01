@@ -38,4 +38,5 @@ public class Fields {
     public static final String SPEAKER_EMAIL = "speaker_email";
     public static final String MODERATOR_NAME = "moderator_name";
     public static final String MODERATOR_EMAIL = "moderator_email";
+    public static final String ATTENDEES_COUNT = "attendees_count";
 }

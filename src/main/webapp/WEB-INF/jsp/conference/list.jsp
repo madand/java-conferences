@@ -31,6 +31,11 @@
                         ${mytl:truncate(conference.description, 160)}
                     </div>
 
+                    <p class="card-text">
+                        <fmt:message key="conference.list.attendeesCount"/>:
+                        <span class="badge bg-info">${conference.attendeesCount}</span>
+                    </p>
+
                     <c:if test="${conference.currentUserAttending}">
                         <div class="card-text">
                             <span class="badge rounded-pill bg-success">

@@ -40,6 +40,10 @@
         <div class="text-muted event-location">
             ${mytl:linesToParagraphs(conference.location)}
         </div>
+        <p>
+            <fmt:message key="conference.list.attendeesCount"/>:
+            <span class="badge bg-info">${conference.attendeesCount}</span>
+        </p>
         ${mytl:linesToParagraphs(conference.description)}
     </div>
 </div>
