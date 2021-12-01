@@ -34,7 +34,9 @@
 <script src="${pageContext.request.contextPath}/assets/js/jquery-3.6.0.min.js"></script>
 <script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
 
-<%@ include file="/WEB-INF/jspf/debug.jspf" %>
+<c:if test="false">
+    <%@ include file="/WEB-INF/jspf/debug.jspf" %>
+</c:if>
 
 </body>
 </html>
