@@ -12,6 +12,7 @@ import net.madand.conferences.service.impl.ConferenceService;
 import net.madand.conferences.web.controller.AbstractController;
 import net.madand.conferences.web.controller.exception.HttpException;
 import net.madand.conferences.web.controller.exception.HttpRedirectException;
+import net.madand.conferences.web.scope.ContextScope;
 import net.madand.conferences.web.scope.RequestScope;
 import net.madand.conferences.web.scope.SessionScope;
 import net.madand.conferences.web.util.HtmlSupport;
@@ -100,6 +101,7 @@ public class ConferenceController extends AbstractController {
         final String sortDirection = request.getParameter("sortDirection");
         request.setAttribute("sortableFields", sortableFields);
 
+
         QueryOptions queryOptions = new QueryOptions()
                 .withPagination(currentPage, itemsPerPage)
                 .withSorting(sortBy, sortDirection, sortableFields.get(0), Sorting.ASC, sortableFields);
@@ -164,7 +166,7 @@ public class ConferenceController extends AbstractController {
             }
 
             conferenceService.create(conference);
-            SessionScope.setFlashMessageSuccess(request.getSession(), "Saved successfully");
+            setLocalizedFlashMessageSuccess("flashMessage.savedSuccessfully", request);
 
             redirect(URLManager.buildURL(URLManager.URI_TALK_LIST, "id=" + conference.getId(), request));
         }
@@ -197,8 +199,7 @@ public class ConferenceController extends AbstractController {
 
             conferenceService.update(conference);
 
-            final HttpSession session = request.getSession();
-            SessionScope.setFlashMessageSuccess(session, "Saved successfully");
+            setLocalizedFlashMessageSuccess("flashMessage.savedSuccessfully", request);
             redirect(URLManager.buildURL(URLManager.URI_TALK_LIST, "id=" + conference.getId(), request));
         }
 
@@ -214,8 +215,7 @@ public class ConferenceController extends AbstractController {
 
         conferenceService.delete(conference);
 
-        final HttpSession session = request.getSession();
-        SessionScope.setFlashMessageSuccess(session, "Deleted successfully");
+        setLocalizedFlashMessageInfo("flashMessage.deletedSuccessfully", request);
         redirect(URLManager.previousUrl(request));
     }
 
@@ -250,6 +250,7 @@ public class ConferenceController extends AbstractController {
 
         conferenceService.removeAttendee(conference, userOptional.get());
 
+        setLocalizedFlashMessageInfo("flashMessage.cancelSuccessfully", request);
         redirect(URLManager.previousUrl(request));
     }
 }

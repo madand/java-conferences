@@ -55,14 +55,13 @@ public class UserController extends AbstractController {
                 User user = userOptional.get();
                 if (PasswordHelper.checkPassword(bean.getPassword(), user.getPasswordHash())) {
                     SessionScope.setCurrentUserId(session, user.getId());
-                    SessionScope.setFlashMessageSuccess(session,
-                            String.format("Successfully logged in as %s.", user.getRealName()));
 
+                    setLocalizedFlashMessageSuccess("flashMessage.login.success", request);
                     redirect(URLManager.previousUrl(request));
                 }
             }
 
-            SessionScope.setFlashMessageError(session, "Invalid login or password");
+            setLocalizedFlashMessageError("flashMessage.login.error", request);
         }
 
         renderView("user/login", request, response);
@@ -85,12 +84,11 @@ public class UserController extends AbstractController {
                 user.setPassword(password);
                 userService.create(user);
                 SessionScope.setCurrentUserId(session, user.getId());
-                SessionScope.setFlashMessageSuccess(session,
-                        String.format("Successfully registered as %s.", user.getRealName()));
 
+                setLocalizedFlashMessageSuccess("flashMessage.register.success", request);
                 redirect(URLManager.previousUrl(request));
             } else {
-                SessionScope.setFlashMessageError(session, "Entered passwords are not the same");
+                setLocalizedFlashMessageError("flashMessage.register.passwordMismatch", request);
             }
         }
 
@@ -111,7 +109,7 @@ public class UserController extends AbstractController {
 
             userService.update(user);
 
-            SessionScope.setFlashMessageSuccess(session, "Successfully updated user profile");
+            setLocalizedFlashMessageSuccess("flashMessage.user.editSuccessfully", request);
             redirect(URLManager.previousUrl(request));
         }
 
@@ -124,7 +122,7 @@ public class UserController extends AbstractController {
         User user = RequestScope.getUser(request).orElseThrow(HttpException::new);
 
         userService.delete(user);
-        SessionScope.setFlashMessageSuccess(request.getSession(), "Successfully deleted user profile");
+        setLocalizedFlashMessageInfo("flashMessage.deletedSuccessfully", request);
         logout(request, response);
     }
 
@@ -149,12 +147,12 @@ public class UserController extends AbstractController {
                     && passwordNew.equals(passwordNewRepeat)) {
                 user.setPassword(passwordNew);
                 userService.update(user);
-                SessionScope.setFlashMessageSuccess(session, "Successfully changed password");
 
+                setLocalizedFlashMessageSuccess("flashMessage.user.passwordChanged", request);
                 redirect(URLManager.previousUrl(request));
             }
 
-            SessionScope.setFlashMessageError(session, "Entered passwords did not match");
+            setLocalizedFlashMessageError("flashMessage.register.passwordMismatch", request);
         }
 
         renderView("user/changePassword", request, response);

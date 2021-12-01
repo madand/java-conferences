@@ -1,6 +1,5 @@
 package net.madand.conferences.web.listener;
 
-import net.madand.conferences.db.Fields;
 import net.madand.conferences.entity.Language;
 import net.madand.conferences.l10n.Languages;
 import net.madand.conferences.l10n.LocalizationHelper;

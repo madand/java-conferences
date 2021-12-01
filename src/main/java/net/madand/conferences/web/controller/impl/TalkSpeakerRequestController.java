@@ -74,7 +74,7 @@ public class TalkSpeakerRequestController extends AbstractController {
         TalkSpeakerRequest talkSpeakerRequest = TalkSpeakerRequest.makeInstance(talk, user);
         talkSpeakerRequestService.create(talkSpeakerRequest);
 
-        SessionScope.setFlashMessageSuccess(request.getSession(), "Talk request created successfully");
+        setLocalizedFlashMessageSuccess("flashMessage.createdSuccessfully", request);
         redirect(URLManager.previousUrl(request));
     }
 
@@ -92,8 +92,7 @@ public class TalkSpeakerRequestController extends AbstractController {
 
         talkSpeakerRequestService.delete(talkSpeakerRequest);
 
-        final HttpSession session = request.getSession();
-        SessionScope.setFlashMessageInfo(session, "Talk request canceled successfully");
+        setLocalizedFlashMessageInfo("flashMessage.cancelSuccessfully", request);
         redirect(URLManager.previousUrl(request));
     }
 
@@ -111,8 +110,7 @@ public class TalkSpeakerRequestController extends AbstractController {
 
         talkSpeakerRequestService.accept(talkSpeakerRequest);
 
-        final HttpSession session = request.getSession();
-        SessionScope.setFlashMessageInfo(session, "Talk request accepted successfully");
+        setLocalizedFlashMessageSuccess("flashMessage.acceptedSuccessfully", request);
         redirect(URLManager.previousUrl(request));
     }
 }

@@ -79,7 +79,7 @@ public class TalkSpeakerProposalController extends AbstractController {
             TalkSpeakerProposal talkSpeakerProposal = TalkSpeakerProposal.makeInstance(talk, speaker, user);
             talkSpeakerProposalService.create(talkSpeakerProposal);
 
-            SessionScope.setFlashMessageSuccess(request.getSession(), "Talk Speaker Proposal created successfully");
+            setLocalizedFlashMessageSuccess("flashMessage.createdSuccessfully", request);
             redirect(URLManager.previousUrl(request));
         }
 
@@ -100,8 +100,7 @@ public class TalkSpeakerProposalController extends AbstractController {
 
         talkSpeakerProposalService.delete(talkSpeakerProposal);
 
-        final HttpSession session = request.getSession();
-        SessionScope.setFlashMessageInfo(session, "Talk Speaker Proposal canceled successfully");
+        setLocalizedFlashMessageInfo("flashMessage.cancelSuccessfully", request);
         redirect(URLManager.previousUrl(request));
     }
 
@@ -119,8 +118,7 @@ public class TalkSpeakerProposalController extends AbstractController {
 
         talkSpeakerProposalService.accept(talkSpeakerProposal);
 
-        final HttpSession session = request.getSession();
-        SessionScope.setFlashMessageInfo(session, "Talk Speaker Proposal accepted successfully");
+        setLocalizedFlashMessageSuccess("flashMessage.acceptedSuccessfully", request);
         redirect(URLManager.previousUrl(request));
     }
 }

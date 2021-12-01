@@ -5,6 +5,7 @@ import net.madand.conferences.service.ServiceFactory;
 import net.madand.conferences.web.controller.exception.HttpException;
 import net.madand.conferences.web.controller.exception.HttpRedirectException;
 import net.madand.conferences.web.scope.ContextScope;
+import net.madand.conferences.web.scope.SessionScope;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -52,5 +53,26 @@ public abstract class AbstractController implements Controller {
         if (!"POST".equals(request.getMethod())) {
             throw new HttpException(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
         }
+    }
+
+    protected void setLocalizedFlashMessageSuccess(String key, HttpServletRequest request) {
+        SessionScope.setFlashMessageSuccess(
+                request.getSession(),
+                ContextScope.getLocalizationHelper(request.getServletContext())
+                        .message(key, SessionScope.getCurrentLanguage(request.getSession())));
+    }
+
+    protected void setLocalizedFlashMessageInfo(String key, HttpServletRequest request) {
+        SessionScope.setFlashMessageInfo(
+                request.getSession(),
+                ContextScope.getLocalizationHelper(request.getServletContext())
+                        .message(key, SessionScope.getCurrentLanguage(request.getSession())));
+    }
+
+    protected void setLocalizedFlashMessageError(String key, HttpServletRequest request) {
+        SessionScope.setFlashMessageError(
+                request.getSession(),
+                ContextScope.getLocalizationHelper(request.getServletContext())
+                        .message(key, SessionScope.getCurrentLanguage(request.getSession())));
     }
 }

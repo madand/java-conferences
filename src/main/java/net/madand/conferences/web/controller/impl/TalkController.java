@@ -99,7 +99,7 @@ public class TalkController extends AbstractController {
             }
 
             talkService.create(talk);
-            SessionScope.setFlashMessageSuccess(request.getSession(), "Saved successfully");
+            setLocalizedFlashMessageSuccess("flashMessage.savedSuccessfully", request);
             redirect(URLManager.buildURL(URLManager.URI_TALK_LIST, "id=" + conference.getId(), request));
         }
 
@@ -134,7 +134,7 @@ public class TalkController extends AbstractController {
             talkService.update(talk);
 
             final HttpSession session = request.getSession();
-            SessionScope.setFlashMessageSuccess(session, "Saved successfully");
+            setLocalizedFlashMessageSuccess("flashMessage.savedSuccessfully", request);
             redirect(URLManager.buildURL(URLManager.URI_TALK_LIST, "id=" + talk.getConference().getId(), request));
         }
 
@@ -149,7 +149,7 @@ public class TalkController extends AbstractController {
 
         talkService.delete(talk);
 
-        SessionScope.setFlashMessageSuccess(request.getSession(), "Deleted successfully");
+        setLocalizedFlashMessageInfo("flashMessage.deletedSuccessfully", request);
         redirect(URLManager.previousUrl(request));
     }
 }

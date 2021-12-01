@@ -88,7 +88,8 @@ public class TalkProposalController extends AbstractController {
             }
 
             talkProposalService.create(talkProposal);
-            SessionScope.setFlashMessageSuccess(request.getSession(), "Successfully created a talk proposal");
+
+            setLocalizedFlashMessageSuccess("flashMessage.talkProposal.created", request);
             redirect(URLManager.buildURL(URLManager.URI_TALK_LIST, "id=" + conference.getId(), request));
         }
 
@@ -121,7 +122,7 @@ public class TalkProposalController extends AbstractController {
             talkProposalService.update(talkProposal);
 
             final HttpSession session = request.getSession();
-            SessionScope.setFlashMessageSuccess(session, "Saved successfully");
+            setLocalizedFlashMessageSuccess("flashMessage.savedSuccessfully", request);
             redirect(URLManager.buildURL(URLManager.URI_TALK_LIST, "id=" + talkProposal.getConference().getId(), request));
         }
 
@@ -143,8 +144,7 @@ public class TalkProposalController extends AbstractController {
 
         talkProposalService.delete(talkProposal);
 
-        final HttpSession session = request.getSession();
-        SessionScope.setFlashMessageSuccess(session, "Deleted successfully");
+        setLocalizedFlashMessageInfo("flashMessage.deletedSuccessfully", request);
         redirect(URLManager.previousUrl(request));
     }
 
@@ -174,7 +174,7 @@ public class TalkProposalController extends AbstractController {
 
             talkProposalService.acceptProposal(talkProposal);
 
-            SessionScope.setFlashMessageSuccess(request.getSession(), "Accepted proposal successfully");
+            setLocalizedFlashMessageSuccess("flashMessage.acceptedSuccessfully", request);
             redirect(URLManager.buildURL(URLManager.URI_TALK_PROPOSAL_LIST_MODER, null, request));
         }
 
