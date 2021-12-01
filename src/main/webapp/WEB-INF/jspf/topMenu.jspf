@@ -3,22 +3,22 @@
 <c:if test="${user.role.moderator}">
     <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-            Moderator
+            <fmt:message key="role.MODERATOR"/>
         </a>
         <ul class="dropdown-menu">
             <li>
                 <a class="dropdown-item" href="${baseURI}/list-talk-proposals-moderator">
-                    List New Talk Proposals (by Speakers)
+                    <fmt:message key="menu.moderator.listNewTalkProposals"/>
                 </a>
             </li>
             <li>
                 <a class="dropdown-item" href="${baseURI}/list-talk-speaker-requests-moderator">
-                    Talk Speaker Requests
+                    <fmt:message key="menu.moderator.talkSpeakerRequests"/>
                 </a>
             </li>
             <li>
                 <a class="dropdown-item" href="${baseURI}/list-talk-speaker-proposals-moderator">
-                    Talk Speaker Proposals
+                    <fmt:message key="menu.moderator.talkSpeakerProposals"/>
                 </a>
             </li>
 
@@ -26,7 +26,7 @@
 
             <li>
                 <a class="dropdown-item" href="${baseURI}/create-conference">
-                    Create Conference
+                    <fmt:message key="menu.moderator.createConference"/>
                 </a>
             </li>
         </ul>
@@ -36,22 +36,22 @@
 <c:if test="${user.role.speaker}">
     <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-            Speaker
+            <fmt:message key="role.SPEAKER"/>
         </a>
         <ul class="dropdown-menu">
             <li>
                 <a class="dropdown-item" href="${baseURI}/list-talk-proposals-speaker">
-                    New Talk Proposals
+                    <fmt:message key="menu.speaker.listNewTalkProposals"/>
                 </a>
             </li>
             <li>
                 <a class="dropdown-item" href="${baseURI}/list-talk-speaker-requests-speaker">
-                    Talk Speaker Requests
+                    <fmt:message key="menu.speaker.talkSpeakerRequests"/>
                 </a>
             </li>
             <li>
                 <a class="dropdown-item" href="${baseURI}/list-talk-speaker-proposals-speaker">
-                    Talk Speaker Proposals
+                    <fmt:message key="menu.speaker.talkSpeakerProposals"/>
                 </a>
             </li>
         </ul>
@@ -69,7 +69,9 @@
 
     <c:otherwise>
         <li class="nav-item">
-            <a class="nav-link" href="${baseURI}/edit-user">Edit Profile</a>
+            <a class="nav-link" href="${baseURI}/edit-user">
+                <fmt:message key="menu.editProfile"/>
+            </a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="${baseURI}/logout">
