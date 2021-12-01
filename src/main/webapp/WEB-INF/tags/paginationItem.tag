@@ -22,6 +22,12 @@ Single pagination item
     <c:otherwise>
         <c:url var="pageUrl" value="${requestScope['javax.servlet.forward.servlet_path']}">
             <c:param name="page" value="${pageNumber}" />
+            <c:if test="${not empty param.sortBy}">
+                <c:param name="sortBy" value="${param.sortBy}" />
+            </c:if>
+            <c:if test="${not empty param.sortDirection}">
+                <c:param name="sortDirection" value="${param.sortDirection}" />
+            </c:if>
         </c:url>
         <li class="page-item ${active ? 'active' : ''}">
             <a class="page-link" href="${pageUrl}">${linkText}</a>

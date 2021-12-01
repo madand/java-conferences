@@ -1,6 +1,7 @@
 package net.madand.conferences.web.controller.impl;
 
 import net.madand.conferences.db.web.QueryOptions;
+import net.madand.conferences.db.web.Sorting;
 import net.madand.conferences.entity.Conference;
 import net.madand.conferences.entity.ConferenceTranslation;
 import net.madand.conferences.entity.Language;
@@ -24,6 +25,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,6 +51,7 @@ public class ConferenceController extends AbstractController {
         super(servletContext);
         conferenceService = serviceFactory.getConferenceService();
     }
+
     public void listUpcoming(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException {
         final HttpSession session = request.getSession();
         final Language currentLanguage = SessionScope.getCurrentLanguage(session);
@@ -59,14 +63,20 @@ public class ConferenceController extends AbstractController {
                 .ifPresent(value -> session.setAttribute(ITEMS_PER_PAGE_SESSION_KEY, value));
         final int itemsPerPage = Optional.ofNullable((Integer) session.getAttribute(ITEMS_PER_PAGE_SESSION_KEY)).orElse(2);
 
+        final List<String> sortableFields = new ArrayList<>();
+        Collections.addAll(sortableFields, "event_date", "attendees_count");
+        final String sortBy = request.getParameter("sortBy");
+        final String sortDirection = request.getParameter("sortDirection");
+        request.setAttribute("sortableFields", sortableFields);
+
         QueryOptions queryOptions = new QueryOptions()
-                .withPagination(currentPage, itemsPerPage);
+                .withPagination(currentPage, itemsPerPage)
+                .withSorting(sortBy, sortDirection, sortableFields.get(0), Sorting.DESC, sortableFields);
+        request.setAttribute("queryOptions", queryOptions);
 
         final List<Conference> conferences = conferenceService.findAllUpcomingWithAttendee(
                 currentLanguage, RequestScope.getUser(request), queryOptions);
-
         request.setAttribute("conferences", conferences);
-        request.setAttribute("queryOptions", queryOptions);
 
         URLManager.rememberUrlIfGET(request);
 
@@ -84,8 +94,15 @@ public class ConferenceController extends AbstractController {
                 .ifPresent(value -> session.setAttribute(ITEMS_PER_PAGE_SESSION_KEY, value));
         final int itemsPerPage = Optional.ofNullable((Integer) session.getAttribute(ITEMS_PER_PAGE_SESSION_KEY)).orElse(2);
 
+        final List<String> sortableFields = new ArrayList<>();
+        Collections.addAll(sortableFields, "event_date", "attendees_count");
+        final String sortBy = request.getParameter("sortBy");
+        final String sortDirection = request.getParameter("sortDirection");
+        request.setAttribute("sortableFields", sortableFields);
+
         QueryOptions queryOptions = new QueryOptions()
-                .withPagination(currentPage, itemsPerPage);
+                .withPagination(currentPage, itemsPerPage)
+                .withSorting(sortBy, sortDirection, sortableFields.get(0), Sorting.ASC, sortableFields);
 
         final List<Conference> conferences = conferenceService.findAllPastWithAttendee(
                 currentLanguage, RequestScope.getUser(request), queryOptions);
@@ -109,8 +126,15 @@ public class ConferenceController extends AbstractController {
                 .ifPresent(value -> session.setAttribute(ITEMS_PER_PAGE_SESSION_KEY, value));
         final int itemsPerPage = Optional.ofNullable((Integer) session.getAttribute(ITEMS_PER_PAGE_SESSION_KEY)).orElse(2);
 
+        final List<String> sortableFields = new ArrayList<>();
+        Collections.addAll(sortableFields, "event_date", "attendees_count");
+        final String sortBy = request.getParameter("sortBy");
+        final String sortDirection = request.getParameter("sortDirection");
+        request.setAttribute("sortableFields", sortableFields);
+
         QueryOptions queryOptions = new QueryOptions()
-                .withPagination(currentPage, itemsPerPage);
+                .withPagination(currentPage, itemsPerPage)
+                .withSorting(sortBy, sortDirection, sortableFields.get(0), Sorting.ASC, sortableFields);
 
         final List<Conference> conferences = conferenceService.findAllWithAttendee(
                 currentLanguage, RequestScope.getUser(request), queryOptions);

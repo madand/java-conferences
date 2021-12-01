@@ -2,7 +2,7 @@ package net.madand.conferences.db.web;
 
 import net.madand.conferences.db.util.QueryBuilder;
 
-import java.util.Set;
+import java.util.List;
 
 public class Sorting {
     public static final String ASC = "asc";
@@ -10,10 +10,14 @@ public class Sorting {
 
     private String field;
     private String direction;
+    private String defaultField;
+    private String defaultDirection;
 
-    public Sorting(String field, String direction, String defaultField, String defaultDirection, Set<String> allowedFields) {
+    public Sorting(String field, String direction, String defaultField, String defaultDirection, List<String> allowedFields) {
         this.field = allowedFields.contains(field) ? field : defaultField;
         this.direction = isValidDirection(direction) ? direction : defaultDirection;
+        this.defaultField = defaultField;
+        this.defaultDirection = defaultDirection;
     }
 
     public void applyTo(QueryBuilder queryBuilder) {
@@ -21,7 +25,7 @@ public class Sorting {
     }
 
     private boolean isValidDirection(String direction) {
-        return direction.equals(ASC) || direction.equals(DESC);
+        return ASC.equals(direction) || DESC.equals(direction);
     }
 
     public String getField() {
@@ -30,5 +34,21 @@ public class Sorting {
 
     public String getDirection() {
         return direction;
+    }
+
+    public String getDefaultField() {
+        return defaultField;
+    }
+
+    public void setDefaultField(String defaultField) {
+        this.defaultField = defaultField;
+    }
+
+    public String getDefaultDirection() {
+        return defaultDirection;
+    }
+
+    public void setDefaultDirection(String defaultDirection) {
+        this.defaultDirection = defaultDirection;
     }
 }

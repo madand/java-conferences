@@ -15,6 +15,42 @@
                                    linkUrl="all" />
 </ul>
 
+<div class="mb-3 text-small">
+    <fmt:message key="sorting.sortBy"/>:
+
+    <c:set var="sortDrection" value="${queryOptions.sorting.direction}"/>
+    <c:forEach items="${sortableFields}" var="sortField">
+        <c:choose>
+            <c:when test="${sortField == queryOptions.sorting.field}">
+                <c:set var="btnType" value="primary"/>
+                <c:set var="icon">
+                    <i class="bi bi-sort-alpha-${sortDrection == 'asc' ? 'down' : 'up'}"></i>
+                </c:set>
+                <c:url var="sortUrl" value="${requestScope['javax.servlet.forward.servlet_path']}">
+                    <c:param name="page" value="${queryOptions.pagination.currentPage}" />
+                    <c:param name="sortBy" value="${sortField}" />
+                    <c:param name="sortDirection"
+                             value="${sortDrection == 'asc' ? 'desc' : 'asc'}" />
+                </c:url>
+            </c:when>
+            <c:otherwise>
+                <c:set var="btnType" value="default"/>
+                <c:set var="icon" value=""/>
+                <c:url var="sortUrl" value="${requestScope['javax.servlet.forward.servlet_path']}">
+                    <c:param name="page" value="${queryOptions.pagination.currentPage}" />
+                    <c:param name="sortBy" value="${sortField}" />
+                    <c:param name="sortDirection" value="desc" />
+                </c:url>
+            </c:otherwise>
+        </c:choose>
+
+        <a href="${sortUrl}" class="btn btn-sm btn-${btnType}">
+            <fmt:message key="sorting.field.${sortField}"/>
+            ${icon}
+        </a>
+    </c:forEach>
+</div>
+
 <div class="row row-cols-1 row-cols-xl-2">
     <c:forEach items="${conferences}" var="conference">
         <div class="col mb-4">
