@@ -1,6 +1,7 @@
 package net.madand.conferences.web.scope;
 
 import net.madand.conferences.entity.Language;
+import net.madand.conferences.l10n.LocalizationHelper;
 import net.madand.conferences.service.ServiceFactory;
 import org.apache.log4j.Logger;
 
@@ -14,6 +15,7 @@ public class ContextScope {
     private static final String SERVICE_FACTORY = "serviceFactory";
     private static final String LANGUAGES = "languages";
     private static final String DEFAULT_LANGUAGE = "defaultLanguage";
+    private static final String LOCALIZATION_HELPER = "localizationHelper";
 
     private static final Logger log = Logger.getLogger(ContextScope.class);
     private static final ScopeSupport support = new ScopeSupport(log);
@@ -42,5 +44,13 @@ public class ContextScope {
 
     public static void setDefaultLanguage(ServletContext servletContext, Language language) {
         support.setAttributeAndLog(servletContext, DEFAULT_LANGUAGE, language);
+    }
+
+    public static LocalizationHelper getLocalizationHelper(ServletContext servletContext) {
+        return (LocalizationHelper) support.getAttributeOrThrow(servletContext, LOCALIZATION_HELPER);
+    }
+
+    public static void setLocalizationHelper(ServletContext servletContext, LocalizationHelper localizationHelper) {
+        support.setAttributeAndLog(servletContext, LOCALIZATION_HELPER, localizationHelper);
     }
 }

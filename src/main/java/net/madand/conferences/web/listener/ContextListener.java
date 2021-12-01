@@ -1,7 +1,9 @@
 package net.madand.conferences.web.listener;
 
+import net.madand.conferences.db.Fields;
 import net.madand.conferences.entity.Language;
 import net.madand.conferences.l10n.Languages;
+import net.madand.conferences.l10n.LocalizationHelper;
 import net.madand.conferences.service.ServiceException;
 import net.madand.conferences.service.ServiceFactory;
 import net.madand.conferences.service.impl.LanguageService;
@@ -86,6 +88,9 @@ public class ContextListener implements ServletContextListener {
             ContextScope.setDefaultLanguage(servletContext, defaultLanguage);
             Config.set(servletContext, Config.FMT_LOCALE, defaultLanguage.getCode());
             Config.set(servletContext, Config.FMT_TIME_ZONE, "Europe/Kiev");
+
+            final String bundleName = servletContext.getInitParameter("javax.servlet.jsp.jstl.fmt.localizationContext");
+            ContextScope.setLocalizationHelper(servletContext, new LocalizationHelper(bundleName));
         } catch (ServiceException e) {
             log.error("Languages query failed", e);
             throw new RuntimeException("Failed to initialize the languages", e);
