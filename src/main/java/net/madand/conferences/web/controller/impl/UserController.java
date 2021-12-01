@@ -40,6 +40,10 @@ public class UserController extends AbstractController {
     }
 
     private void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException, HttpRedirectException {
+        if (RequestScope.getUser(request).isPresent()) {
+            redirect(URLManager.homePage(request));
+        }
+
         LoginBean bean = new LoginBean();
         request.setAttribute("bean", bean);
 
@@ -68,6 +72,10 @@ public class UserController extends AbstractController {
     }
 
     private void register(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException, HttpRedirectException {
+        if (RequestScope.getUser(request).isPresent()) {
+            redirect(URLManager.homePage(request));
+        }
+
         User user = new User();
         user.setRole(Role.ATTENDEE); // Newly registered users are always Attendees.
         request.setAttribute("bean", user);
