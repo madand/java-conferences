@@ -12,10 +12,10 @@ import net.madand.conferences.service.impl.ConferenceService;
 import net.madand.conferences.web.controller.AbstractController;
 import net.madand.conferences.web.controller.exception.HttpException;
 import net.madand.conferences.web.controller.exception.HttpRedirectException;
-import net.madand.conferences.web.scope.ContextScope;
 import net.madand.conferences.web.scope.RequestScope;
 import net.madand.conferences.web.scope.SessionScope;
 import net.madand.conferences.web.util.HtmlSupport;
+import net.madand.conferences.web.util.PaginationSortingSupport;
 import net.madand.conferences.web.util.URLManager;
 import org.apache.log4j.Logger;
 
@@ -57,23 +57,11 @@ public class ConferenceController extends AbstractController {
         final HttpSession session = request.getSession();
         final Language currentLanguage = SessionScope.getCurrentLanguage(session);
 
-        int currentPage = Optional.ofNullable(request.getParameter("page")).map(Integer::parseInt).orElse(1);
-
         final String ITEMS_PER_PAGE_SESSION_KEY = "conferenceListItemsPerPage";
-        Optional.ofNullable(request.getParameter("itemsPerPage")).map(Integer::parseInt)
-                .ifPresent(value -> session.setAttribute(ITEMS_PER_PAGE_SESSION_KEY, value));
-        final int itemsPerPage = Optional.ofNullable((Integer) session.getAttribute(ITEMS_PER_PAGE_SESSION_KEY)).orElse(2);
-
-        final List<String> sortableFields = new ArrayList<>();
-        Collections.addAll(sortableFields, "event_date", "attendees_count");
-        final String sortBy = request.getParameter("sortBy");
-        final String sortDirection = request.getParameter("sortDirection");
-        request.setAttribute("sortableFields", sortableFields);
-
-        QueryOptions queryOptions = new QueryOptions()
-                .withPagination(currentPage, itemsPerPage)
-                .withSorting(sortBy, sortDirection, sortableFields.get(0), Sorting.DESC, sortableFields);
-        request.setAttribute("queryOptions", queryOptions);
+        QueryOptions queryOptions = new PaginationSortingSupport()
+                .withSorting(Sorting.DESC, "event_date", "attendees_count")
+                .withPagination(ITEMS_PER_PAGE_SESSION_KEY)
+                .buildAndApplyTo(request);
 
         final List<Conference> conferences = conferenceService.findAllUpcomingWithAttendee(
                 currentLanguage, RequestScope.getUser(request), queryOptions);
@@ -88,29 +76,16 @@ public class ConferenceController extends AbstractController {
         final HttpSession session = request.getSession();
         final Language currentLanguage = SessionScope.getCurrentLanguage(session);
 
-        int currentPage = Optional.ofNullable(request.getParameter("page")).map(Integer::parseInt).orElse(1);
-
         final String ITEMS_PER_PAGE_SESSION_KEY = "conferenceListItemsPerPage";
-        Optional.ofNullable(request.getParameter("itemsPerPage")).map(Integer::parseInt)
-                .ifPresent(value -> session.setAttribute(ITEMS_PER_PAGE_SESSION_KEY, value));
-        final int itemsPerPage = Optional.ofNullable((Integer) session.getAttribute(ITEMS_PER_PAGE_SESSION_KEY)).orElse(2);
-
-        final List<String> sortableFields = new ArrayList<>();
-        Collections.addAll(sortableFields, "event_date", "attendees_count");
-        final String sortBy = request.getParameter("sortBy");
-        final String sortDirection = request.getParameter("sortDirection");
-        request.setAttribute("sortableFields", sortableFields);
-
-
-        QueryOptions queryOptions = new QueryOptions()
-                .withPagination(currentPage, itemsPerPage)
-                .withSorting(sortBy, sortDirection, sortableFields.get(0), Sorting.ASC, sortableFields);
+        QueryOptions queryOptions = new PaginationSortingSupport()
+                .withSorting(Sorting.ASC, "event_date", "attendees_count")
+                .withPagination(ITEMS_PER_PAGE_SESSION_KEY)
+                .buildAndApplyTo(request);
 
         final List<Conference> conferences = conferenceService.findAllPastWithAttendee(
                 currentLanguage, RequestScope.getUser(request), queryOptions);
 
         request.setAttribute("conferences", conferences);
-        request.setAttribute("queryOptions", queryOptions);
 
         URLManager.rememberUrlIfGET(request);
 
@@ -121,28 +96,16 @@ public class ConferenceController extends AbstractController {
         final HttpSession session = request.getSession();
         final Language currentLanguage = SessionScope.getCurrentLanguage(session);
 
-        int currentPage = Optional.ofNullable(request.getParameter("page")).map(Integer::parseInt).orElse(1);
-
         final String ITEMS_PER_PAGE_SESSION_KEY = "conferenceListItemsPerPage";
-        Optional.ofNullable(request.getParameter("itemsPerPage")).map(Integer::parseInt)
-                .ifPresent(value -> session.setAttribute(ITEMS_PER_PAGE_SESSION_KEY, value));
-        final int itemsPerPage = Optional.ofNullable((Integer) session.getAttribute(ITEMS_PER_PAGE_SESSION_KEY)).orElse(2);
-
-        final List<String> sortableFields = new ArrayList<>();
-        Collections.addAll(sortableFields, "event_date", "attendees_count");
-        final String sortBy = request.getParameter("sortBy");
-        final String sortDirection = request.getParameter("sortDirection");
-        request.setAttribute("sortableFields", sortableFields);
-
-        QueryOptions queryOptions = new QueryOptions()
-                .withPagination(currentPage, itemsPerPage)
-                .withSorting(sortBy, sortDirection, sortableFields.get(0), Sorting.ASC, sortableFields);
+        QueryOptions queryOptions = new PaginationSortingSupport()
+                .withSorting(Sorting.ASC, "event_date", "attendees_count")
+                .withPagination(ITEMS_PER_PAGE_SESSION_KEY)
+                .buildAndApplyTo(request);
 
         final List<Conference> conferences = conferenceService.findAllWithAttendee(
                 currentLanguage, RequestScope.getUser(request), queryOptions);
 
         request.setAttribute("conferences", conferences);
-        request.setAttribute("queryOptions", queryOptions);
 
         URLManager.rememberUrlIfGET(request);
 
