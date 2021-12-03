@@ -15,33 +15,9 @@
                                    linkUrl="all" />
 </ul>
 
-<div class="mb-3 text-small">
-    <fmt:message key="sorting.sortBy"/>:
-
-    <c:set var="sortDrection" value="${queryOptions.sorting.direction}"/>
-    <c:forEach items="${sortableFields}" var="sortField">
-
-        <c:set var="sortDirection" value="desc" />
-        <c:set var="btnType" value="default"/>
-        <c:set var="icon" value=""/>
-        <c:if test="${sortField == queryOptions.sorting.field}">
-            <c:set var="sortDirection" value="${sortDrection == 'asc' ? 'desc' : 'asc'}" />
-            <c:set var="btnType" value="primary"/>
-            <c:set var="icon">
-                <i class="bi bi-sort-alpha-${sortDrection == 'asc' ? 'down' : 'up'}"></i>
-            </c:set>
-        </c:if>
-
-        <c:url var="sortUrl" value="${requestScope['javax.servlet.forward.servlet_path']}">
-            <c:param name="sortBy" value="${sortField}" />
-            <c:param name="sortDirection" value="${sortDirection}" />
-        </c:url>
-        <a href="${sortUrl}" class="btn btn-sm btn-${btnType}">
-            <fmt:message key="sorting.field.${sortField}"/>
-            ${icon}
-        </a>
-    </c:forEach>
-</div>
+<mytags:sorting sortableFields="${sortableFields}"
+                sortingOptions="${queryOptions.sorting}"
+                url="${requestScope['javax.servlet.forward.servlet_path']}" />
 
 <div class="row row-cols-1 row-cols-xl-2">
     <c:forEach items="${conferences}" var="conference">
