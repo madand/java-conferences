@@ -17,7 +17,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
@@ -75,7 +74,7 @@ public class TalkSpeakerProposalController extends AbstractController {
 
         if ("POST".equals(request.getMethod())) {
             final int speakerId = Integer.parseInt(request.getParameter("speakerId"));
-            final User speaker = serviceFactory.getUserService().findById(speakerId).orElseThrow(HttpException::new);
+            final User speaker = serviceFactory.getUserService().findOneById(speakerId).orElseThrow(HttpException::new);
             TalkSpeakerProposal talkSpeakerProposal = TalkSpeakerProposal.makeInstance(talk, speaker, user);
             talkSpeakerProposalService.create(talkSpeakerProposal);
 

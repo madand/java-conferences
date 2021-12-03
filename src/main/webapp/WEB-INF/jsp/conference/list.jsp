@@ -80,6 +80,6 @@
     </c:forEach>
 </div>
 
-<mytags:pagination queryOptions="${queryOptions}" />
+<mytags:pagination paginationOptions="${queryOptions.pagination}" />
 
 <%@ include file="/WEB-INF/jspf/footer.jspf" %>

@@ -51,8 +51,7 @@ public class ConferenceDao {
         final QueryBuilder queryBuilder = new QueryBuilder("v_conference t")
                 .select("t.*, ca.user_id as attendee_id")
                 .leftJoin("conference_attendee ca ON ca.conference_id = t.id AND ca.user_id = ?")
-                .where("language_id = ? AND event_date >= CURRENT_DATE")
-                .orderBy("event_date DESC");
+                .where("language_id = ? AND event_date >= CURRENT_DATE");
 
         int attendeeId = user.map(User::getId).orElse(-1);
         final StatementParametersSetter paramsSetter = stmt -> {
@@ -78,8 +77,7 @@ public class ConferenceDao {
         final QueryBuilder queryBuilder = new QueryBuilder("v_conference t")
                 .select("t.*, ca.user_id as attendee_id")
                 .leftJoin("conference_attendee ca ON ca.conference_id = t.id AND ca.user_id = ?")
-                .where("language_id = ? AND event_date < CURRENT_DATE")
-                .orderBy("event_date DESC");
+                .where("language_id = ? AND event_date < CURRENT_DATE");
 
         int attendeeId = user.map(User::getId).orElse(-1);
         final StatementParametersSetter paramsSetter = stmt -> {
@@ -105,8 +103,7 @@ public class ConferenceDao {
         final QueryBuilder queryBuilder = new QueryBuilder("v_conference t")
                 .select("t.*, ca.user_id as attendee_id")
                 .leftJoin("conference_attendee ca ON ca.conference_id = t.id AND ca.user_id = ?")
-                .where("language_id = ?")
-                .orderBy("event_date");
+                .where("language_id = ?");
 
         int attendeeId = user.map(User::getId).orElse(-1);
         final StatementParametersSetter paramsSetter = stmt -> {

@@ -53,7 +53,7 @@ public class UserController extends AbstractController {
             bean.setEmail(request.getParameter("email"));
             bean.setPassword(request.getParameter("password"));
 
-            final Optional<User> userOptional = userService.findByEmail(bean.getEmail());
+            final Optional<User> userOptional = userService.findOneByEmail(bean.getEmail());
 
             if (userOptional.isPresent()) {
                 User user = userOptional.get();

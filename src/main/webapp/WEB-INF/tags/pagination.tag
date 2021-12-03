@@ -4,11 +4,11 @@
 <%@ taglib uri="/WEB-INF/tld/mytl.tld" prefix="mytl" %>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="mytags"%>
 
-<%@ attribute  name="queryOptions" required="true" type="net.madand.conferences.db.web.QueryOptions" %>
+<%@ attribute  name="paginationOptions" type="net.madand.conferences.db.web.Pagination" required="true" %>
 
-<c:set var="currentPage" value="${queryOptions.pagination.currentPage}" />
-<c:set var="totalPages" value="${queryOptions.pagination.totalPages}" />
-<c:set var="itemsPerPage" value="${queryOptions.pagination.itemsPerPage}" />
+<c:set var="currentPage" value="${paginationOptions.currentPage}" />
+<c:set var="totalPages" value="${paginationOptions.totalPages}" />
+<c:set var="itemsPerPage" value="${paginationOptions.itemsPerPage}" />
 <c:set var="nextText">
     <fmt:message key="pagination.next"/>
 </c:set>

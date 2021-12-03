@@ -5,7 +5,6 @@ import net.madand.conferences.entity.*;
 import net.madand.conferences.l10n.Languages;
 import net.madand.conferences.service.ServiceException;
 import net.madand.conferences.service.impl.TalkService;
-import net.madand.conferences.service.impl.TalkSpeakerProposalService;
 import net.madand.conferences.service.impl.TalkSpeakerRequestService;
 import net.madand.conferences.web.controller.AbstractController;
 import net.madand.conferences.web.controller.exception.HttpException;
@@ -84,7 +83,7 @@ public class TalkController extends AbstractController {
             String speakerIdStr = Optional.ofNullable(request.getParameter("speakerId")).orElse("");
             if (!speakerIdStr.isEmpty()) {
                 final int speakerId = Integer.parseInt(speakerIdStr);
-                talk.setSpeaker(serviceFactory.getUserService().findById(speakerId)
+                talk.setSpeaker(serviceFactory.getUserService().findOneById(speakerId)
                         .orElseThrow(HttpException::new));
             } else {
                 talk.setSpeaker(null);
@@ -117,7 +116,7 @@ public class TalkController extends AbstractController {
             String speakerIdStr = Optional.ofNullable(request.getParameter("speakerId")).orElse("");
             if (!speakerIdStr.isEmpty()) {
                 final int speakerId = Integer.parseInt(speakerIdStr);
-                talk.setSpeaker(serviceFactory.getUserService().findById(speakerId)
+                talk.setSpeaker(serviceFactory.getUserService().findOneById(speakerId)
                         .orElseThrow(HttpException::new));
             } else {
                 talk.setSpeaker(null);

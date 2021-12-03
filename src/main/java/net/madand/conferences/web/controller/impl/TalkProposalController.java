@@ -108,7 +108,7 @@ public class TalkProposalController extends AbstractController {
             String speakerIdStr = request.getParameter("speakerId");
             if (speakerIdStr != null && !speakerIdStr.isEmpty()) {
                 final int speakerId = Integer.parseInt(speakerIdStr);
-                talkProposal.setSpeaker(serviceFactory.getUserService().findById(speakerId)
+                talkProposal.setSpeaker(serviceFactory.getUserService().findOneById(speakerId)
                         .orElseThrow(HttpException::new));
             }
             talkProposal.setDuration(Integer.parseInt(request.getParameter("duration")));

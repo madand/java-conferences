@@ -38,7 +38,7 @@ public class LoadUserFilter implements Filter {
 
         Optional<User> user;
         try {
-            user = userService.findById(userId);
+            user = userService.findOneById(userId);
         } catch (ServiceException e) {
             log.error("Failed to load a user with ID=" + userId + ". Removing the user from session.", e);
             // Logout the user, just in case.
