@@ -20,6 +20,7 @@ public class Conference implements Serializable {
 
     private boolean currentUserAttending;
     private int attendeesCount;
+    private int talksCount;
 
     private final List<ConferenceTranslation> translations = new ArrayList<>();
 
@@ -137,6 +138,14 @@ public class Conference implements Serializable {
 
     public int getAttendeesCount() {
         return attendeesCount;
+    }
+
+    public int getTalksCount() {
+        return talksCount;
+    }
+
+    public void setTalksCount(int talksCount) {
+        this.talksCount = talksCount;
     }
 
     public void setAttendeesCount(int attendantsCount) {

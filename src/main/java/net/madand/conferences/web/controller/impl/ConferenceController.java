@@ -59,7 +59,7 @@ public class ConferenceController extends AbstractController {
 
         final String ITEMS_PER_PAGE_SESSION_KEY = "conferenceListItemsPerPage";
         QueryOptions queryOptions = new PaginationSortingSupport()
-                .withSorting(Sorting.DESC, "event_date", "attendees_count")
+                .withSorting(Sorting.DESC, "event_date", "talks_count", "attendees_count")
                 .withPagination(ITEMS_PER_PAGE_SESSION_KEY)
                 .buildAndApplyTo(request);
 
@@ -78,7 +78,7 @@ public class ConferenceController extends AbstractController {
 
         final String ITEMS_PER_PAGE_SESSION_KEY = "conferenceListItemsPerPage";
         QueryOptions queryOptions = new PaginationSortingSupport()
-                .withSorting(Sorting.ASC, "event_date", "attendees_count")
+                .withSorting(Sorting.ASC, "event_date", "talks_count", "attendees_count")
                 .withPagination(ITEMS_PER_PAGE_SESSION_KEY)
                 .buildAndApplyTo(request);
 
@@ -98,7 +98,7 @@ public class ConferenceController extends AbstractController {
 
         final String ITEMS_PER_PAGE_SESSION_KEY = "conferenceListItemsPerPage";
         QueryOptions queryOptions = new PaginationSortingSupport()
-                .withSorting(Sorting.ASC, "event_date", "attendees_count")
+                .withSorting(Sorting.ASC, "event_date", "talks_count", "attendees_count")
                 .withPagination(ITEMS_PER_PAGE_SESSION_KEY)
                 .buildAndApplyTo(request);
 

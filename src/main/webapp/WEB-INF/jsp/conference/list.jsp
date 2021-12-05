@@ -25,20 +25,28 @@
             <div class="card h-100">
                 <div class="card-body">
                     <h3 class="card-title"><c:out value="${conference.name}" /></h3>
-                    <p class="card-subtitle text-muted event-date">
-                        <mytl:formatDate value="${conference.eventDate}" format="LONG" />
-                    </p>
-                    <div class="card-text text-muted event-location">
-                        ${mytl:linesToParagraphs(conference.location)}
+                    <div class="card-text row row-cols-2 text-muted mb-1">
+                        <div class="col event-date">
+                            <mytl:formatDate value="${conference.eventDate}" format="LONG" />
+                        </div>
+                        <div class="col event-location">
+                            ${mytl:linesToParagraphs(conference.location)}
+                        </div>
+                    </div>
+                    <div class="card-text row row-cols-2 mb-2">
+                        <div class="col ">
+                            <span class="badge badge-pill bg-secondary">${conference.talksCount}</span>
+                            <fmt:message key="conference.list.talks"/>
+                        </div>
+                        <div class="col ">
+                            <span class="badge badge-pill bg-info">${conference.attendeesCount}</span>
+                            <fmt:message key="conference.list.attendees"/>
+                        </div>
                     </div>
                     <div class="card-text">
                         ${mytl:truncate(conference.description, 160)}
                     </div>
 
-                    <p class="card-text">
-                        <fmt:message key="conference.list.attendeesCount"/>:
-                        <span class="badge bg-info">${conference.attendeesCount}</span>
-                    </p>
 
                     <c:if test="${conference.currentUserAttending}">
                         <div class="card-text">
@@ -56,24 +64,7 @@
                                          messageKey="conference.list.button.details"
                                          icon="eye" />
 
-
-                    <c:choose>
-                        <c:when test="${conference.currentUserAttending}">
-                            <mytags:postActionButton action="cancel-attendance"
-                                                     entityId="${conference.id}"
-                                                     buttonType="danger"
-                                                     messageKey="button.cancelAttendance"
-                                                     icon="x-circle" />
-                        </c:when>
-                        <c:otherwise>
-                            <mytags:postActionButton action="attend-conference"
-                                                     entityId="${conference.id}"
-                                                     buttonType="success"
-                                                     messageKey="button.attend"
-                                                     icon="check-circle" />
-                        </c:otherwise>
-                    </c:choose>
-
+                    <mytags:attendConferenceButtons conference="${conference}" />
                 </div>
             </div>
         </div>

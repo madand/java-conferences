@@ -204,7 +204,8 @@ CREATE VIEW v_conference
            ensure_translated(l.name, t.id, 'name', 'conference') as name,
            ensure_translated(l.description, t.id, 'description', 'conference') as description,
            ensure_translated(l.location, t.id, 'location', 'conference') as location,
-           (SELECT count(*) FROM conference_attendee WHERE conference_id = t.id) as attendees_count
+           (SELECT count(*) FROM conference_attendee WHERE conference_id = t.id) as attendees_count,
+           (SELECT count(*) FROM talk WHERE conference_id = t.id) as talks_count
       FROM conference t
            JOIN conference_translation l ON l.conference_id = t.id;
   COMMENT ON VIEW v_conference
@@ -244,8 +245,6 @@ CREATE VIEW v_new_talk_proposal
   COMMENT ON VIEW v_new_talk_proposal
     IS 'View that joins new_talk_proposal and its translation.';
 
-
-DROP VIEW v_talk_speaker_request;
 CREATE VIEW v_talk_speaker_request
   AS
   SELECT t.id,
@@ -264,7 +263,6 @@ CREATE VIEW v_talk_speaker_request
 COMMENT ON VIEW v_new_talk_proposal
   IS 'View that joins talk_speaker_request with translated talk and conference.';
 
-DROP VIEW IF EXISTS v_talk_speaker_proposal;
 CREATE VIEW v_talk_speaker_proposal
   AS
   SELECT t.id,
