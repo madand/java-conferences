@@ -129,15 +129,15 @@ public class UserController extends AbstractController {
     private void edit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException, HttpRedirectException, HttpException {
         final User currentUser = RequestScope.getUser(request).orElseThrow(HttpException::forbidden);
 
-        final User user;
+        User user = currentUser;
+
         final int id = Optional.ofNullable(request.getParameter("id")).map(Integer::parseInt).orElse(0);
-        // Moderator can edit any user. Other roles can only edit own profile.
+        // Moderator can edit any user.
         if (currentUser.getRole().isModerator() && id > 0) {
             user = userService.findOneById(id).orElseThrow(HttpException::forbidden);
             request.setAttribute("roles", Role.values());
-        } else {
-            user = currentUser;
         }
+
         request.setAttribute("bean", user);
 
         URLManager.rememberUrlIfGET(request);
@@ -164,10 +164,22 @@ public class UserController extends AbstractController {
     private void delete(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, ServiceException, HttpRedirectException, HttpException {
         checkIsPOST(request);
 
-        User user = RequestScope.getUser(request).orElseThrow(HttpException::new);
+        final User currentUser = RequestScope.getUser(request).orElseThrow(HttpException::forbidden);
+
+        User user = currentUser;
+        final int id = Optional.ofNullable(request.getParameter("id")).map(Integer::parseInt).orElse(0);
+        // Moderator can delete any user.
+        if (currentUser.getRole().isModerator() && id > 0) {
+            user = userService.findOneById(id).orElseThrow(HttpException::forbidden);
+        }
 
         userService.delete(user);
         setLocalizedFlashMessageInfo("flashMessage.deletedSuccessfully", request);
+
+        if (user != currentUser) {
+            redirect(URLManager.buildURL(URLManager.URI_USER_MANAGE, null, request));
+        }
+
         logout(request, response);
     }
 
@@ -178,7 +190,17 @@ public class UserController extends AbstractController {
     }
 
     private void changePassword(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException, HttpRedirectException, HttpException {
-        final User user = RequestScope.getUser(request).orElseThrow(HttpException::forbidden);
+        final User currentUser = RequestScope.getUser(request).orElseThrow(HttpException::forbidden);
+
+        User user = currentUser;
+
+        final int id = Optional.ofNullable(request.getParameter("id")).map(Integer::parseInt).orElse(0);
+        // Moderator can edit any user.
+        if (currentUser.getRole().isModerator() && id > 0) {
+            user = userService.findOneById(id).orElseThrow(HttpException::forbidden);
+            request.setAttribute("roles", Role.values());
+        }
+
         request.setAttribute("bean", user);
 
         if ("POST".equals(request.getMethod())) {

@@ -8,12 +8,12 @@
 
 <div class="actions">
     <mytags:actionButton action="change-password"
-                         entityId="${user.id}"
+                         entityId="${bean.id}"
                          buttonType="primary"
                          messageKey="user.changePassword.title"
                          icon="cursor-text" />
     <mytags:deleteButton action="delete-user"
-                         entityId="${user.id}"
+                         entityId="${bean.id}"
                          icon="trash" />
 </div>
 

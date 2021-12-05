@@ -8,7 +8,8 @@
 
 <div class="row">
     <div class="col-sm-4">
-        <form method="post" action="${requestScope['javax.servlet.forward.request_uri']}">
+        <c:url var="actionUrl" value="${originalURIAndQueryString}" />
+        <form method="post" action="${actionUrl}">
             <div class="row">
                 <div class="col">
                     <mytags:inputText name="password" labelKey="user.label.password"
