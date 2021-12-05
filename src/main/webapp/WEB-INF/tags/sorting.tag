@@ -14,7 +14,7 @@
     <c:set var="sortDrection" value="${sortingOptions.direction}"/>
     <c:forEach items="${sortableFields}" var="sortField">
 
-        <c:set var="sortDirection" value="desc" />
+        <c:set var="sortDirection" value="${sortingOptions.defaultDirection}" />
         <c:set var="btnType" value="default"/>
         <c:set var="icon" value=""/>
         <c:if test="${sortField == sortingOptions.field}">
