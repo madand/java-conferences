@@ -17,7 +17,18 @@
                          icon="trash" />
 </div>
 
-<form method="post" action="${requestScope['javax.servlet.forward.request_uri']}">
+<c:url var="actionUrl" value="${originalURIAndQueryString}" />
+<form method="post" action="${actionUrl}">
+    <c:if test="${bean != user}">
+        <div class="row">
+            <div class="col">
+                <mytags:rolesDropDown name="role"
+                                      labelKey="user.label.role"
+                                      roles="${roles}"
+                                      value="${bean.role}" />
+            </div>
+        </div>
+    </c:if>
     <div class="row">
         <div class="col">
             <mytags:inputText name="email" labelKey="user.label.email"

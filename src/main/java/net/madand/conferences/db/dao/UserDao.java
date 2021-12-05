@@ -1,8 +1,12 @@
 package net.madand.conferences.db.dao;
 
 import net.madand.conferences.auth.Role;
+import net.madand.conferences.db.Fields;
+import net.madand.conferences.db.util.QueryBuilder;
 import net.madand.conferences.db.util.QueryHelper;
 import net.madand.conferences.db.util.StatementParametersSetter;
+import net.madand.conferences.db.web.QueryOptions;
+import net.madand.conferences.entity.Conference;
 import net.madand.conferences.entity.Talk;
 import net.madand.conferences.entity.User;
 
@@ -14,16 +18,35 @@ import java.util.List;
 import java.util.Optional;
 
 public class UserDao {
-    private static final String FIND_ALL = "SELECT * FROM \"user\" ORDER BY real_name";
-    private static final String FIND_ALL_BY_ROLE = "SELECT * FROM \"user\" WHERE role = ?::role_type ORDER BY real_name";
     private static final String FIND_ONE_BY_ID = "SELECT * FROM \"user\" WHERE id = ?";
     private static final String FIND_ONE_BY_EMAIL = "SELECT * FROM \"user\" WHERE email = ?";
     private static final String INSERT = "INSERT INTO \"user\" (email, real_name, password_hash, role) VALUES (?,?,?,?::role_type)";
     private static final String UPDATE = "UPDATE \"user\" SET email = ?, real_name = ?, password_hash = ?, role = ?::role_type WHERE id = ?";
     private static final String DELETE = "DELETE FROM \"user\" WHERE id = ?";
 
+    public static List<User> findAllExceptGiven(Connection connection, User excludeUser, QueryOptions queryOptions) throws SQLException {
+        final QueryBuilder queryBuilder = new QueryBuilder("\"user\" t").where("id <> ?");
+        final StatementParametersSetter paramsSetter = stmt ->
+                stmt.setInt(1, excludeUser.getId());
+
+        queryOptions.getPagination().setTotalItemsCount(
+                QueryHelper.count(connection, queryBuilder.buildCountTotal(), paramsSetter));
+
+        queryOptions.applyTo(queryBuilder); // Apply pagination and sorting.
+        return QueryHelper.findAll(connection, queryBuilder.buildSelect(), paramsSetter, UserDao::mapRow);
+    }
+
+    /**
+     * Find all users with the given role, sorted by the real name.
+     *
+     * @param connection the connection.
+     * @param role the role.
+     * @return all users that have the given role.
+     * @throws SQLException
+     */
     public static List<User> findAllByRole(Connection connection, Role role) throws SQLException {
-        return QueryHelper.findAll(connection, FIND_ALL_BY_ROLE,
+        final String SQL = "SELECT * FROM \"user\" WHERE role = ?::role_type ORDER BY real_name";
+        return QueryHelper.findAll(connection, SQL,
                 stmt -> stmt.setString(1, role.toString()),
                 UserDao::mapRow);
     }
@@ -90,4 +113,5 @@ public class UserDao {
 
         return user;
     }
+
 }

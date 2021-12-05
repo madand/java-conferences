@@ -1,8 +1,11 @@
 package net.madand.conferences.web.controller.impl;
 
 import net.madand.conferences.auth.Role;
+import net.madand.conferences.db.web.QueryOptions;
+import net.madand.conferences.db.web.Sorting;
 import net.madand.conferences.entity.User;
 import net.madand.conferences.security.PasswordHelper;
+import net.madand.conferences.security.PermissionHelper;
 import net.madand.conferences.service.ServiceException;
 import net.madand.conferences.service.impl.UserService;
 import net.madand.conferences.web.bean.LoginBean;
@@ -11,6 +14,7 @@ import net.madand.conferences.web.controller.exception.HttpException;
 import net.madand.conferences.web.controller.exception.HttpRedirectException;
 import net.madand.conferences.web.scope.RequestScope;
 import net.madand.conferences.web.scope.SessionScope;
+import net.madand.conferences.web.util.PaginationSortingSupport;
 import net.madand.conferences.web.util.URLManager;
 
 import javax.servlet.ServletContext;
@@ -19,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 public class UserController extends AbstractController {
@@ -32,11 +37,29 @@ public class UserController extends AbstractController {
         handlersMap.put(URLManager.URI_USER_DELETE, this::delete);
         handlersMap.put(URLManager.URI_USER_EDIT, this::edit);
         handlersMap.put(URLManager.URI_USER_CHANGE_PASSWORD, this::changePassword);
+        handlersMap.put(URLManager.URI_USER_MANAGE, this::manage);
     }
 
     public UserController(ServletContext servletContext) {
         super(servletContext);
         userService = serviceFactory.getUserService();
+    }
+
+    private void manage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException, HttpRedirectException, HttpException {
+        User user = PermissionHelper.ensureGetModerator(request);
+
+        final String ITEMS_PER_PAGE_SESSION_KEY = "userListItemsPerPage";
+        QueryOptions queryOptions = new PaginationSortingSupport()
+                .withSorting(Sorting.ASC, "email", "real_name", "created_at", "id")
+                .withPagination(ITEMS_PER_PAGE_SESSION_KEY)
+                .buildAndApplyTo(request); // This sets these request attributes: sortableFields, queryOptions.
+
+        final List<User> users = userService.findAllExceptGiven(user, queryOptions);
+        request.setAttribute("users", users);
+
+        URLManager.rememberUrlIfGET(request);
+
+        renderView("user/manage", request, response);
     }
 
     private void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException, HttpRedirectException {
@@ -104,16 +127,30 @@ public class UserController extends AbstractController {
     }
 
     private void edit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException, HttpRedirectException, HttpException {
-        final User user = RequestScope.getUser(request).orElseThrow(HttpException::forbidden);
+        final User currentUser = RequestScope.getUser(request).orElseThrow(HttpException::forbidden);
+
+        final User user;
+        final int id = Optional.ofNullable(request.getParameter("id")).map(Integer::parseInt).orElse(0);
+        // Moderator can edit any user. Other roles can only edit own profile.
+        if (currentUser.getRole().isModerator() && id > 0) {
+            user = userService.findOneById(id).orElseThrow(HttpException::forbidden);
+            request.setAttribute("roles", Role.values());
+        } else {
+            user = currentUser;
+        }
         request.setAttribute("bean", user);
 
         URLManager.rememberUrlIfGET(request);
 
         if ("POST".equals(request.getMethod())) {
-            final HttpSession session = request.getSession();
-
             user.setEmail(request.getParameter("email"));
             user.setRealName(request.getParameter("realName"));
+
+            // Moderator is editing another user.
+            if (user != currentUser) {
+                user.setRole(Role.valueOf(Optional.ofNullable(request.getParameter("role"))
+                        .orElse(Role.ATTENDEE.toString())));
+            }
 
             userService.update(user);
 
@@ -145,8 +182,6 @@ public class UserController extends AbstractController {
         request.setAttribute("bean", user);
 
         if ("POST".equals(request.getMethod())) {
-            final HttpSession session = request.getSession();
-
             String oldPassword = Optional.ofNullable(request.getParameter("password")).orElse("");
             String passwordNew = Optional.ofNullable(request.getParameter("passwordNew")).orElse("");
             String passwordNewRepeat = Optional.ofNullable(request.getParameter("passwordNewRepeat")).orElse("");

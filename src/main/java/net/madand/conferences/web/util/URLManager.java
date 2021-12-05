@@ -13,6 +13,7 @@ public class URLManager {
     public static final String URI_USER_EDIT = "edit-user";
     public static final String URI_USER_CHANGE_PASSWORD = "change-password";
     public static final String URI_USER_DELETE = "delete-user";
+    public static final String URI_USER_MANAGE = "manage-users";
 
     public static final String URI_CONFERENCE_LIST_UPCOMING = "";
     public static final String URI_CONFERENCE_LIST_PAST = "past";

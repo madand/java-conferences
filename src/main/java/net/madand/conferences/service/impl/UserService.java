@@ -2,6 +2,7 @@ package net.madand.conferences.service.impl;
 
 import net.madand.conferences.auth.Role;
 import net.madand.conferences.db.dao.UserDao;
+import net.madand.conferences.db.web.QueryOptions;
 import net.madand.conferences.entity.Talk;
 import net.madand.conferences.entity.User;
 import net.madand.conferences.service.AbstractService;
@@ -16,14 +17,21 @@ public class UserService extends AbstractService {
         super(dataSource);
     }
 
-    public Optional<User> findByEmail(String email) throws ServiceException {
+    public List<User> findAllExceptGiven(User excludeUser, QueryOptions queryOptions) throws ServiceException {
+        return callNoTransaction(
+                connection -> UserDao.findAllExceptGiven(connection, excludeUser, queryOptions),
+                "Failed to the list of users"
+        );
+    }
+
+    public Optional<User> findOneByEmail(String email) throws ServiceException {
         return callNoTransaction(
                 connection -> UserDao.findOneByEmail(connection, email),
                 "Failed to find the user"
         );
     }
 
-    public Optional<User> findById(int id) throws ServiceException {
+    public Optional<User> findOneById(int id) throws ServiceException {
         return callNoTransaction(
                 connection -> UserDao.findOneById(connection, id),
                 "Failed to find the user"

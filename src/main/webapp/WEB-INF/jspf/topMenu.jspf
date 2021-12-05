@@ -29,6 +29,14 @@
                     <fmt:message key="menu.moderator.createConference"/>
                 </a>
             </li>
+
+            <li><hr class="dropdown-divider"></li>
+
+            <li>
+                <a class="dropdown-item" href="${baseURI}/manage-users">
+                    <fmt:message key="menu.moderator.manageUsers"/>
+                </a>
+            </li>
         </ul>
     </li>
 </c:if>
