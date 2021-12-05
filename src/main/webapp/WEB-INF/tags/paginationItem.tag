@@ -14,11 +14,13 @@ Single pagination item
 <%@ attribute  name="disabled" type="java.lang.Boolean" %>
 
 <c:choose>
+
     <c:when test="${disabled}">
         <li class="page-item disabled">
             <a class="page-link" tabindex="-1">${linkText}</a>
         </li>
     </c:when>
+
     <c:otherwise>
         <c:url var="pageUrl" value="${requestScope['javax.servlet.forward.servlet_path']}">
             <c:param name="page" value="${pageNumber}" />
@@ -33,4 +35,5 @@ Single pagination item
             <a class="page-link" href="${pageUrl}">${linkText}</a>
         </li>
     </c:otherwise>
+
 </c:choose>

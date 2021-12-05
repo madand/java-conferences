@@ -5,7 +5,7 @@ import net.madand.conferences.db.web.QueryOptions;
 import net.madand.conferences.db.web.Sorting;
 import net.madand.conferences.entity.User;
 import net.madand.conferences.security.PasswordHelper;
-import net.madand.conferences.security.PermissionHelper;
+import net.madand.conferences.auth.AuthHelper;
 import net.madand.conferences.service.ServiceException;
 import net.madand.conferences.service.impl.UserService;
 import net.madand.conferences.web.bean.LoginBean;
@@ -46,7 +46,7 @@ public class UserController extends AbstractController {
     }
 
     private void manage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException, HttpRedirectException, HttpException {
-        User user = PermissionHelper.ensureGetModerator(request);
+        User user = AuthHelper.ensureGetModerator(request);
 
         final String ITEMS_PER_PAGE_SESSION_KEY = "userListItemsPerPage";
         QueryOptions queryOptions = new PaginationSortingSupport()
