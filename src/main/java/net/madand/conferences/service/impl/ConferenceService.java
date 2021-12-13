@@ -44,6 +44,12 @@ public class ConferenceService extends AbstractService {
                 "Failed to fetch conferences");
     }
 
+    public List<Conference> findAllForAttendee(Language language, User attendee, QueryOptions queryOptions) throws ServiceException {
+        return callNoTransaction(
+                connection -> ConferenceDao.findAllForAttendee(connection, language, attendee, queryOptions),
+                "Failed to fetch conferences");
+    }
+
     public Optional<Conference> findOne(int id, Language language) throws ServiceException {
         return callNoTransaction(
                 connection -> ConferenceDao.findOne(connection, id, language),

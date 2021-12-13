@@ -1,5 +1,6 @@
 package net.madand.conferences.web.controller.impl;
 
+import net.madand.conferences.auth.AuthHelper;
 import net.madand.conferences.db.web.QueryOptions;
 import net.madand.conferences.db.web.Sorting;
 import net.madand.conferences.entity.Conference;
@@ -46,6 +47,7 @@ public class ConferenceController extends AbstractController {
         handlersMap.put(URLManager.URI_CONFERENCE_DELETE, this::delete);
         handlersMap.put(URLManager.URI_CONFERENCE_ATTEND, this::attendConference);
         handlersMap.put(URLManager.URI_CONFERENCE_CANCEL_ATTENDANCE, this::cancelAttendance);
+        handlersMap.put(URLManager.URI_MY_CONFERENCES, this::listMyConferences);
     }
 
     public ConferenceController(ServletContext servletContext) {
@@ -110,6 +112,24 @@ public class ConferenceController extends AbstractController {
         URLManager.rememberUrlIfGET(request);
 
         renderView("conference/list", request, response);
+    }
+
+    public void listMyConferences(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServiceException, HttpException {
+        final User user = AuthHelper.ensureGetUserAnyRole(request);
+        final Language currentLanguage = SessionScope.getCurrentLanguage(request.getSession());
+
+        final String ITEMS_PER_PAGE_SESSION_KEY = "myConferencesItemsPerPage";
+        QueryOptions queryOptions = new PaginationSortingSupport()
+                .withSorting(Sorting.DESC, "event_date", "talks_count", "attendees_count")
+                .withPagination(ITEMS_PER_PAGE_SESSION_KEY)
+                .buildAndApplyTo(request);
+
+        final List<Conference> conferences = conferenceService.findAllForAttendee(currentLanguage, user, queryOptions);
+        request.setAttribute("conferences", conferences);
+
+        URLManager.rememberUrlIfGET(request);
+
+        renderView("conference/myConferences", request, response);
     }
 
     public void create(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, ServiceException, HttpRedirectException {

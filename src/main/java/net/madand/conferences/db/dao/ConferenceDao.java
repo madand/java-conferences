@@ -23,8 +23,6 @@ public class ConferenceDao {
     private static final Logger log = Logger.getLogger(ConferenceDao.class);
 
     private static final String FIND_ALL = "SELECT * FROM conference ORDER BY id";
-    private static final String FIND_ALL_LANG = "SELECT * FROM v_conference WHERE language_id = ? ORDER BY event_date";
-    private static final String FIND_ALL_FOR_USER = "SELECT * FROM v_conference_with_attendee WHERE language_id = ? AND  ORDER BY event_date";
     private static final String FIND_ONE = "SELECT * FROM conference WHERE id = ?";
     private static final String FIND_ONE_LANG = "SELECT * FROM v_conference WHERE id = ? AND language_id = ?";
     
@@ -111,19 +109,36 @@ public class ConferenceDao {
             stmt.setInt(2, language.getId());
         };
 
-        final String SQL_TOTAL_COUNT = queryBuilder.buildCountTotal();
-        log.debug(SQL_TOTAL_COUNT);
-        queryOptions.getPagination().setTotalItemsCount(QueryHelper.count(connection, SQL_TOTAL_COUNT, paramsSetter));
+        queryOptions.getPagination()
+                .setTotalItemsCount(QueryHelper.count(connection, queryBuilder.buildCountTotal(), paramsSetter));
 
         queryOptions.applyTo(queryBuilder);
-        final String SQL_SELECT = queryBuilder.buildSelect();
-        log.debug(SQL_SELECT);
-        return QueryHelper.findAll(connection, SQL_SELECT, paramsSetter,
+        return QueryHelper.findAll(connection, queryBuilder.buildSelect(), paramsSetter,
                 rs -> {
                     Conference conference = ConferenceDao.mapRowWithTranslation(rs);
                     conference.setCurrentUserAttending(rs.getInt(Fields.ATTENDEE_ID) > 0);
                     return conference;
                 });
+    }
+
+    public static List<Conference> findAllForAttendee(Connection connection, Language language, User attendee,
+                                                      QueryOptions queryOptions) throws SQLException {
+        final QueryBuilder queryBuilder = new QueryBuilder("v_conference t")
+                .select("t.*, ca.user_id as attendee_id")
+                .innerJoin("conference_attendee ca ON ca.conference_id = t.id AND ca.user_id = ?")
+                .where("language_id = ?");
+
+        final StatementParametersSetter paramsSetter = stmt -> {
+            stmt.setInt(1, attendee.getId());
+            stmt.setInt(2, language.getId());
+        };
+
+        queryOptions.getPagination()
+                .setTotalItemsCount(QueryHelper.count(connection, queryBuilder.buildCountTotal(), paramsSetter));
+
+        queryOptions.applyTo(queryBuilder);
+        return QueryHelper.findAll(connection, queryBuilder.buildSelect(), paramsSetter,
+                ConferenceDao::mapRowWithTranslation);
     }
 
     public static Optional<Conference> findOne(Connection conn, int id, Language language) throws SQLException {

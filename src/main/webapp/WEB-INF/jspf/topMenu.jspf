@@ -1,4 +1,12 @@
 
+<c:if test="${not empty user}">
+    <li class="nav-item">
+        <a class="nav-link" href="${baseURI}/my-conferences">
+            <fmt:message key="menu.attendee.myConferences"/>
+        </a>
+    </li>
+</c:if>
+
 
 <c:if test="${user.role.moderator}">
     <li class="nav-item dropdown">

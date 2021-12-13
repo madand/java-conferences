@@ -23,6 +23,7 @@ public class URLManager {
     public static final String URI_CONFERENCE_DELETE = "delete-conference";
     public static final String URI_CONFERENCE_ATTEND = "attend-conference";
     public static final String URI_CONFERENCE_CANCEL_ATTENDANCE = "cancel-attendance";
+    public static final String URI_MY_CONFERENCES = "my-conferences";
 
     public static final String URI_TALK_LIST = "list-talks";
     public static final String URI_TALK_CREATE = "create-talk";

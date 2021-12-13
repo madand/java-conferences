@@ -26,6 +26,11 @@ public class QueryBuilder {
         return this;
     }
 
+    public QueryBuilder innerJoin(String innerJoin) {
+        joins.add(" INNER JOIN " + innerJoin);
+        return this;
+    }
+
     public QueryBuilder where(String... wheres) {
         Collections.addAll(where, wheres);
         return this;
