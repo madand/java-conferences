@@ -6,8 +6,8 @@ DROP VIEW IF EXISTS v_conference;
 DROP VIEW IF EXISTS v_talk;
 DROP VIEW IF EXISTS v_new_talk_proposal;
 
-DROP TRIGGER IF EXISTS compute_end_time ON talk;
-DROP FUNCTION IF EXISTS compute_end_time;
+DROP FUNCTION IF EXISTS set_updated_at CASCADE;
+DROP FUNCTION IF EXISTS compute_end_time CASCADE;
 
 DROP FUNCTION IF EXISTS ensure_translated(TEXT, INTEGER, TEXT, TEXT);
 DROP FUNCTION IF EXISTS get_default_language_id();
@@ -28,6 +28,16 @@ DROP TYPE IF EXISTS role_type;
 
 CREATE TYPE role_type AS ENUM ('MODERATOR', 'SPEAKER', 'ATTENDEE');
 
+CREATE OR REPLACE FUNCTION set_updated_at()
+  RETURNS trigger
+  LANGUAGE 'plpgsql' STABLE
+AS $BODY$
+BEGIN
+  NEW.updated_at := CURRENT_TIMESTAMP;
+  RETURN NEW;
+END
+$BODY$;
+
 CREATE TABLE "user" (
   id SERIAL NOT NULL PRIMARY KEY,
   created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -39,6 +49,10 @@ CREATE TABLE "user" (
 );
 COMMENT ON TABLE "user"
   IS 'The application user.';
+
+CREATE TRIGGER set_updated_at
+  BEFORE UPDATE ON "user"
+  FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 CREATE TABLE language (
   id SERIAL NOT NULL PRIMARY KEY,
@@ -58,6 +72,10 @@ CREATE TABLE conference (
 );
 COMMENT ON TABLE conference
   IS 'The conference.';
+
+CREATE TRIGGER set_updated_at
+  BEFORE UPDATE ON conference
+  FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 CREATE TABLE conference_translation (
   language_id INTEGER NOT NULL REFERENCES language(id) ON UPDATE CASCADE ON DELETE CASCADE,
@@ -92,6 +110,10 @@ CREATE TABLE talk (
 );
 COMMENT ON TABLE talk
   IS 'A talk given at the conference.';
+
+CREATE TRIGGER set_updated_at
+  BEFORE UPDATE ON talk
+  FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 CREATE TABLE talk_translation (
     language_id INTEGER NOT NULL REFERENCES language(id) ON UPDATE CASCADE ON DELETE CASCADE,
@@ -134,6 +156,10 @@ CREATE TABLE new_talk_proposal (
 );
 COMMENT ON TABLE new_talk_proposal
   IS 'A new talk proposed by the speaker. Should be accepted by a moderator.';
+
+CREATE TRIGGER set_updated_at
+  BEFORE UPDATE ON new_talk_proposal
+  FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 CREATE TABLE new_talk_proposal_translation (
   language_id INTEGER NOT NULL REFERENCES language(id) ON UPDATE CASCADE ON DELETE CASCADE,
@@ -192,6 +218,7 @@ AS $BODY$
   CREATE TRIGGER compute_end_time
     BEFORE INSERT OR UPDATE ON talk
     FOR EACH ROW EXECUTE FUNCTION compute_end_time();
+
 
 CREATE VIEW v_conference
     AS
